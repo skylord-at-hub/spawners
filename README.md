@@ -13,4 +13,4 @@ coming soon..
 
 ## Changelog ##
 ### 0.1 ###
-Initial Release
+* Initial Release
