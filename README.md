@@ -12,4 +12,5 @@ coming soon..
 [G+ Community](https://plus.google.com/communities/105201070842404099845)
 
 ## Changelog ##
-coming soon..
+### 0.1 ###
+Initial Release
