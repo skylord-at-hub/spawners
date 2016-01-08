@@ -42,3 +42,4 @@ WTFPL
 * spawners are active only if player is in radius (21)
 * spawners are diggable only with steel pickaxe and above, so no noob griefers can raid your base too easy
 * mobs play sound when spawned
+* animated textures
