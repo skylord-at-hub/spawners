@@ -10,6 +10,9 @@ Inspired from:
 
 ![spawners-01.jpg](https://bitbucket.org/repo/y69Me7/images/2710670485-spawners-01.jpg)
 
+## YouTube video ##
+[Minetest - spawners MOD](https://youtu.be/TlaMVl0ZDtw)
+
 ## Links ##
 [Minetest Forum Page](https://forum.minetest.net/viewtopic.php?f=10&t=13727)
 
