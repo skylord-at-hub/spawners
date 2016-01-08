@@ -398,4 +398,4 @@ for i, mob_table in ipairs(spawners.mob_tables) do
 	end
 end
 
-print ("[MOD] Spawners 0.1 Loaded.")
+print ("[MOD] Spawners 0.2 Loaded.")

@@ -24,6 +24,11 @@ Inspired from:
 WTFPL
 
 ## Changelog ##
+### 0.2 ###
+* support pyramids mod - mummy
+* support creatures mod
+* shorten the code - more effecient
+
 ### 0.1 ###
 * Initial Release
 * detects only 6 nodes for 'air' around the spawner [top, bottom, left, right, front, back] afterwards it will check the node above and below the found 'air' node - so there is enough space to spawn someone
