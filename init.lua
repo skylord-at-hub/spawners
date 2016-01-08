@@ -3,7 +3,7 @@ local max_obj_per_mapblock = tonumber(minetest.setting_get("max_objects_per_bloc
 -- main table
 spawners = {}
 -- list of mods
-spawners.mob_mods = {"mobs", "creatures", "testmod"}
+spawners.mob_mods = {"mobs", "pyramids", "creatures"}
 -- table holding all mobs info
 spawners.mob_tables = {}
 
@@ -12,21 +12,38 @@ for k, v in ipairs(spawners.mob_mods) do
 	
 	local modpath = minetest.get_modpath(v)
 
+	-- list of mobs and their info
 	if (modpath) then
+
 		-- MOBS REDO CONFIG
 		if v == "mobs" and mobs.mod == "redo" then
-			-- list of mobs and their info
-			table.insert(spawners.mob_tables, {name="sheep_white", mod_prefix_default=v, mod_prefix_custom="", dummy_size={x=0.52,y=0.52}, dummy_offset=0.2, dummy_mesh="mobs_sheep.b3d", dummy_texture={"mobs_sheep_white.png"}, night_only=false})
+			table.insert(spawners.mob_tables, {name="sheep_white", mod_prefix=v, egg_name_custom="", dummy_size={x=0.52,y=0.52}, dummy_offset=0.2, dummy_mesh="mobs_sheep.b3d", dummy_texture={"mobs_sheep_white.png"}, night_only=false})
 
-			table.insert(spawners.mob_tables, {name="cow", mod_prefix_default=v, mod_prefix_custom="", dummy_size={x=0.3,y=0.3}, dummy_offset=-0.3, dummy_mesh="mobs_cow.x", dummy_texture={"mobs_cow.png"}, night_only=false})
+			table.insert(spawners.mob_tables, {name="cow", mod_prefix=v, egg_name_custom="", dummy_size={x=0.3,y=0.3}, dummy_offset=-0.3, dummy_mesh="mobs_cow.x", dummy_texture={"mobs_cow.png"}, night_only=false})
 
-			table.insert(spawners.mob_tables, {name="chicken", mod_prefix_default=v, mod_prefix_custom="", dummy_size={x=0.9,y=0.9}, dummy_offset=0.2, dummy_mesh="mobs_chicken.x", dummy_texture={"mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png"}, night_only=false})
+			table.insert(spawners.mob_tables, {name="chicken", mod_prefix=v, egg_name_custom="", dummy_size={x=0.9,y=0.9}, dummy_offset=0.2, dummy_mesh="mobs_chicken.x", dummy_texture={"mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png"}, night_only=false})
 
-			table.insert(spawners.mob_tables, {name="warthog", mod_prefix_default=v, mod_prefix_custom="", dummy_size={x=0.62,y=0.62}, dummy_offset=-0.3, dummy_mesh="mobs_warthog.x", dummy_texture={"mobs_warthog.png"}, night_only=true})
+			table.insert(spawners.mob_tables, {name="warthog", mod_prefix=v, egg_name_custom="", dummy_size={x=0.62,y=0.62}, dummy_offset=-0.3, dummy_mesh="mobs_warthog.x", dummy_texture={"mobs_warthog.png"}, night_only=false})
 
-			table.insert(spawners.mob_tables, {name="bunny", mod_prefix_default=v, mod_prefix_custom="", dummy_size={x=1,y=1}, dummy_offset=0.2, dummy_mesh="mobs_bunny.b3d", dummy_texture={"mobs_bunny_brown.png"}, night_only=false})
+			table.insert(spawners.mob_tables, {name="bunny", mod_prefix=v, egg_name_custom="", dummy_size={x=1,y=1}, dummy_offset=0.2, dummy_mesh="mobs_bunny.b3d", dummy_texture={"mobs_bunny_brown.png"}, night_only=false})
 
-			table.insert(spawners.mob_tables, {name="kitten", mod_prefix_default=v, mod_prefix_custom="", dummy_size={x=0.32,y=0.32}, dummy_offset=0, dummy_mesh="mobs_kitten.b3d", dummy_texture={"mobs_kitten_ginger.png"}, night_only=false})
+			table.insert(spawners.mob_tables, {name="kitten", mod_prefix=v, egg_name_custom="", dummy_size={x=0.32,y=0.32}, dummy_offset=0, dummy_mesh="mobs_kitten.b3d", dummy_texture={"mobs_kitten_ginger.png"}, night_only=false})
+		end
+
+		-- PYRAMIDS MOD CONFIG
+		if v == "pyramids" then
+			table.insert(spawners.mob_tables, {name="mummy", mod_prefix=v, egg_name_custom="pyramids:spawn_egg", dummy_size={x=3.3,y=3.3}, dummy_offset=-0.3, dummy_mesh="pyramids_mummy.x", dummy_texture={"pyramids_mummy.png"}, night_only=false})
+		end
+
+		-- CREATURES MOD CONFIG
+		if v == "creatures" then
+			table.insert(spawners.mob_tables, {name="chicken", mod_prefix=v, egg_name_custom="creatures:chicken_spawn_egg", dummy_size={x=0.9,y=0.9}, dummy_offset=-0.3, dummy_mesh="creatures_chicken.b3d", dummy_texture={"creatures_chicken.png"}, night_only=false})
+
+			table.insert(spawners.mob_tables, {name="ghost", mod_prefix=v, egg_name_custom="creatures:ghost_spawn_egg", dummy_size={x=0.7,y=0.7}, dummy_offset=-0.5, dummy_mesh="creatures_ghost.b3d", dummy_texture={"creatures_ghost.png"}, night_only=true})
+
+			table.insert(spawners.mob_tables, {name="sheep", mod_prefix=v, egg_name_custom="creatures:sheep_spawn_egg", dummy_size={x=0.6,y=0.6}, dummy_offset=-0.3, dummy_mesh="creatures_sheep.b3d", dummy_texture={"creatures_sheep.png^creatures_sheep_white.png"}, night_only=false})
+
+			table.insert(spawners.mob_tables, {name="zombie", mod_prefix=v, egg_name_custom="creatures:zombie_spawn_egg", dummy_size={x=0.5,y=0.5}, dummy_offset=-0.5, dummy_mesh="creatures_zombie.b3d", dummy_texture={"creatures_zombie.png"}, night_only=true})
 		end
 
 	else
@@ -120,19 +137,25 @@ function spawners.check_node_status(pos, mob, night_only)
 			table.insert(spawn_positions, {x=pos.x, y=pos.y-1.5, z=pos.z})
 		end
 
-		-- spawner is closed from all sides
-		if not (front or right or back or left or top or bottom) then return false end
+		if #spawn_positions < 1 then
+			-- spawner is closed from all sides
+			return false
+		else
+			-- pick random from the open sides
+			local pick_random
 
-		-- pick random from the open sides
-		local pick_random = math.random(1,#spawn_positions)
-		
-		for k, v in pairs (spawn_positions) do
-			if k == pick_random then
-				random_pos = v
+			if #spawn_positions == 1 then
+				pick_random = #spawn_positions
+			else
+				pick_random = math.random(1,#spawn_positions)
+			end
+			
+			for k, v in pairs (spawn_positions) do
+				if k == pick_random then
+					random_pos = v
+				end
 			end
 		end
-		
-		if not random_pos then return false end
 
 		-- check the node above and below the found air node
 		local node_above = minetest.get_node({x=random_pos.x, y=random_pos.y+1, z=random_pos.z}).name
@@ -193,7 +216,7 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 		end
 	end
 
-	minetest.register_entity("spawners:dummy_"..mob_name, dummy_definition)
+	minetest.register_entity("spawners:dummy_"..mod_prefix.."_"..mob_name, dummy_definition)
 
 	-- node spawner active
 	minetest.register_node("spawners:"..mod_prefix.."_"..mob_name.."_spawner_active", {
@@ -220,7 +243,7 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 		drop = "spawners:"..mod_prefix.."_"..mob_name.."_spawner",
 		on_construct = function(pos)
 			pos.y = pos.y + offset
-			minetest.add_entity(pos,"spawners:dummy_"..mob_name)
+			minetest.add_entity(pos,"spawners:dummy_"..mod_prefix.."_"..mob_name)
 		end,
 	})
 
@@ -354,17 +377,21 @@ end
 for i, mob_table in ipairs(spawners.mob_tables) do
 	if mob_table then
 
-		local mod_prefix
-		if mob_table.mod_prefix_custom == "" then mod_prefix = mob_table.mod_prefix_default end
+		local mob_egg
+		if mob_table.egg_name_custom ~= "" then 
+			mob_egg = mob_table.egg_name_custom
+		else
+			mob_egg = mob_table.mod_prefix..":"..mob_table.name
+		end
 
 		-- spawners
-		spawners.create(mob_table.name, mod_prefix, mob_table.dummy_size, mob_table.dummy_offset, mob_table.dummy_mesh, mob_table.dummy_texture, mob_table.night_only)
+		spawners.create(mob_table.name, mob_table.mod_prefix, mob_table.dummy_size, mob_table.dummy_offset, mob_table.dummy_mesh, mob_table.dummy_texture, mob_table.night_only)
 		-- recipes
 		minetest.register_craft({
-			output = "spawners:"..mod_prefix.."_"..mob_table.name.."_spawner",
+			output = "spawners:"..mob_table.mod_prefix.."_"..mob_table.name.."_spawner",
 			recipe = {
 				{"default:diamondblock", "fake_fire:flint_and_steel", "default:diamondblock"},
-				{"xpanes:bar", mod_prefix..":"..mob_table.name, "xpanes:bar"},
+				{"xpanes:bar", mob_egg, "xpanes:bar"},
 				{"default:diamondblock", "xpanes:bar", "default:diamondblock"},
 			}
 		})
