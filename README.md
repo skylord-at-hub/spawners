@@ -32,11 +32,6 @@ fake_fire, xpanes for recipes
 ## License ##
 WTFPL
 
-Inspired from:
-
-* HeroOfTheWinds [Mob Spawners MOD](https://forum.minetest.net/viewtopic.php?f=9&t=10555)
-* Discontinued BlockMen [Creatures MOD](https://github.com/BlockMen/creatures)
-
 ## Changelog ##
 ### 0.2 ###
 * support pyramids mod - mummy
