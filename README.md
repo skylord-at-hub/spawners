@@ -3,18 +3,26 @@ This MOD for Minetest let the player craft mob Spawner blocks.
 
 Easy to implement new mob mods, but you must make sure that those mods following the right naming convention and have sounds, textures, models with the right name.
 
-Inspired from:
+Currently it works with [Pyramids Mummy](https://forum.minetest.net/viewtopic.php?id=7063), [Mobs Redo](https://forum.minetest.net/viewtopic.php?f=11&t=9917) and [Creatures](https://forum.minetest.net/viewtopic.php?f=11&t=8638).
 
-* HeroOfTheWinds [Mob Spawners MOD](https://forum.minetest.net/viewtopic.php?f=9&t=10555)
-* Discontinued BlockMen [Creatures MOD](https://github.com/BlockMen/creatures)
-
-![spawners-01.jpg](https://bitbucket.org/repo/y69Me7/images/2710670485-spawners-01.jpg)
+![spawners_promo.jpg](https://bitbucket.org/repo/y69Me7/images/3793257566-spawners_promo.jpg)
+![spawner_waiting_medium.gif](https://bitbucket.org/repo/y69Me7/images/246761582-spawner_waiting_medium.gif) ![spawner_animated_medium.gif](https://bitbucket.org/repo/y69Me7/images/1359872529-spawner_animated_medium.gif)
 
 ## YouTube video ##
 [Minetest - spawners MOD](https://youtu.be/TlaMVl0ZDtw)
 
+## Mod dependencies ##
+* default
+* mobs?
+* fake_fire?
+* xpanes?
+* creatures?
+
+mobs redo, creatures are supported mods
+fake_fire, xpanes for recipes
+
 ## Links ##
-[Minetest Forum Page](https://forum.minetest.net/viewtopic.php?f=10&t=13727)
+[Minetest Forum Page](https://forum.minetest.net/viewtopic.php?f=10&t=13727) - try this MOD on this server
 
 [G+ Collection](https://plus.google.com/collection/06fEx)
 
@@ -22,6 +30,11 @@ Inspired from:
 
 ## License ##
 WTFPL
+
+Inspired from:
+
+* HeroOfTheWinds [Mob Spawners MOD](https://forum.minetest.net/viewtopic.php?f=9&t=10555)
+* Discontinued BlockMen [Creatures MOD](https://github.com/BlockMen/creatures)
 
 ## Changelog ##
 ### 0.2 ###
