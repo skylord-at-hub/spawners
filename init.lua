@@ -1,11 +1,22 @@
+-- user settings
 local max_obj_per_mapblock = tonumber(minetest.setting_get("max_objects_per_block"))
-
+dofile(minetest.get_modpath("spawners").."/config.lua")
 -- main table
 spawners = {}
 -- list of mods
 spawners.mob_mods = {"mobs", "pyramids", "creatures"}
 -- table holding all mobs info
 spawners.mob_tables = {}
+for k, mod1 in ipairs(ENABLED_MODS) do
+	print("********************** key: "..k..", val: "..mod1)
+	
+	for j, mobs1 in ipairs(MOBS_PROPS[mod1]) do
+		print(mobs1.name)
+
+
+
+	end
+end
 
 -- check if mods exists and build tables
 for k, v in ipairs(spawners.mob_mods) do
@@ -90,7 +101,7 @@ function spawners.check_around_radius(pos)
 	local player_near = false
 	local radius = 21
 
-	for  _,obj in ipairs(minetest.get_objects_inside_radius(pos, radius)) do
+	for _,obj in ipairs(minetest.get_objects_inside_radius(pos, radius)) do
 		if obj:is_player() then
 			player_near = true
 		end
@@ -300,6 +311,7 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 		light_source = 2,
 		drawtype = "allfaces",
 		walkable = true,
+		catch_up = false,
 		damage_per_second = 4,
 		sunlight_propagates = true,
 		tiles = {"spawners_spawner.png^[colorize:#FF000030"},
@@ -318,10 +330,9 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 	minetest.register_abm({
 		nodenames = {"spawners:"..mod_prefix.."_"..mob_name.."_spawner", "spawners:"..mod_prefix.."_"..mob_name.."_spawner_active", "spawners:"..mod_prefix.."_"..mob_name.."_spawner_overheat", "spawners:"..mod_prefix.."_"..mob_name.."_spawner_waiting"},
 		neighbors = {"air"},
-		interval = 2.0,
-		chance = 20,
+		interval = 5.0,
+		chance = 8,
 		action = function(pos, node, active_object_count, active_object_count_wider)
-			
 
 			local random_pos, waiting = spawners.check_node_status(pos, mob_name, night_only)
 
@@ -398,4 +409,4 @@ for i, mob_table in ipairs(spawners.mob_tables) do
 	end
 end
 
-print ("[MOD] Spawners 0.2 Loaded.")
+print ("[MOD] Spawners 0.3 Loaded.")
