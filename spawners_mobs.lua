@@ -194,11 +194,10 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 
 end
 
--- create all spawners and crafting recipes
+-- create all spawners
 for i, mob_table in ipairs(spawners.mob_tables) do
 	if mob_table then
 
-		-- spawners
 		spawners.create(mob_table.name, mob_table.mod_prefix, mob_table.dummy_size, mob_table.dummy_offset, mob_table.dummy_mesh, mob_table.dummy_texture, mob_table.night_only, mob_table.sound_custom)
 	end
 end
