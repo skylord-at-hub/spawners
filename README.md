@@ -13,9 +13,9 @@ Currently it works with [Pyramids Mummy](https://forum.minetest.net/viewtopic.ph
 
 ## Mod dependencies ##
 * default
-* mobs?
 * fake_fire?
 * xpanes?
+* mobs?
 * creatures?
 * pyramids?
 
