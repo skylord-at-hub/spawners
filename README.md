@@ -33,6 +33,16 @@ fake_fire, xpanes for recipes
 WTFPL
 
 ## Changelog ##
+### 0.3 ###
+* new folder and file structure
+* more convenient disable/enable, add/remove new MODs in config.lua file - added property for custom sounds
+* added sound for bunny
+* fixed sound for pyramids:mummy
+* added footsteps and digging sounds for the spawners
+* shorter and more effective code, easier to read, fixed variable namings
+* ABM tweak - longer delay to trigger but bigger chance for spawn entity
+* disabled ABM catch_up
+
 ### 0.2 ###
 * support pyramids mod - mummy
 * support creatures mod
