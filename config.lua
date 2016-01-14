@@ -16,7 +16,7 @@
 
 -- [*] -> MANDATORY - has to be filled in!
 
--- mods what should be enabled and loded
+-- mods what should be enabled and loded, remove/add the one you want to load
 ENABLED_MODS = {"mobs", "pyramids", "creatures"}
 
 -- mobs properties - setup all you mobs here

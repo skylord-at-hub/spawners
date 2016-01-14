@@ -1,7 +1,7 @@
 # Spawners #
-This MOD for Minetest let the player craft mob Spawner blocks.
+This MOD for Minetest let the player craft mob Spawner blocks. Mobs are spawning randomly in a short intervals.
 
-Easy to implement new mob mods, but you must make sure that those mods following the right naming convention and have sounds, textures, models with the right name.
+Easy to implement new mob mods just look in to config.lua.
 
 Currently it works with [Pyramids Mummy](https://forum.minetest.net/viewtopic.php?id=7063), [Mobs Redo](https://forum.minetest.net/viewtopic.php?f=11&t=9917) and [Creatures](https://forum.minetest.net/viewtopic.php?f=11&t=8638).
 
@@ -17,6 +17,7 @@ Currently it works with [Pyramids Mummy](https://forum.minetest.net/viewtopic.ph
 * fake_fire?
 * xpanes?
 * creatures?
+* pyramids?
 
 mobs redo, creatures are supported mods
 
@@ -38,10 +39,11 @@ WTFPL
 * more convenient disable/enable, add/remove new MODs in config.lua file - added property for custom sounds
 * added sound for bunny
 * fixed sound for pyramids:mummy
-* added footsteps and digging sounds for the spawners
+* added footsteps and dug sounds for the spawners
 * shorter and more effective code, easier to read, fixed variable namings
 * ABM tweak - longer delay to trigger but bigger chance for spawn entity
 * disabled ABM catch_up
+* added normal map texture for default spawner
 
 ### 0.2 ###
 * support pyramids mod - mummy
