@@ -175,7 +175,7 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 
 			elseif waiting then
 				-- waiting status
-				if node.name ~= "spawners:"..mod_prefix.."_"..mob_name.."_spawner_spawner_waiting" then
+				if node.name ~= "spawners:"..mod_prefix.."_"..mob_name.."_spawner_waiting" then
 					minetest.set_node(pos, {name="spawners:"..mod_prefix.."_"..mob_name.."_spawner_waiting"})
 				end
 			else
