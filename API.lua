@@ -41,10 +41,8 @@ end
 -- start spawning mobs
 function spawners.start_spawning(pos, how_many, mob_name, mod_prefix, sound_custom)
 	if not pos or not how_many or not mob_name then return end
-	print("mod_prefix: "..mod_prefix)
-	print("mob_name: "..mob_name)
-	local sound_name
 
+	local sound_name
 	-- remove 'spawners:' from the string
 	local mob_name = string.sub(mob_name,10)
 
@@ -56,8 +54,61 @@ function spawners.start_spawning(pos, how_many, mob_name, mod_prefix, sound_cust
 	end
 
 	for i=1,how_many do
+		local obj = minetest.add_entity(pos, mod_prefix..":"..mob_name)
 
-		if mob_name == "default:stone_with_gold" then
+		if obj then
+			if sound_name then
+				minetest.sound_play(sound_name, {
+					pos = pos,
+					max_hear_distance = 32,
+					gain = 10,
+				})
+			end
+		end
+	end
+end
+
+function spawners.add_effects(pos, radius)
+	minetest.add_particlespawner({
+		amount = 32,
+		time = .5,
+		minpos = vector.subtract(pos, radius / 2),
+		maxpos = vector.add(pos, radius / 2),
+		minvel = {x=-1, y=-10, z=-1},
+		maxvel = {x=1,  y=10,  z=1},
+		minacc = vector.new(),
+		maxacc = vector.new(),
+		minexptime = .5,
+		maxexptime = 1,
+		minsize = 2,
+		maxsize = 8,
+		texture = "smoke_particle.png",
+	})
+end
+
+-- start spawning ores
+function spawners.start_spawning_ores(pos, ore_name, sound_custom, spawners_pos)
+	if not pos or not ore_name then return end
+
+	local sound_name
+	local player_near = false
+
+	-- use custom sounds
+	if sound_custom ~= "" then 
+		sound_name = sound_custom
+	else
+		sound_name = false
+	end
+
+	local how_many = math.random(0,2)
+	how_many = how_many+1
+	print("how_many: "..how_many)
+
+	for i=1, how_many do
+		print("i: "..i)
+		
+		if i > 1 then
+			player_near, pos = spawners.check_around_radius_ores(pos, "default:stone")
 
 			minetest.sound_play(sound_name, {
 				pos = pos,
@@ -65,27 +116,25 @@ function spawners.start_spawning(pos, how_many, mob_name, mod_prefix, sound_cust
 				gain = 10,
 			})
 
-			minetest.set_node(pos, {name="default:stone_with_gold"})
-		
+			minetest.set_node(pos, {name=ore_name})
+			spawners.add_effects(pos, 1)
+			print("#2 spawing "..ore_name.." at "..minetest.pos_to_string(pos))
 		else
+			minetest.sound_play(sound_name, {
+				pos = pos,
+				max_hear_distance = 32,
+				gain = 10,
+			})
 
-			local obj = minetest.add_entity(pos, mod_prefix..":"..mob_name)
-
-			if obj then
-				if sound_name then
-					minetest.sound_play(sound_name, {
-						pos = pos,
-						max_hear_distance = 32,
-						gain = 10,
-					})
-				end
-			end
+			minetest.set_node(pos, {name=ore_name})
+			print("#1 spawing "..ore_name.." at "..minetest.pos_to_string(pos))
+			spawners.add_effects(pos, 1)
 		end
 	end
 	
 end
 
-function spawners.check_around_radius(pos, check_node)
+function spawners.check_around_radius(pos)
 	local player_near = false
 	local found_node = false
 	local radius = 21
@@ -96,8 +145,16 @@ function spawners.check_around_radius(pos, check_node)
 			player_near = true
 		end
 	end
+
+	return player_near
+end
+
+function spawners.check_around_radius_ores(pos, check_node)
+	local player_near = spawners.check_around_radius(pos);
+	local found_node = false
+	local node_ore_pos = nil
 	print("check_node: "..check_node)
-	if check_node and check_node == "default:stone" then
+	if check_node then
 		
 		node_ore_pos = minetest.find_node_near(pos, 3, {check_node})
 		
@@ -110,16 +167,11 @@ function spawners.check_around_radius(pos, check_node)
 	return player_near, found_node
 end
 
-function spawners.check_node_status(pos, mob, night_only, check_node)
-	if not check_node then check_node = "air" end
+function spawners.check_node_status(pos, mob, night_only)
+		local player_near = spawners.check_around_radius(pos)
 
-	local player_near, found_node = spawners.check_around_radius(pos, check_node)
-	local random_pos = false
-
-	if check_node == "default:stone" and not found_node then
-		print("no stone found #2")
-		return false, true
-	elseif player_near then
+	if player_near then
+		local random_pos = false
 		local min_node_light = 10
 		local tod = minetest.get_timeofday() * 24000
 		local node_light = minetest.get_node_light(pos)
@@ -127,66 +179,65 @@ function spawners.check_node_status(pos, mob, night_only, check_node)
 		if not node_light then
 			return false
 		end
-		print("node_light: "..node_light)
-		if check_node == "air" then
-			local spawn_positions = {}
-			local right = minetest.get_node({x=pos.x+1, y=pos.y, z=pos.z})
-			local front = minetest.get_node({x=pos.x, y=pos.y, z=pos.z+1})
-			local left = minetest.get_node({x=pos.x-1, y=pos.y, z=pos.z})
-			local back = minetest.get_node({x=pos.x, y=pos.y, z=pos.z-1})
-			local top = minetest.get_node({x=pos.x, y=pos.y+1, z=pos.z})
-			local bottom = minetest.get_node({x=pos.x, y=pos.y-1, z=pos.z})
 
-			-- make sure that at least one side of the spawner is open
-			if right.name == "air" then
-				table.insert(spawn_positions, {x=pos.x+1.5, y=pos.y, z=pos.z})
-			end
-			if front.name == "air" then
-				table.insert(spawn_positions, {x=pos.x, y=pos.y, z=pos.z+1.5})
-			end
-			if left.name == "air" then
-				table.insert(spawn_positions, {x=pos.x-1.5, y=pos.y, z=pos.z})
-			end
-			if back.name == "air" then
-				table.insert(spawn_positions, {x=pos.x, y=pos.y, z=pos.z-1.5})
-			end
-			if top.name == "air" then
-				table.insert(spawn_positions, {x=pos.x, y=pos.y+1.5, z=pos.z})
-			end
-			if bottom.name == "air" then
-				table.insert(spawn_positions, {x=pos.x, y=pos.y-1.5, z=pos.z})
-			end
+		local spawn_positions = {}
+		local right = minetest.get_node({x=pos.x+1, y=pos.y, z=pos.z})
+		local front = minetest.get_node({x=pos.x, y=pos.y, z=pos.z+1})
+		local left = minetest.get_node({x=pos.x-1, y=pos.y, z=pos.z})
+		local back = minetest.get_node({x=pos.x, y=pos.y, z=pos.z-1})
+		local top = minetest.get_node({x=pos.x, y=pos.y+1, z=pos.z})
+		local bottom = minetest.get_node({x=pos.x, y=pos.y-1, z=pos.z})
 
-			if #spawn_positions < 1 then
-				-- spawner is not touching node what he needs to
-				return false
+		-- make sure that at least one side of the spawner is open
+		if right.name == "air" then
+			table.insert(spawn_positions, {x=pos.x+1.5, y=pos.y, z=pos.z})
+		end
+		if front.name == "air" then
+			table.insert(spawn_positions, {x=pos.x, y=pos.y, z=pos.z+1.5})
+		end
+		if left.name == "air" then
+			table.insert(spawn_positions, {x=pos.x-1.5, y=pos.y, z=pos.z})
+		end
+		if back.name == "air" then
+			table.insert(spawn_positions, {x=pos.x, y=pos.y, z=pos.z-1.5})
+		end
+		if top.name == "air" then
+			table.insert(spawn_positions, {x=pos.x, y=pos.y+1.5, z=pos.z})
+		end
+		if bottom.name == "air" then
+			table.insert(spawn_positions, {x=pos.x, y=pos.y-1.5, z=pos.z})
+		end
+
+		if #spawn_positions < 1 then
+			-- spawner is cloed from all sides
+			return false
+		else
+			-- pick random from the open sides
+			local pick_random
+
+			if #spawn_positions == 1 then
+				pick_random = #spawn_positions
 			else
-				-- pick random from the open sides
-				local pick_random
-
-				if #spawn_positions == 1 then
-					pick_random = #spawn_positions
-				else
-					pick_random = math.random(1,#spawn_positions)
-				end
-				
-				for k, v in pairs (spawn_positions) do
-					if k == pick_random then
-						random_pos = v
-					end
+				pick_random = math.random(1,#spawn_positions)
+			end
+			
+			for k, v in pairs (spawn_positions) do
+				if k == pick_random then
+					random_pos = v
 				end
 			end
+		end
 
-			-- check the node above and below the found air node
-			local node_above = minetest.get_node({x=random_pos.x, y=random_pos.y+1, z=random_pos.z}).name
-			local node_below = minetest.get_node({x=random_pos.x, y=random_pos.y-1, z=random_pos.z}).name
-			
-			if not (node_above == "air" or node_below == "air") then return false end
+		-- check the node above and below the found air node
+		local node_above = minetest.get_node({x=random_pos.x, y=random_pos.y+1, z=random_pos.z}).name
+		local node_below = minetest.get_node({x=random_pos.x, y=random_pos.y-1, z=random_pos.z}).name
+		
+		if not (node_above == "air" or node_below == "air") then
+			return false
 		end
 
 		-- spawn only at day
 		if not night_only and node_light < min_node_light then
-			print("not enough light")
 			return false, true
 		end
 
@@ -202,5 +253,17 @@ function spawners.check_node_status(pos, mob, night_only, check_node)
 		return random_pos, false, found_node
 	else
 		return false, true
+	end
+end
+
+function spawners.check_node_status_ores(pos, ore_name, check_node)
+	if not check_node then return end
+
+	local player_near, found_node = spawners.check_around_radius_ores(pos, check_node)
+
+	if player_near then
+		return false, found_node
+	else
+		return true, false
 	end
 end
