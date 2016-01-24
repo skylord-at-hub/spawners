@@ -140,8 +140,8 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 	minetest.register_abm({
 		nodenames = {"spawners:"..mod_prefix.."_"..mob_name.."_spawner", "spawners:"..mod_prefix.."_"..mob_name.."_spawner_active", "spawners:"..mod_prefix.."_"..mob_name.."_spawner_overheat", "spawners:"..mod_prefix.."_"..mob_name.."_spawner_waiting"},
 		neighbors = {"air"},
-		interval = 5.0,
-		chance = 7,
+		interval = 10,
+		chance = 2,
 		action = function(pos, node, active_object_count, active_object_count_wider)
 
 			local random_pos, waiting = spawners.check_node_status(pos, mob_name, night_only)
