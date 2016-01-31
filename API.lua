@@ -71,18 +71,18 @@ end
 function spawners.add_effects(pos, radius)
 	minetest.add_particlespawner({
 		amount = 32,
-		time = .5,
+		time = 2,
 		minpos = vector.subtract(pos, radius / 2),
 		maxpos = vector.add(pos, radius / 2),
-		minvel = {x=-1, y=-10, z=-1},
-		maxvel = {x=1,  y=10,  z=1},
+		minvel = {x=-0.5, y=-10, z=-0.5},
+		maxvel = {x=0.5,  y=10,  z=0.5},
 		minacc = vector.new(),
 		maxacc = vector.new(),
 		minexptime = .5,
-		maxexptime = 1,
-		minsize = 2,
+		maxexptime = 2,
+		minsize = .5,
 		maxsize = 8,
-		texture = "smoke_particle.png",
+		texture = "spawners_smoke_particle.png",
 	})
 end
 
@@ -127,8 +127,8 @@ function spawners.start_spawning_ores(pos, ore_name, sound_custom, spawners_pos)
 			})
 
 			minetest.set_node(pos, {name=ore_name})
-			print("#1 spawing "..ore_name.." at "..minetest.pos_to_string(pos))
 			spawners.add_effects(pos, 1)
+			print("#1 spawing "..ore_name.." at "..minetest.pos_to_string(pos))
 		end
 	end
 	
