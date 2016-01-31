@@ -160,10 +160,9 @@ end
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
 	print("allow_metadata_inventory_put")
-	print("listname: "..listname)
-	print("stack name: "..stack:get_name())
 	if minetest.is_protected(pos, player:get_player_name()) then
-		return 0
+		minetest.record_protection_violation(pos, player:get_player_name())
+		return
 	end
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
@@ -172,12 +171,11 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
 	ingot = string.split(ingot, ":")
 	ingot = string.split(ingot[2], "_")
 
-	print("ingot 3: "..ingot[3])
+	if ingot[3] == "iron" then
+		ingot[3] = "steel"
+	end
 
 	if stack:get_name() == "default:"..ingot[3].."_ingot" then
-		if inv:is_empty("src") then
-			meta:set_string("infotext", "ore spawner is empty")
-		end
 		return stack:get_count()
 	else
 		return 0
@@ -187,6 +185,7 @@ end
 local function allow_metadata_inventory_take(pos, listname, index, stack, player)
 	print("allow_metadata_inventory_take")
 	if minetest.is_protected(pos, player:get_player_name()) then
+		minetest.record_protection_violation(pos, player:get_player_name())
 		return 0
 	end
 	return stack:get_count()
@@ -194,15 +193,68 @@ end
 
 local function on_receive_fields(pos, formname, fields, sender)
 	print("on_receive_fields")
+	local ore_node = minetest.get_node_or_nil(pos)
 
 	if minetest.is_protected(pos, sender:get_player_name()) then
-		return 0
+		minetest.record_protection_violation(pos, sender:get_player_name())
+		return
 	end
 
-	for k, v in ipairs(fields) do
-		print("k: "..k)
-		print("v: "..v)
+	local ingot = ore_node.name
+	ingot = string.split(ingot, ":")
+	ingot = string.split(ingot[2], "_")
+	
+
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+	-- inv:set_size("fuel", 1)
+	local fuellist = inv:get_list("fuel")
+
+	if inv:is_empty("fuel") then
+		if ore_node.name ~= "spawners:stone_with_"..ingot[3].."_spawner" then
+			minetest.swap_node(pos, {name="spawners:stone_with_"..ingot[3].."_spawner"})
+		end
+		meta:set_string("infotext", ingot[3].." ore spawner is empty")
+	else
+		meta:set_string("infotext", ingot[3].." ore spawner has "..inv:get_stack("fuel", 1):get_count().." ingots")
 	end
+
+	-- fix iron vs. steel issue
+	if ingot[3] == "iron" then
+		ingot[3] = "steel"
+		print("changing ingot name to: "..ingot[3])
+	end
+
+	if not fuellist[1]:is_empty() and inv:get_stack("fuel", 1):get_name() == "default:"..ingot[3].."_ingot" then
+		
+		-- fix iron vs. steel issue
+		if ingot[3] == "steel" then
+			ingot[3] = "iron"
+			print("changing ingot name to: "..ingot[3])
+		end
+
+		local waiting, found_node = spawners.check_node_status_ores(pos, "stone_with_"..ingot[3], "default:stone")
+
+		if found_node then
+			print("found_node");
+			minetest.swap_node(pos, {name="spawners:stone_with_"..ingot[3].."_spawner_active"})
+		elseif waiting then
+			print("waiting");
+			minetest.swap_node(pos, {name="spawners:stone_with_"..ingot[3].."_spawner_waiting"})
+		else
+			return
+		end
+	end
+
+
+
+	print("get_stack: "..inv:get_stack("fuel", 1):get_count())
+	print("get_stack: "..inv:get_stack("fuel", 1):take_item():to_string())
+	print("take_item: "..inv:get_stack("fuel", 1):take_item():get_count())
+	-- inv:set_stack("fuel", 1, aftercooked.items[1])
+	-- print("get_stack: "..inv:get_stack("fuel", 1))
+	-- inv:set_stack("fuel", 1, inv:get_stack("fuel", 1):take_item())
+	
 end
 
 -- 
@@ -326,16 +378,16 @@ function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_
 		is_ground_content = true,
 		groups = {cracky=1,level=2},
 		on_construct = function(pos)
-			local waiting, found_node = spawners.check_node_status_ores(pos, ore_name, "default:stone")
+			-- local waiting, found_node = spawners.check_node_status_ores(pos, ore_name, "default:stone")
 
 			spawners.get_formspec(pos)
 
-			if found_node then
-				minetest.swap_node(pos, {name="spawners:"..ore_name.."_spawner_active"})
-			elseif waiting then
-				minetest.swap_node(pos, {name="spawners:"..ore_name.."_spawner_waiting"})
-			else
-			end
+			-- if found_node then
+			-- 	minetest.swap_node(pos, {name="spawners:"..ore_name.."_spawner_active"})
+			-- elseif waiting then
+			-- 	minetest.swap_node(pos, {name="spawners:"..ore_name.."_spawner_waiting"})
+			-- else
+			-- end
 
 			pos.y = pos.y + offset
 			minetest.add_entity(pos,"spawners:dummy_ore_"..ore_name)
@@ -352,7 +404,7 @@ function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_
 	-- ABM
 	-- 
 	minetest.register_abm({
-		nodenames = {"spawners:"..ore_name.."_spawner", "spawners:"..ore_name.."_spawner_active", "spawners:"..ore_name.."_spawner_waiting"},
+		nodenames = {"spawners:"..ore_name.."_spawner_active", "spawners:"..ore_name.."_spawner_waiting"},
 		interval = 5.0,
 		chance = 5,
 		action = function(pos, node, active_object_count, active_object_count_wider)
@@ -361,11 +413,38 @@ function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_
 
 			print("ore_name: "..ore_name)
 
+			local meta = minetest.get_meta(pos)
+			local inv = meta:get_inventory()
+
 			if found_node then
 				-- make sure the right node status is shown
 				if node.name ~= "spawners:"..ore_name.."_spawner_active" then
-					minetest.swap_node(pos, {name="spawners:"..ore_name.."_spawner"})
+					minetest.swap_node(pos, {name="spawners:"..ore_name.."_spawner_active"})
 				end
+
+				-- take fuel
+				local stack = inv:get_stack("fuel", 1)
+				stack:take_item()
+
+				print("stack: "..stack:get_count())
+
+				inv:set_stack("fuel", 1, stack)
+
+				if inv:is_empty("fuel") then
+					minetest.swap_node(pos, {name="spawners:"..ore_name.."_spawner"})
+					meta:set_string("infotext", ore_name.." ore spawner is empty")
+				else
+					meta:set_string("infotext", ore_name.." ore spawner has "..inv:get_stack("fuel", 1):get_count().." ingots")
+				end
+
+
+				-- print("get_stack: "..inv:get_stack("fuel", 1):get_count())
+				-- print("get_stack: "..inv:get_stack("fuel", 1):take_item():to_string())
+				-- print("take_item: "..inv:get_stack("fuel", 1):take_item():get_count())
+				-- print(inv:get_stack("fuel", 1):get_count()-inv:get_stack("fuel", 1):take_item():get_count())
+				-- inv:set_stack("fuel", 1, aftercooked.items[1])
+				-- print("get_stack: "..inv:get_stack("fuel", 1))
+				-- inv:set_stack("fuel", 1, inv:get_stack("fuel", 1):take_item())
 
 				-- enough place to spawn more ores
 				spawners.start_spawning_ores(found_node, "default:"..ore_name, sound_custom)
@@ -385,9 +464,6 @@ end
 -- default:stone_with_gold
 spawners.create_ore("stone_with_gold", "", {x=.33,y=.33}, 0, {"default_stone.png^default_mineral_gold.png"}, "tnt_ignite")
 
--- default:stone_with_coal
-spawners.create_ore("stone_with_coal", "", {x=.33,y=.33}, 0, {"default_stone.png^default_mineral_gold.png"}, "tnt_ignite")
-
 -- default:stone_with_iron
 spawners.create_ore("stone_with_iron", "", {x=.33,y=.33}, 0, {"default_stone.png^default_mineral_gold.png"}, "tnt_ignite")
 
@@ -401,15 +477,6 @@ minetest.register_craft({
 	recipe = {
 		{"default:diamondblock", "fake_fire:flint_and_steel", "default:diamondblock"},
 		{"xpanes:bar", "default:goldblock", "xpanes:bar"},
-		{"default:diamondblock", "xpanes:bar", "default:diamondblock"},
-	}
-})
-
-minetest.register_craft({
-	output = "spawners:stone_with_coal_spawner",
-	recipe = {
-		{"default:diamondblock", "fake_fire:flint_and_steel", "default:diamondblock"},
-		{"xpanes:bar", "default:coalblock", "xpanes:bar"},
 		{"default:diamondblock", "xpanes:bar", "default:diamondblock"},
 	}
 })
