@@ -89,7 +89,6 @@ end
 -- start spawning ores
 function spawners.start_spawning_ores(pos, ore_name, sound_custom, spawners_pos)
 	if not pos or not ore_name then return end
-
 	local sound_name
 	local player_near = false
 
@@ -101,7 +100,7 @@ function spawners.start_spawning_ores(pos, ore_name, sound_custom, spawners_pos)
 	end
 
 	local how_many = math.random(0,2)
-	how_many = how_many+1
+	-- how_many = how_many+1
 	print("how_many: "..how_many)
 
 	for i=1, how_many do
@@ -116,9 +115,9 @@ function spawners.start_spawning_ores(pos, ore_name, sound_custom, spawners_pos)
 				gain = 10,
 			})
 
+			print("#2 spawing "..ore_name.." at "..minetest.pos_to_string(pos))
 			minetest.set_node(pos, {name=ore_name})
 			spawners.add_effects(pos, 1)
-			print("#2 spawing "..ore_name.." at "..minetest.pos_to_string(pos))
 		else
 			minetest.sound_play(sound_name, {
 				pos = pos,
@@ -126,9 +125,9 @@ function spawners.start_spawning_ores(pos, ore_name, sound_custom, spawners_pos)
 				gain = 10,
 			})
 
+			print("#1 spawing "..ore_name.." at "..minetest.pos_to_string(pos))
 			minetest.set_node(pos, {name=ore_name})
 			spawners.add_effects(pos, 1)
-			print("#1 spawing "..ore_name.." at "..minetest.pos_to_string(pos))
 		end
 	end
 	
@@ -161,6 +160,8 @@ function spawners.check_around_radius_ores(pos, check_node)
 		if node_ore_pos then
 			found_node = node_ore_pos
 			print("found stone: "..minetest.pos_to_string(found_node));
+		else
+			found_node = false
 		end
 	end
 
@@ -262,7 +263,7 @@ function spawners.check_node_status_ores(pos, ore_name, check_node)
 	local player_near, found_node = spawners.check_around_radius_ores(pos, check_node)
 
 	if player_near then
-		return false, found_node
+		return true, found_node
 	else
 		return true, false
 	end

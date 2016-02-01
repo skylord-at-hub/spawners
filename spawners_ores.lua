@@ -1,24 +1,5 @@
---
 -- Formspecs
---
-
-local function active_formspec(fuel_percent, item_percent)
-	local formspec = 
-		"size[8,8.5]"..
-		default.gui_bg..
-		default.gui_bg_img..
-		default.gui_slots..
-		"list[current_name;fuel;3.5,1.5;1,1;]"..
-		"list[current_player;main;0,4.25;8,1;]"..
-		"list[current_player;main;0,5.5;8,3;8]"..
-		"button_exit[5,1.5;2,1;exit;Save]"..
-		"listring[current_name;fuel]"..
-		"listring[current_player;main]"..
-		default.get_hotbar_bg(0, 4.25)
-	return formspec
-end
-
-local inactive_formspec =
+local ore_formspec =
 	"size[8,8.5]"..
 	default.gui_bg..
 	default.gui_bg_img..
@@ -30,10 +11,6 @@ local inactive_formspec =
 	"listring[current_name;fuel]"..
 	"listring[current_player;main]"..
 	default.get_hotbar_bg(0, 4.25)
-
---
--- Node callback functions that are the same for active and inactive furnace
---
 
 function spawners.get_formspec(pos)
 
@@ -52,104 +29,10 @@ function spawners.get_formspec(pos)
 
 	local fuellist = inv:get_list("fuel")
 
-	--
-	-- Cooking
-	--
-	
-	-- Check if we have cookable content
-	-- local cooked, aftercooked = minetest.get_craft_result({method = "cooking", width = 1, items = srclist})
-	-- local cookable = true
-	
-	-- if cooked.time == 0 then
-	-- 	cookable = false
-	-- end
-	
-	-- Check if we have enough fuel to burn
-	-- if fuel_time < fuel_totaltime then
-	-- 	-- The furnace is currently active and has enough fuel
-	-- 	fuel_time = fuel_time + 1
-		
-	-- 	-- If there is a cookable item then check if it is ready yet
-	-- 	if cookable then
-	-- 		src_time = src_time + 1
-	-- 		if src_time >= cooked.time then
-	-- 			-- Place result in dst list if possible
-	-- 			if inv:room_for_item("dst", cooked.item) then
-	-- 				inv:add_item("dst", cooked.item)
-	-- 				inv:set_stack("src", 1, aftercooked.items[1])
-	-- 				src_time = 0
-	-- 			end
-	-- 		end
-	-- 	end
-	-- else
-	-- 	-- Furnace ran out of fuel
-	-- 	if cookable then
-	-- 		-- We need to get new fuel
-	-- 		local fuel, afterfuel = minetest.get_craft_result({method = "fuel", width = 1, items = fuellist})
-			
-	-- 		if fuel.time == 0 then
-	-- 			-- No valid fuel in fuel list
-	-- 			fuel_totaltime = 0
-	-- 			fuel_time = 0
-	-- 			src_time = 0
-	-- 		else
-	-- 			-- Take fuel from fuel list
-	-- 			inv:set_stack("fuel", 1, afterfuel.items[1])
-				
-	-- 			fuel_totaltime = fuel.time
-	-- 			fuel_time = 0
-				
-	-- 		end
-	-- 	else
-	-- 		-- We don't need to get new fuel since there is no cookable item
-	-- 		fuel_totaltime = 0
-	-- 		fuel_time = 0
-	-- 		src_time = 0
-	-- 	end
-	-- end
-	
-	--
 	-- Update formspec, infotext and node
-	--
-	local formspec = inactive_formspec
-	-- local item_state = ""
-	-- local item_percent = 0
-	-- if cookable then
-	-- 	item_percent =  math.floor(src_time / cooked.time * 100)
-	-- 	item_state = item_percent .. "%"
-	-- else
-	-- 	if srclist[1]:is_empty() then
-	-- 		item_state = "Empty"
-	-- 	else
-	-- 		item_state = "Not cookable"
-	-- 	end
-	-- end
+	local formspec = ore_formspec
 	
-	-- local fuel_state = "Empty"
-	-- local active = "inactive "
-	-- if fuel_time <= fuel_totaltime and fuel_totaltime ~= 0 then
-	-- 	active = "active "
-	-- 	local fuel_percent = math.floor(fuel_time / fuel_totaltime * 100)
-	-- 	fuel_state = fuel_percent .. "%"
-	-- 	formspec = active_formspec(fuel_percent, item_percent)
-	-- 	-- swap_node(pos, "default:furnace_active")
-	-- else
-	-- 	if not fuellist[1]:is_empty() then
-	-- 		fuel_state = "0%"
-	-- 	end
-	-- 	-- swap_node(pos, "default:furnace")
-	-- end
-	
-	-- local infotext =  "Furnace " .. active .. "(Item: " .. item_state .. "; Fuel: " .. fuel_state .. ")"
-	
-	--
-	-- Set meta values
-	--
-	-- meta:set_float("fuel_totaltime", fuel_totaltime)
-	-- meta:set_float("fuel_time", fuel_time)
-	-- meta:set_float("src_time", src_time)
 	meta:set_string("formspec", formspec)
-	-- meta:set_string("infotext", infotext)
 end
 
 local function can_dig(pos, player)
@@ -200,14 +83,13 @@ local function on_receive_fields(pos, formname, fields, sender)
 		return
 	end
 
+	-- get the ore name
 	local ingot = ore_node.name
 	ingot = string.split(ingot, ":")
 	ingot = string.split(ingot[2], "_")
-	
 
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
-	-- inv:set_size("fuel", 1)
 	local fuellist = inv:get_list("fuel")
 
 	if inv:is_empty("fuel") then
@@ -216,13 +98,12 @@ local function on_receive_fields(pos, formname, fields, sender)
 		end
 		meta:set_string("infotext", ingot[3].." ore spawner is empty")
 	else
-		meta:set_string("infotext", ingot[3].." ore spawner has "..inv:get_stack("fuel", 1):get_count().." ingots")
+		meta:set_string("infotext", ingot[3].." ore spawner fuel: "..inv:get_stack("fuel", 1):get_count())
 	end
 
 	-- fix iron vs. steel issue
 	if ingot[3] == "iron" then
 		ingot[3] = "steel"
-		print("changing ingot name to: "..ingot[3])
 	end
 
 	if not fuellist[1]:is_empty() and inv:get_stack("fuel", 1):get_name() == "default:"..ingot[3].."_ingot" then
@@ -230,7 +111,6 @@ local function on_receive_fields(pos, formname, fields, sender)
 		-- fix iron vs. steel issue
 		if ingot[3] == "steel" then
 			ingot[3] = "iron"
-			print("changing ingot name to: "..ingot[3])
 		end
 
 		local waiting, found_node = spawners.check_node_status_ores(pos, "stone_with_"..ingot[3], "default:stone")
@@ -245,22 +125,9 @@ local function on_receive_fields(pos, formname, fields, sender)
 			return
 		end
 	end
-
-
-
-	print("get_stack: "..inv:get_stack("fuel", 1):get_count())
-	print("get_stack: "..inv:get_stack("fuel", 1):take_item():to_string())
-	print("take_item: "..inv:get_stack("fuel", 1):take_item():get_count())
-	-- inv:set_stack("fuel", 1, aftercooked.items[1])
-	-- print("get_stack: "..inv:get_stack("fuel", 1))
-	-- inv:set_stack("fuel", 1, inv:get_stack("fuel", 1):take_item())
-	
 end
 
--- 
 -- Ores creation
--- 
-
 function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_custom)
 	-- dummy inside the spawner
 	local dummy_ore_definition = {
@@ -319,13 +186,7 @@ function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_
 		is_ground_content = true,
 		groups = {cracky=1,level=2,igniter=1,not_in_creative_inventory=1},
 		drop = "spawners:"..ore_name.."_spawner",
-		-- on_construct = function(pos)
-		-- 	pos.y = pos.y + offset
-		-- 	minetest.add_entity(pos,"spawners:dummy_ore_"..ore_name)
-		-- end,
-
 		can_dig = can_dig,
-	
 		allow_metadata_inventory_put = allow_metadata_inventory_put,
 		allow_metadata_inventory_take = allow_metadata_inventory_take,
 		on_receive_fields = on_receive_fields,
@@ -354,13 +215,7 @@ function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_
 		is_ground_content = true,
 		groups = {cracky=1,level=2,not_in_creative_inventory=1},
 		drop = "spawners:"..ore_name.."_spawner",
-		-- on_construct = function(pos)
-		-- 	spawners.get_formspec(pos)
-		-- 	pos.y = pos.y + offset
-		-- 	minetest.add_entity(pos,"spawners:dummy_ore_"..ore_name)
-		-- end,
 		can_dig = can_dig,
-	
 		allow_metadata_inventory_put = allow_metadata_inventory_put,
 		allow_metadata_inventory_take = allow_metadata_inventory_take,
 		on_receive_fields = on_receive_fields,
@@ -378,17 +233,7 @@ function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_
 		is_ground_content = true,
 		groups = {cracky=1,level=2},
 		on_construct = function(pos)
-			-- local waiting, found_node = spawners.check_node_status_ores(pos, ore_name, "default:stone")
-
 			spawners.get_formspec(pos)
-
-			-- if found_node then
-			-- 	minetest.swap_node(pos, {name="spawners:"..ore_name.."_spawner_active"})
-			-- elseif waiting then
-			-- 	minetest.swap_node(pos, {name="spawners:"..ore_name.."_spawner_waiting"})
-			-- else
-			-- end
-
 			pos.y = pos.y + offset
 			minetest.add_entity(pos,"spawners:dummy_ore_"..ore_name)
 		end,
@@ -400,9 +245,7 @@ function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_
 		on_receive_fields = on_receive_fields,
 	})
 
-	-- 
 	-- ABM
-	-- 
 	minetest.register_abm({
 		nodenames = {"spawners:"..ore_name.."_spawner_active", "spawners:"..ore_name.."_spawner_waiting"},
 		interval = 5.0,
@@ -436,15 +279,6 @@ function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_
 				else
 					meta:set_string("infotext", ore_name.." ore spawner has "..inv:get_stack("fuel", 1):get_count().." ingots")
 				end
-
-
-				-- print("get_stack: "..inv:get_stack("fuel", 1):get_count())
-				-- print("get_stack: "..inv:get_stack("fuel", 1):take_item():to_string())
-				-- print("take_item: "..inv:get_stack("fuel", 1):take_item():get_count())
-				-- print(inv:get_stack("fuel", 1):get_count()-inv:get_stack("fuel", 1):take_item():get_count())
-				-- inv:set_stack("fuel", 1, aftercooked.items[1])
-				-- print("get_stack: "..inv:get_stack("fuel", 1))
-				-- inv:set_stack("fuel", 1, inv:get_stack("fuel", 1):take_item())
 
 				-- enough place to spawn more ores
 				spawners.start_spawning_ores(found_node, "default:"..ore_name, sound_custom)
