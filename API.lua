@@ -34,7 +34,7 @@ for k, mob_mod in ipairs(ENABLED_MODS) do
 			::continue::
 		end
 	else
-		print("[MOD] Spawners: MOD "..mob_mod.." not found.")
+		print("[MOD] Spawners: MOD "..mob_mod.." not found and will not be loaded.")
 	end
 end
 
@@ -72,9 +72,9 @@ function spawners.add_effects(pos, radius)
 	minetest.add_particlespawner({
 		amount = 32,
 		time = 2,
-		minpos = vector.subtract(pos, radius / 2),
-		maxpos = vector.add(pos, radius / 2),
-		minvel = {x=-0.5, y=-10, z=-0.5},
+		minpos = vector.subtract({x=pos.x, y=pos.y+1, z=pos.z}, radius / 2),
+		maxpos = vector.add({x=pos.x, y=pos.y+1, z=pos.z}, radius / 2),
+		minvel = {x=-0.5, y=3, z=-0.5},
 		maxvel = {x=0.5,  y=10,  z=0.5},
 		minacc = vector.new(),
 		maxacc = vector.new(),
@@ -99,7 +99,7 @@ function spawners.start_spawning_ores(pos, ore_name, sound_custom, spawners_pos)
 		sound_name = false
 	end
 
-	local how_many = math.random(0,2)
+	local how_many = math.random(1,2)
 	-- how_many = how_many+1
 	print("how_many: "..how_many)
 
@@ -112,7 +112,7 @@ function spawners.start_spawning_ores(pos, ore_name, sound_custom, spawners_pos)
 			minetest.sound_play(sound_name, {
 				pos = pos,
 				max_hear_distance = 32,
-				gain = 10,
+				gain = 15,
 			})
 
 			print("#2 spawing "..ore_name.." at "..minetest.pos_to_string(pos))
@@ -122,7 +122,7 @@ function spawners.start_spawning_ores(pos, ore_name, sound_custom, spawners_pos)
 			minetest.sound_play(sound_name, {
 				pos = pos,
 				max_hear_distance = 32,
-				gain = 10,
+				gain = 15,
 			})
 
 			print("#1 spawing "..ore_name.." at "..minetest.pos_to_string(pos))
@@ -155,7 +155,7 @@ function spawners.check_around_radius_ores(pos, check_node)
 	print("check_node: "..check_node)
 	if check_node then
 		
-		node_ore_pos = minetest.find_node_near(pos, 3, {check_node})
+		node_ore_pos = minetest.find_node_near(pos, 2, {check_node})
 		
 		if node_ore_pos then
 			found_node = node_ore_pos

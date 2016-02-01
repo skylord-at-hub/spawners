@@ -4,6 +4,7 @@ local ore_formspec =
 	default.gui_bg..
 	default.gui_bg_img..
 	default.gui_slots..
+	"label[2,1.7;Input Ingot]"..
 	"list[current_name;fuel;3.5,1.5;1,1;]"..
 	"list[current_player;main;0,4.25;8,1;]"..
 	"list[current_player;main;0,5.5;8,3;8]"..
@@ -116,11 +117,11 @@ local function on_receive_fields(pos, formname, fields, sender)
 		local waiting, found_node = spawners.check_node_status_ores(pos, "stone_with_"..ingot[3], "default:stone")
 
 		if found_node then
-			print("found_node");
 			minetest.swap_node(pos, {name="spawners:stone_with_"..ingot[3].."_spawner_active"})
 		elseif waiting then
-			print("waiting");
 			minetest.swap_node(pos, {name="spawners:stone_with_"..ingot[3].."_spawner_waiting"})
+
+			meta:set_string("infotext", "There is no stone around - waiting. "..ingot[3].." ore spawner fuel: "..inv:get_stack("fuel", 1):get_count())
 		else
 			return
 		end
@@ -142,6 +143,8 @@ function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_
 		automatic_rotate = math.pi * -3,
 		m_name = "dummy_ore"
 	}
+
+	local ore = string.split(ore_name, "_")
 
 	dummy_ore_definition.on_activate = function(self)
 		self.object:setvelocity({x=0, y=0, z=0})
@@ -236,6 +239,7 @@ function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_
 			spawners.get_formspec(pos)
 			pos.y = pos.y + offset
 			minetest.add_entity(pos,"spawners:dummy_ore_"..ore_name)
+			meta:set_string("infotext", ore[3].." ore spawner is empty")
 		end,
 
 		can_dig = can_dig,
@@ -265,19 +269,23 @@ function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_
 					minetest.swap_node(pos, {name="spawners:"..ore_name.."_spawner_active"})
 				end
 
-				-- take fuel
-				local stack = inv:get_stack("fuel", 1)
-				stack:take_item()
 
-				print("stack: "..stack:get_count())
-
-				inv:set_stack("fuel", 1, stack)
 
 				if inv:is_empty("fuel") then
 					minetest.swap_node(pos, {name="spawners:"..ore_name.."_spawner"})
-					meta:set_string("infotext", ore_name.." ore spawner is empty")
+					meta:set_string("infotext", ore[3].." ore spawner is empty.")
+
+					return
 				else
-					meta:set_string("infotext", ore_name.." ore spawner has "..inv:get_stack("fuel", 1):get_count().." ingots")
+					-- take fuel
+					local stack = inv:get_stack("fuel", 1)
+					stack:take_item()
+
+					print("stack: "..stack:get_count())
+
+					inv:set_stack("fuel", 1, stack)
+
+					meta:set_string("infotext", ore[3].." ore spawner fuel: "..inv:get_stack("fuel", 1):get_count())
 				end
 
 				-- enough place to spawn more ores
@@ -287,6 +295,8 @@ function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_
 				-- waiting status
 				if node.name ~= "spawners:"..ore_name.."_spawner_waiting" then
 					minetest.swap_node(pos, {name="spawners:"..ore_name.."_spawner_waiting"})
+					
+					meta:set_string("infotext", "There is no stone around - waiting. "..ore[3].." ore spawner fuel: "..inv:get_stack("fuel", 1):get_count())
 				end
 			end
 
@@ -296,13 +306,13 @@ function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_
 end
 
 -- default:stone_with_gold
-spawners.create_ore("stone_with_gold", "", {x=.33,y=.33}, 0, {"default_stone.png^default_mineral_gold.png"}, "tnt_ignite")
+spawners.create_ore("stone_with_gold", "", {x=.33,y=.33}, 0, {"default_stone.png^default_mineral_gold.png"}, "strike")
 
 -- default:stone_with_iron
-spawners.create_ore("stone_with_iron", "", {x=.33,y=.33}, 0, {"default_stone.png^default_mineral_gold.png"}, "tnt_ignite")
+spawners.create_ore("stone_with_iron", "", {x=.33,y=.33}, 0, {"default_stone.png^default_mineral_gold.png"}, "strike")
 
 -- default:stone_with_copper
-spawners.create_ore("stone_with_copper", "", {x=.33,y=.33}, 0, {"default_stone.png^default_mineral_gold.png"}, "tnt_ignite")
+spawners.create_ore("stone_with_copper", "", {x=.33,y=.33}, 0, {"default_stone.png^default_mineral_gold.png"}, "strike")
 
 
 -- recipes
