@@ -236,6 +236,7 @@ function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_
 		is_ground_content = true,
 		groups = {cracky=1,level=2},
 		on_construct = function(pos)
+			local meta = minetest.get_meta(pos)
 			spawners.get_formspec(pos)
 			pos.y = pos.y + offset
 			minetest.add_entity(pos,"spawners:dummy_ore_"..ore_name)
