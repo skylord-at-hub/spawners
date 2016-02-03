@@ -7,4 +7,4 @@ dofile(minetest.get_modpath("spawners").."/spawners_mobs.lua")
 -- Spawners for ores
 dofile(minetest.get_modpath("spawners").."/spawners_ores.lua")
 
-print ("[MOD] Spawners 0.3 Loaded.")
+print ("[MOD] Spawners 0.4 Loaded.")
