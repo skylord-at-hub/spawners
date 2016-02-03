@@ -28,12 +28,8 @@ function spawners.get_formspec(pos)
 		end
 	end
 
-	local fuellist = inv:get_list("fuel")
-
 	-- Update formspec, infotext and node
-	local formspec = ore_formspec
-	
-	meta:set_string("formspec", formspec)
+	meta:set_string("formspec", ore_formspec)
 end
 
 local function can_dig(pos, player)
@@ -43,7 +39,6 @@ local function can_dig(pos, player)
 end
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
-	print("allow_metadata_inventory_put")
 	if minetest.is_protected(pos, player:get_player_name()) then
 		minetest.record_protection_violation(pos, player:get_player_name())
 		return
@@ -67,7 +62,6 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
 end
 
 local function allow_metadata_inventory_take(pos, listname, index, stack, player)
-	print("allow_metadata_inventory_take")
 	if minetest.is_protected(pos, player:get_player_name()) then
 		minetest.record_protection_violation(pos, player:get_player_name())
 		return 0
@@ -76,7 +70,6 @@ local function allow_metadata_inventory_take(pos, listname, index, stack, player
 end
 
 local function on_receive_fields(pos, formname, fields, sender)
-	print("on_receive_fields")
 	local ore_node = minetest.get_node_or_nil(pos)
 
 	if minetest.is_protected(pos, sender:get_player_name()) then
@@ -121,7 +114,7 @@ local function on_receive_fields(pos, formname, fields, sender)
 		elseif waiting then
 			minetest.swap_node(pos, {name="spawners:stone_with_"..ingot[3].."_spawner_waiting"})
 
-			meta:set_string("infotext", "There is no stone around - waiting. "..ingot[3].." ore spawner fuel: "..inv:get_stack("fuel", 1):get_count())
+			meta:set_string("infotext", "Waiting status - player was away or no stone around, "..ingot[3].." ore spawner fuel: "..inv:get_stack("fuel", 1):get_count())
 		else
 			return
 		end
@@ -259,7 +252,6 @@ function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_
 
 			local waiting, found_node = spawners.check_node_status_ores(pos, ore_name,  "default:stone")
 
-			print("ore_name: "..ore_name)
 
 			local meta = minetest.get_meta(pos)
 			local inv = meta:get_inventory()
@@ -270,34 +262,31 @@ function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_
 					minetest.swap_node(pos, {name="spawners:"..ore_name.."_spawner_active"})
 				end
 
+				
+				-- take fuel
+				local stack = inv:get_stack("fuel", 1)
+				stack:take_item()
 
 
-				if inv:is_empty("fuel") then
-					minetest.swap_node(pos, {name="spawners:"..ore_name.."_spawner"})
-					meta:set_string("infotext", ore[3].." ore spawner is empty.")
+				inv:set_stack("fuel", 1, stack)
 
-					return
-				else
-					-- take fuel
-					local stack = inv:get_stack("fuel", 1)
-					stack:take_item()
-
-					print("stack: "..stack:get_count())
-
-					inv:set_stack("fuel", 1, stack)
-
-					meta:set_string("infotext", ore[3].." ore spawner fuel: "..inv:get_stack("fuel", 1):get_count())
-				end
+				meta:set_string("infotext", ore[3].." ore spawner fuel: "..inv:get_stack("fuel", 1):get_count())
 
 				-- enough place to spawn more ores
 				spawners.start_spawning_ores(found_node, "default:"..ore_name, sound_custom)
 
+				-- empty / no fuel
+				if inv:is_empty("fuel") then
+					minetest.swap_node(pos, {name="spawners:"..ore_name.."_spawner"})
+					meta:set_string("infotext", ore[3].." ore spawner is empty.")
+
+				end
 			else
 				-- waiting status
 				if node.name ~= "spawners:"..ore_name.."_spawner_waiting" then
 					minetest.swap_node(pos, {name="spawners:"..ore_name.."_spawner_waiting"})
 					
-					meta:set_string("infotext", "There is no stone around - waiting. "..ore[3].." ore spawner fuel: "..inv:get_stack("fuel", 1):get_count())
+					meta:set_string("infotext", "Waiting status - player was away or no stone around, "..ore[3].." ore spawner fuel: "..inv:get_stack("fuel", 1):get_count())
 				end
 			end
 

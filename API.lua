@@ -34,7 +34,6 @@ for k, mob_mod in ipairs(ENABLED_MODS) do
 			::continue::
 		end
 	else
-		print("[MOD] Spawners: MOD "..mob_mod.." not found and will not be loaded.")
 	end
 end
 
@@ -101,31 +100,29 @@ function spawners.start_spawning_ores(pos, ore_name, sound_custom, spawners_pos)
 
 	local how_many = math.random(1,2)
 	-- how_many = how_many+1
-	print("how_many: "..how_many)
 
 	for i=1, how_many do
-		print("i: "..i)
 		
 		if i > 1 then
 			player_near, pos = spawners.check_around_radius_ores(pos, "default:stone")
 
+			if not pos then return end
+
 			minetest.sound_play(sound_name, {
 				pos = pos,
 				max_hear_distance = 32,
-				gain = 15,
+				gain = 20,
 			})
 
-			print("#2 spawing "..ore_name.." at "..minetest.pos_to_string(pos))
 			minetest.set_node(pos, {name=ore_name})
 			spawners.add_effects(pos, 1)
 		else
 			minetest.sound_play(sound_name, {
 				pos = pos,
 				max_hear_distance = 32,
-				gain = 15,
+				gain = 20,
 			})
 
-			print("#1 spawing "..ore_name.." at "..minetest.pos_to_string(pos))
 			minetest.set_node(pos, {name=ore_name})
 			spawners.add_effects(pos, 1)
 		end
@@ -152,16 +149,12 @@ function spawners.check_around_radius_ores(pos, check_node)
 	local player_near = spawners.check_around_radius(pos);
 	local found_node = false
 	local node_ore_pos = nil
-	print("check_node: "..check_node)
 	if check_node then
 		
 		node_ore_pos = minetest.find_node_near(pos, 2, {check_node})
 		
 		if node_ore_pos then
 			found_node = node_ore_pos
-			print("found stone: "..minetest.pos_to_string(found_node));
-		else
-			found_node = false
 		end
 	end
 
@@ -262,7 +255,7 @@ function spawners.check_node_status_ores(pos, ore_name, check_node)
 
 	local player_near, found_node = spawners.check_around_radius_ores(pos, check_node)
 
-	if player_near then
+	if player_near and found_node then
 		return true, found_node
 	else
 		return true, false
