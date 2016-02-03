@@ -34,6 +34,8 @@ fake_fire, xpanes for recipes
 WTFPL
 
 ## Changelog ##
+### 0.4 ###
+
 ### 0.3 ###
 * new folder and file structure
 * more convenient disable/enable, add/remove new MODs in config.lua file - added property for custom sounds
