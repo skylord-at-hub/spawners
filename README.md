@@ -9,7 +9,7 @@ Currently it works with [Pyramids Mummy](https://forum.minetest.net/viewtopic.ph
 ![spawner_waiting_medium.gif](https://bitbucket.org/repo/y69Me7/images/246761582-spawner_waiting_medium.gif) ![spawner_animated_medium.gif](https://bitbucket.org/repo/y69Me7/images/1359872529-spawner_animated_medium.gif)
 
 ## YouTube video ##
-[Minetest - spawners MOD](https://youtu.be/TlaMVl0ZDtw)
+[Minetest - spawners MOD v0.1](https://youtu.be/TlaMVl0ZDtw)
 
 ## Mod dependencies ##
 * default

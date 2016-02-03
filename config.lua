@@ -53,12 +53,12 @@ MOBS_PROPS = {
 			sound_custom=""
 		},
 		{
-			name="warthog",
+			name="pumba",
 			egg_name_custom="",
 			dummy_size={x=0.62,y=0.62},
 			dummy_offset=-0.3,
-			dummy_mesh="mobs_warthog.x",
-			dummy_texture={"mobs_warthog.png"},
+			dummy_mesh="mobs_pumba.x",
+			dummy_texture={"mobs_pumba.png"},
 			night_only=false,
 			sound_custom="mobs_pig"
 		},
