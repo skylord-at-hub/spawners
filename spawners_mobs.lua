@@ -101,6 +101,7 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 		tiles = {"spawners_spawner.png"},
 		is_ground_content = true,
 		groups = {cracky=1,level=2},
+		stack_max = 1,
 		on_construct = function(pos)
 			local random_pos, waiting = spawners.check_node_status(pos, mob_name, night_only)
 

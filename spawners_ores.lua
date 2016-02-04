@@ -228,6 +228,7 @@ function spawners.create_ore(ore_name, mod_prefix, size, offset, texture, sound_
 		tiles = {"spawners_spawner.png"},
 		is_ground_content = true,
 		groups = {cracky=1,level=2},
+		stack_max = 1,
 		on_construct = function(pos)
 			local meta = minetest.get_meta(pos)
 			spawners.get_formspec(pos)
