@@ -34,6 +34,16 @@ fake_fire, xpanes for recipes
 WTFPL
 
 ## Changelog ##
+### 0.4 ###
+* NEW added ore spawners - iron, gold and copper
+* ore spawners have chance to spawn 2 ores from 1 ingot
+* ore spawners have formspec
+* new sounds for ore spawners
+* added particle effect for ore spawners
+* re-done all textures from scratch (mob and ore spawners)
+* adjusted mob spawners ABM
+* mob spawners fixed name conflicts in config file warthog vs. pumba
+
 ### 0.3 ###
 * new folder and file structure
 * more convenient disable/enable, add/remove new MODs in config.lua file - added property for custom sounds
