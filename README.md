@@ -1,5 +1,5 @@
 # Spawners #
-This MOD for Minetest let the player craft mob Spawner blocks. Mobs are spawning randomly in a short intervals.
+This MOD for Minetest let the player craft mob and ore Spawner blocks. Mobs/Ores are spawning randomly in a short intervals.
 
 Easy to implement new mob mods just look in to config.lua.
 
