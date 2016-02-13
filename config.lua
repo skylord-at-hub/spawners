@@ -108,7 +108,7 @@ MOBS_PROPS = {
 			dummy_texture={"creatures_chicken.png"},
 			night_only=false,
 			sound_custom=""
-		},	
+		},
 		{
 			name="ghost",
 			egg_name_custom="creatures:ghost_spawn_egg",
@@ -118,7 +118,7 @@ MOBS_PROPS = {
 			dummy_texture={"creatures_ghost.png"},
 			night_only=true,
 			sound_custom=""
-		},	
+		},
 		{
 			name="sheep",
 			egg_name_custom="creatures:sheep_spawn_egg",
@@ -128,7 +128,7 @@ MOBS_PROPS = {
 			dummy_texture={"creatures_sheep.png^creatures_sheep_white.png"},
 			night_only=false,
 			sound_custom=""
-		},	
+		},
 		{
 			name="zombie",
 			egg_name_custom="creatures:zombie_spawn_egg",
@@ -136,7 +136,17 @@ MOBS_PROPS = {
 			dummy_offset=-0.5,
 			dummy_mesh="creatures_zombie.b3d",
 			dummy_texture={"creatures_zombie.png"},
-			night_only=true,
+			night_only=false,
+			sound_custom=""
+		},
+		{
+			name="oerrki",
+			egg_name_custom="creatures:oerrki_spawn_egg",
+			dummy_size={x=0.4,y=0.4},
+			dummy_offset=-0.5,
+			dummy_mesh="creatures_oerrki.b3d",
+			dummy_texture={"creatures_oerrki.png"},
+			night_only=false,
 			sound_custom=""
 		}	
 	}
