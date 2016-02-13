@@ -1,5 +1,5 @@
 # Spawners #
-This MOD for Minetest let the player craft mob Spawner blocks. Mobs are spawning randomly in a short intervals.
+This MOD for Minetest let the player craft mob and ore Spawner blocks. Mobs/Ores are spawning randomly in a short intervals.
 
 Easy to implement new mob mods just look in to config.lua.
 
@@ -42,6 +42,7 @@ WTFPL
 * added particle effect for ore spawners
 * re-done all textures from scratch (mob and ore spawners)
 * adjusted mob spawners ABM
+* added maximum stacked items for spawners to max 1
 * mob spawners fixed name conflicts in config file warthog vs. pumba
 
 ### 0.3 ###
