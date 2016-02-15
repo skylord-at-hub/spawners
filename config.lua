@@ -81,6 +81,16 @@ MOBS_PROPS = {
 			dummy_texture={"mobs_kitten_ginger.png"},
 			night_only=false,
 			sound_custom=""
+		},
+		{
+			name="spider",
+			egg_name_custom="",
+			dummy_size={x=2,y=2},
+			dummy_offset=-0.2,
+			dummy_mesh="mobs_spider.x",
+			dummy_texture={"mobs_spider.png"},
+			night_only=false,
+			sound_custom=""
 		}
 	},
 

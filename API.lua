@@ -132,7 +132,6 @@ end
 
 function spawners.check_around_radius(pos)
 	local player_near = false
-	local found_node = false
 	local radius = 21
 	local node_ore_pos = nil
 
@@ -162,7 +161,7 @@ function spawners.check_around_radius_ores(pos, check_node)
 end
 
 function spawners.check_node_status(pos, mob, night_only)
-		local player_near = spawners.check_around_radius(pos)
+	local player_near = spawners.check_around_radius(pos)
 
 	if player_near then
 		local random_pos = false
@@ -240,11 +239,11 @@ function spawners.check_node_status(pos, mob, night_only)
 			if not (19359 > tod and tod > 5200) or node_light < min_node_light then
 				return random_pos
 			else
-				return false, true, found_node
+				return false, true
 			end
 		end
 
-		return random_pos, false, found_node
+		return random_pos, false
 	else
 		return false, true
 	end
