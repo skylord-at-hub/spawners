@@ -34,6 +34,13 @@ fake_fire, xpanes for recipes
 WTFPL
 
 ## Changelog ##
+### 0.5 ###
+* new mobs redo sheep textures
+* added mobs redo spider spawner
+* added oerrki spawner for creatures mod
+* added screenshot and description for MODs in-game tab
+* added pyramids mod to optional dependencies
+
 ### 0.4 ###
 * NEW added ore spawners - iron, gold and copper
 * ore spawners have chance to spawn 2 ores from 1 ingot
