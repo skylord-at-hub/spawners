@@ -24,7 +24,9 @@ mobs redo, creatures are supported mods
 fake_fire, xpanes for recipes
 
 ## Links ##
-[Minetest Forum Page](https://forum.minetest.net/viewtopic.php?f=10&t=13727) - try this MOD on this server
+[[Mod]Minetest Forum Page](https://forum.minetest.net/viewtopic.php?f=11&t=13857)
+
+[[Server]Minetest Forum Page](https://forum.minetest.net/viewtopic.php?f=10&t=13727) - try this MOD on this server
 
 [G+ Collection](https://plus.google.com/collection/06fEx)
 
