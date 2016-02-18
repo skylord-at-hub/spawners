@@ -28,7 +28,7 @@ MOBS_PROPS = {
 			dummy_size={x=0.52,y=0.52},
 			dummy_offset=0.2,
 			dummy_mesh="mobs_sheep.b3d",
-			dummy_texture={"mobs_sheep_white.png"},
+			dummy_texture={"mobs_sheep_wool.png^mobs_sheep_base.png"},
 			night_only=false,
 			sound_custom="mobs_sheep"
 		},
