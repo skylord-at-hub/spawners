@@ -91,6 +91,16 @@ MOBS_PROPS = {
 			dummy_texture={"mobs_spider.png"},
 			night_only=false,
 			sound_custom=""
+		},
+		{
+			name="stone_monster",
+			egg_name_custom="",
+			dummy_size={x=0.5,y=0.5},
+			dummy_offset=0.1,
+			dummy_mesh="mobs_stone_monster.b3d",
+			dummy_texture={"mobs_stone_monster.png"},
+			night_only=false,
+			sound_custom=""
 		}
 	},
 
