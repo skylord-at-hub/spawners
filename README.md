@@ -36,6 +36,9 @@ fake_fire, xpanes for recipes
 WTFPL
 
 ## Changelog ##
+### 0.5.1 ###
+* added mobs redo stone monster spawner
+
 ### 0.5 ###
 * new mobs redo sheep textures
 * added mobs redo spider spawner
