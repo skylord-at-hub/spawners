@@ -96,11 +96,31 @@ MOBS_PROPS = {
 			name="stone_monster",
 			egg_name_custom="",
 			dummy_size={x=0.5,y=0.5},
-			dummy_offset=0.1,
+			dummy_offset=0.05,
 			dummy_mesh="mobs_stone_monster.b3d",
 			dummy_texture={"mobs_stone_monster.png"},
 			night_only=false,
 			sound_custom="mobs_stonemonster"
+		},
+		{
+			name="oerkki",
+			egg_name_custom="",
+			dummy_size={x=0.5,y=0.5},
+			dummy_offset=0.05,
+			dummy_mesh="mobs_oerkki.b3d",
+			dummy_texture={"mobs_oerkki.png"},
+			night_only=false,
+			sound_custom=""
+		},
+		{
+			name="tree_monster",
+			egg_name_custom="",
+			dummy_size={x=0.4,y=0.4},
+			dummy_offset=0.05,
+			dummy_mesh="mobs_tree_monster.b3d",
+			dummy_texture={"mobs_tree_monster.png"},
+			night_only=false,
+			sound_custom="mobs_treemonster"
 		}
 	},
 
