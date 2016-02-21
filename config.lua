@@ -100,7 +100,7 @@ MOBS_PROPS = {
 			dummy_mesh="mobs_stone_monster.b3d",
 			dummy_texture={"mobs_stone_monster.png"},
 			night_only=false,
-			sound_custom=""
+			sound_custom="mobs_stonemonster"
 		}
 	},
 
