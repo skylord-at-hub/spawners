@@ -187,7 +187,7 @@ MOBS_PROPS = {
 			dummy_mesh="creatures_oerrki.b3d",
 			dummy_texture={"creatures_oerrki.png"},
 			night_only=false,
-			sound_custom=""
+			sound_custom="creatures_oerrki_idle"
 		}	
 	}
 
