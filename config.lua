@@ -28,8 +28,8 @@ MOBS_PROPS = {
 			egg_name_custom="",
 			dummy_size={x=0.4,y=0.4},
 			dummy_offset=0,
-			dummy_mesh="creatures_mummy.b3d",
-			dummy_texture={"creatures_mummy.png"},
+			dummy_mesh="spawners_mob_mummy.b3d",
+			dummy_texture={"spawners_mob_mummy.png"},
 			night_only="disable",
 			sound_custom="spawners_mob_mummy"
 		}
