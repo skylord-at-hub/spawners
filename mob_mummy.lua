@@ -69,6 +69,6 @@ end
 
 mobs:register_mob("spawners:mummy", mummy_def)
 
-mobs:register_spawn("spawners:mummy", {"default:desert_sand", "default:desert_stone"}, 20, 0, 7000, 2, 0)
+mobs:register_spawn("spawners:mummy", {"default:desert_sand", "default:desert_stone"}, 20, 0, 14000, 2, 31000)
 
 mobs:register_egg("spawners:mummy", "Mummy Monster", "default_sandstone_brick", 1)
