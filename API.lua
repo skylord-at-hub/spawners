@@ -12,6 +12,9 @@ for k, mob_mod in ipairs(ENABLED_MODS) do
 
 			if mob_mod == "mobs" and not (mobs.mod == "redo") then goto continue end
 
+			-- include spawners mob addons
+			dofile(minetest.get_modpath("spawners").."/mob_mummy.lua")
+
 			table.insert(spawners.mob_tables, {name=mob.name, mod_prefix=mob_mod, egg_name_custom=mob.egg_name_custom, dummy_size=mob.dummy_size, dummy_offset=mob.dummy_offset, dummy_mesh=mob.dummy_mesh, dummy_texture=mob.dummy_texture, night_only=mob.night_only, sound_custom=mob.sound_custom})
 
 			-- use custom egg or create a default egg
@@ -229,17 +232,19 @@ function spawners.check_node_status(pos, mob, night_only)
 			return false
 		end
 
-		-- spawn only at day
-		if not night_only and node_light < min_node_light then
-			return false, true
-		end
-
-		-- spawn only at night
-		if night_only then
-			if not (19359 > tod and tod > 5200) or node_light < min_node_light then
-				return random_pos
-			else
+		if night_only ~= "disable" then
+			-- spawn only at day
+			if not night_only and node_light < min_node_light then
 				return false, true
+			end
+
+			-- spawn only at night
+			if night_only then
+				if not (19359 > tod and tod > 5200) or node_light < min_node_light then
+					return random_pos
+				else
+					return false, true
+				end
 			end
 		end
 

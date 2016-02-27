@@ -10,17 +10,31 @@
 
 -- * [dummy_texture : table] - Textures used for the mob.
 
--- * [night_only : string] - If true mobs will spawn only during the night or in dark areas, default:true.
+-- * [night_only : boolean : string] - If true mobs will spawn only during the night or in dark areas, default:true. Writing "disable" will disable light check and it will spawn in both states (night and day)
 
 -- [sound_custom : string] - Custom name for the sound file name if differ from default: i.e 'mobs_cow'.
 
 -- [*] -> MANDATORY - has to be filled in!
 
 -- mods what should be enabled and loded, remove/add the one you want to load
-ENABLED_MODS = {"mobs", "pyramids", "creatures"}
+ENABLED_MODS = {"mobs", "pyramids", "creatures", "spawners"}
 
 -- mobs properties - setup all you mobs here
 MOBS_PROPS = {
+
+	["spawners"] = { -- SPAWNERS (THIS) MOD CONFIG
+		{
+			name="mummy",
+			egg_name_custom="",
+			dummy_size={x=0.4,y=0.4},
+			dummy_offset=0,
+			dummy_mesh="creatures_mummy.b3d",
+			dummy_texture={"creatures_mummy.png"},
+			night_only="disable",
+			sound_custom="spawners_mob_mummy"
+		}
+	},
+
 	["mobs"] = { -- MOBS REDO CONFIG
 		{
 			name="sheep_white",
@@ -137,7 +151,6 @@ MOBS_PROPS = {
 		}
 	},
 
-
 	["creatures"] = { -- CREATURES MOD CONFIG
 		{
 			name="chicken",
@@ -188,7 +201,6 @@ MOBS_PROPS = {
 			dummy_texture={"creatures_oerrki.png"},
 			night_only=false,
 			sound_custom="creatures_oerrki_idle"
-		}	
+		}
 	}
-
 }
