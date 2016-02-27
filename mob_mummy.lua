@@ -19,6 +19,7 @@ local mummy_def = {
 	makes_footstep_sound = true,
 	sounds = {
 		random = "spawners_mob_mummy",
+		damage = "spawners_mob_mummy_hit",
 	},
 	walk_velocity = .75,
 	run_velocity = 1.5,
