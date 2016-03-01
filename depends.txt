@@ -1,6 +1,5 @@
 default
 mobs?
 creatures?
-pyramids?
 fake_fire?
 xpanes?

@@ -12,10 +12,7 @@ for k, mob_mod in ipairs(ENABLED_MODS) do
 
 			if mob_mod == "mobs" and not (mobs.mod == "redo") then goto continue end
 
-			-- include spawners mob addons
-			dofile(minetest.get_modpath("spawners").."/mob_mummy.lua")
-
-			table.insert(spawners.mob_tables, {name=mob.name, mod_prefix=mob_mod, egg_name_custom=mob.egg_name_custom, dummy_size=mob.dummy_size, dummy_offset=mob.dummy_offset, dummy_mesh=mob.dummy_mesh, dummy_texture=mob.dummy_texture, night_only=mob.night_only, sound_custom=mob.sound_custom})
+			table.insert(spawners.mob_tables, {name=mob.name, mod_prefix=mob_mod, egg_name_custom=mob.egg_name_custom, dummy_size=mob.dummy_size, dummy_offset=mob.dummy_offset, dummy_mesh=mob.dummy_mesh, dummy_texture=mob.dummy_texture, night_only=mob.night_only, sound_custom=mob.sound_custom, env=mob.env})
 
 			-- use custom egg or create a default egg
 			if mob.egg_name_custom ~= "" then 
@@ -24,25 +21,28 @@ for k, mob_mod in ipairs(ENABLED_MODS) do
 				mob_egg = mob_mod..":"..mob.name
 			end
 			
-			-- recipes
-			minetest.register_craft({
-				output = "spawners:"..mob_mod.."_"..mob.name.."_spawner",
-				recipe = {
-					{"default:diamondblock", "fake_fire:flint_and_steel", "default:diamondblock"},
-					{"xpanes:bar", mob_egg, "xpanes:bar"},
-					{"default:diamondblock", "xpanes:bar", "default:diamondblock"},
-				}
-			})
+			-- recipes - not for environmental spawners
+			if not mob.env then 
+				minetest.register_craft({
+					output = "spawners:"..mob_mod.."_"..mob.name.."_spawner",
+					recipe = {
+						{"default:diamondblock", "fake_fire:flint_and_steel", "default:diamondblock"},
+						{"xpanes:bar", mob_egg, "xpanes:bar"},
+						{"default:diamondblock", "xpanes:bar", "default:diamondblock"},
+					}
+				})
+			end
 
 			::continue::
 		end
 	else
+		-- print something ?
 	end
 end
 
 -- start spawning mobs
 function spawners.start_spawning(pos, how_many, mob_name, mod_prefix, sound_custom)
-	if not pos or not how_many or not mob_name then return end
+	if not (pos or how_many or mob_name) then return end
 
 	local sound_name
 	-- remove 'spawners:' from the string

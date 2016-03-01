@@ -17,23 +17,10 @@
 -- [*] -> MANDATORY - has to be filled in!
 
 -- mods what should be enabled and loded, remove/add the one you want to load
-ENABLED_MODS = {"mobs", "pyramids", "creatures", "spawners"}
+ENABLED_MODS = {"mobs", "pyramids", "creatures"}
 
 -- mobs properties - setup all you mobs here
 MOBS_PROPS = {
-
-	["spawners"] = { -- SPAWNERS (THIS) MOD CONFIG
-		{
-			name="mummy",
-			egg_name_custom="",
-			dummy_size={x=0.4,y=0.4},
-			dummy_offset=0,
-			dummy_mesh="spawners_mob_mummy.b3d",
-			dummy_texture={"spawners_mob_mummy.png"},
-			night_only="disable",
-			sound_custom="spawners_mob_mummy"
-		}
-	},
 
 	["mobs"] = { -- MOBS REDO CONFIG
 		{
@@ -204,3 +191,38 @@ MOBS_PROPS = {
 		}
 	}
 }
+
+-- 
+-- check for 3rd party dependencies
+-- 
+
+-- include mummy mobs redo addon (spawner)
+if minetest.get_modpath("mobs") then
+	-- enable spawner
+	table.insert(ENABLED_MODS, "spawners")
+
+	-- configure spawner
+	MOBS_PROPS["spawners"] = {
+		{
+			name="mummy",
+			egg_name_custom="",
+			dummy_size={x=0.4,y=0.4},
+			dummy_offset=0,
+			dummy_mesh="spawners_mob_mummy.b3d",
+			dummy_texture={"spawners_mob_mummy.png"},
+			night_only="disable",
+			sound_custom="spawners_mob_mummy"
+		},
+		{
+			name="mummy",
+			egg_name_custom="",
+			dummy_size={x=0.4,y=0.4},
+			dummy_offset=0,
+			dummy_mesh="spawners_mob_mummy.b3d",
+			dummy_texture={"spawners_mob_mummy.png"},
+			night_only="disable",
+			sound_custom="spawners_mob_mummy",
+			env=true
+		}
+	}
+end
