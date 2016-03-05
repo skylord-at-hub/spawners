@@ -1,7 +1,7 @@
 # Spawners #
 This MOD for Minetest let the player craft mob and ore Spawner blocks. Mobs/Ores are spawning randomly in a short intervals.
 
-From version 0.6 Pyramids can be spawned in desert and environmental spwaners are added. Environmental spawners are used for spawning inside of temples and dungeons (mapgen v6 default minetest game). - Thanks to BlockMen. These kind of spawners are very rarely droping real mob spawners, in any other case they don't drop anything.
+From version 0.6 Pyramids can be spawned in desert and environmental spwaners are added. Environmental spawners are used for spawning inside of temples and dungeons (mapgen v6 default minetest game). - Thanks to BlockMen. These kind of spawners are very rarely dropping real mob spawners, in any other case they don't drop anything.
 
 Easy to implement new mob mods just look in to config.lua.
 New features can be enabled/disabled in settings.txt file.
