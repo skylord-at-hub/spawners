@@ -1,7 +1,10 @@
 # Spawners #
 This MOD for Minetest let the player craft mob and ore Spawner blocks. Mobs/Ores are spawning randomly in a short intervals.
 
+From version 0.6 Pyramids can be spawned in desert and environmental spwaners are added. Environmental spawners are used for spawning inside of temples and dungeons (mapgen v6 default minetest game). - Thanks to BlockMen. These kind of spawners are very rarely droping real mob spawners, in any other case they don't drop anything.
+
 Easy to implement new mob mods just look in to config.lua.
+New features can be enabled/disabled in settings.txt file.
 
 Currently it works with [Pyramids Mummy](https://forum.minetest.net/viewtopic.php?id=7063), [Mobs Redo](https://forum.minetest.net/viewtopic.php?f=11&t=9917) and [Creatures](https://forum.minetest.net/viewtopic.php?f=11&t=8638).
 
@@ -36,8 +39,19 @@ fake_fire, xpanes for recipes
 WTFPL
 
 ## Changelog ##
+### 0.6 ###
+* inherited BlockMen Pyramid mod, so now Spawners can spawn Pyramids in desert (mapgen v6)
+* spawning Pyramids work independently from BlockMen Pyramids mod (can be removed) but works also besides BlockMen Pyramid mod 
+* added more various loot (default) in pyramids chests and higher up the chance of spawning more loot
+* added new environmental spawners
+* added generation of environmental spawners for default mapgen v6 temples and dungeons
+* addend new config parameter 'disable' for night_only attribute in config file
+* added new attribute 'env' in config file for defining environmental spawners
+* added settings.txt file for enable/disable new features (pyramids, mapgen spawners..)
+* fixed abm catch_up (disabled), now it works
+
 ### 0.5.1 ###
-* added mobs redo stone monster spawner
+* added mobs redo stone monster spawner (re-done from BlockMen Pyramids)
 
 ### 0.5 ###
 * new mobs redo sheep textures
