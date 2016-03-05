@@ -151,7 +151,6 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 			drawtype = "allfaces",
 			walkable = true,
 			sounds = default.node_sound_stone_defaults(),
-			catch_up = false,
 			damage_per_second = 4,
 			sunlight_propagates = true,
 			tiles = {"spawners_spawner.png^[colorize:#FF000030"},
@@ -290,7 +289,6 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 			drawtype = "allfaces",
 			walkable = true,
 			sounds = default.node_sound_stone_defaults(),
-			catch_up = false,
 			damage_per_second = 4,
 			sunlight_propagates = true,
 			tiles = {"spawners_spawner.png^[colorize:#FF000030"},
@@ -327,17 +325,21 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 			"spawners:"..mod_prefix.."_"..mob_name.."_spawner_waiting_env"
 		},
 		neighbors = {"air"},
-		interval = 10.0,
-		chance = 5,
+		interval = 15.0,
+		chance = 10,
+		catch_up = false,
 		action = function(pos, node, active_object_count, active_object_count_wider)
 
 			local random_pos, waiting = spawners.check_node_status(pos, mob_name, night_only)
 
-			local ext = ""
-			
 			-- additional name extention for environmental spawners
-			if env and env ~= nil then
+			local ext
+			local env_ext = string.sub(node.name, string.len(node.name) - 3)
+	
+			if env_ext and env_ext == "_env" then
 				ext = "_env"
+			else
+				ext = ""
 			end
 
 			if random_pos then
@@ -358,9 +360,10 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 
 					return
 				end
-
+				print(node.name)
 				-- make sure the right node status is shown
 				if node.name ~= "spawners:"..mod_prefix.."_"..mob_name.."_spawner_active"..ext then
+					print("active: "..node.name)
 					minetest.set_node(pos, {name="spawners:"..mod_prefix.."_"..mob_name.."_spawner_active"..ext})
 				end
 
