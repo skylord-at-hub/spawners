@@ -5,11 +5,6 @@ pyramids = {}
 dofile(minetest.get_modpath("spawners").."/pyramids_nodes.lua")
 dofile(minetest.get_modpath("spawners").."/pyramids_room.lua")
 
--- include mummy mobs redo addon
-if minetest.get_modpath("mobs") then
-	dofile(minetest.get_modpath("spawners").."/mob_mummy.lua")
-end
-
 local chest_stuff = {
 	{name="default:apple", max = 3},
 	{name="default:torch", max = 10},

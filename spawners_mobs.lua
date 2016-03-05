@@ -325,8 +325,8 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 			"spawners:"..mod_prefix.."_"..mob_name.."_spawner_waiting_env"
 		},
 		neighbors = {"air"},
-		interval = 15.0,
-		chance = 10,
+		interval = 10.0,
+		chance = 6,
 		catch_up = false,
 		action = function(pos, node, active_object_count, active_object_count_wider)
 
@@ -360,10 +360,8 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 
 					return
 				end
-				print(node.name)
 				-- make sure the right node status is shown
 				if node.name ~= "spawners:"..mod_prefix.."_"..mob_name.."_spawner_active"..ext then
-					print("active: "..node.name)
 					minetest.set_node(pos, {name="spawners:"..mod_prefix.."_"..mob_name.."_spawner_active"..ext})
 				end
 

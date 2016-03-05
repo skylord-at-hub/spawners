@@ -14,6 +14,8 @@
 
 -- [sound_custom : string] - Custom name for the sound file name if differ from default: i.e 'mobs_cow'.
 
+-- [env : boolean] - This spawner will become environmental spawner. Environmental spawners have different properties/behaviour (used for map gen) and cannot be crafted. 
+
 -- [*] -> MANDATORY - has to be filled in!
 
 -- mods what should be enabled and loded, remove/add the one you want to load
@@ -92,6 +94,17 @@ MOBS_PROPS = {
 			dummy_texture={"mobs_spider.png"},
 			night_only=false,
 			sound_custom=""
+		},
+		{
+			name="spider",
+			egg_name_custom="",
+			dummy_size={x=2,y=2},
+			dummy_offset=-0.2,
+			dummy_mesh="mobs_spider.x",
+			dummy_texture={"mobs_spider.png"},
+			night_only="disable",
+			sound_custom="",
+			env = true
 		},
 		{
 			name="stone_monster",
