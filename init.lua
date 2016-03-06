@@ -25,7 +25,7 @@ if SPAWN_PYRAMIDS then
 	print("[Mod][spawners] Pyramids enabled")
 end
 
--- Spawners Pyramids
+-- Add Spawners to dungeons, temples..
 if SPAWNERS_GENERATE then
 	dofile(minetest.get_modpath("spawners").."/spawners_gen.lua")
 
