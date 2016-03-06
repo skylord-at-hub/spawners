@@ -342,6 +342,8 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 				ext = ""
 			end
 
+			minetest.log("action", "[Mod][Spawners] checking for: "..mob_name)
+
 			if random_pos then
 
 				-- do not spawn if too many active entities in map block and call cooldown
