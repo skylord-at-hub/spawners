@@ -342,7 +342,7 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 				ext = ""
 			end
 
-			minetest.log("action", "[Mod][Spawners] checking for: "..mob_name)
+			minetest.log("action", "[Mod][Spawners] checking for: "..mob_name.." at "..minetest.pos_to_string(pos))
 
 			if random_pos then
 
