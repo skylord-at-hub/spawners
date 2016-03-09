@@ -26,7 +26,13 @@ local mummy_def = {
 	view_range = 8,
 	jump = true,
 	floats = 0,
-	drops = {},
+	drops = {
+		{name = "default:sandstone", chance = 1, min = 1, max = 3},
+		{name = "default:sandstonebrick", chance = 2, min = 1, max = 2},
+		{name = "pyramids:deco_stone1", chance = 15, min = 1, max = 1},
+		{name = "pyramids:deco_stone2", chance = 15, min = 1, max = 1},
+		{name = "pyramids:deco_stone3", chance = 15, min = 1, max = 1},
+	},
 	water_damage = 4,
 	lava_damage = 8,
 	light_damage = 0,
@@ -51,22 +57,6 @@ local mummy_def = {
 		})
 	end,
 }
-
--- drop mod specific blocks if the mod is found
-if minetest.get_modpath("pyramids") then
-	mummy_def["drops"] = {
-		{name = "default:sandstone", chance = 1, min = 1, max = 3},
-		{name = "default:sandstonebrick", chance = 2, min = 1, max = 2},
-		{name = "pyramids:deco_stone1", chance = 15, min = 1, max = 1},
-		{name = "pyramids:deco_stone2", chance = 15, min = 1, max = 1},
-		{name = "pyramids:deco_stone3", chance = 15, min = 1, max = 1},
-	}
-else -- default drops
-	mummy_def["drops"] = {
-		{name = "default:sandstone", chance = 1, min = 1, max = 3},
-		{name = "default:sandstonebrick", chance = 2, min = 1, max = 3},
-	}
-end
 
 mobs:register_mob("spawners:mummy", mummy_def)
 
