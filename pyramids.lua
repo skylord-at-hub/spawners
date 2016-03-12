@@ -63,7 +63,7 @@ end
 
 function pyramids.spawn_mummy(pos, number)
 	-- needs mobs redo
-	if minetest.get_modpath("mobs") then
+	if minetest.get_modpath("mobs") ~= nil then
 		for i=0,number do
 			minetest.add_entity(pos,"spawners:mummy")
 		end
@@ -72,7 +72,7 @@ end
 
 local function add_spawner(pos)
 	-- needs mobs redo
-	if minetest.get_modpath("mobs") then
+	if minetest.get_modpath("mobs") ~= nil then
 		minetest.set_node(pos, {name="spawners:spawners_mummy_spawner_env"})
 		
 		if not minetest.setting_getbool("only_peaceful_mobs") then pyramids.spawn_mummy({x=pos.x,y=pos.y,z=pos.z-2},2)
@@ -138,7 +138,7 @@ local function make(pos)
 	minetest.after(2, pyramids.make_traps, pos)
 
 	-- needs mobs redo
-	if minetest.get_modpath("mobs") then
+	if minetest.get_modpath("mobs") ~= nil then
 		add_spawner({x=pos.x+11,y=pos.y+2, z=pos.z+16})
 	end
 

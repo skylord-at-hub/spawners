@@ -210,7 +210,7 @@ MOBS_PROPS = {
 -- 
 
 -- include mummy mobs redo addon (spawner)
-if minetest.get_modpath("mobs") then
+if minetest.get_modpath("mobs") ~= nil then
 	-- enable spawner
 	table.insert(ENABLED_MODS, "spawners")
 
