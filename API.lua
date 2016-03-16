@@ -55,6 +55,16 @@ function spawners.start_spawning(pos, how_many, mob_name, mod_prefix, sound_cust
 		sound_name = mod_prefix.."_"..mob_name
 	end
 
+	-- use random colours for sheeps
+	if mob_name == "sheep_white" then
+		local mob_name1 = ""
+		local sheep_colours = {"black", "blue", "brown", "cyan", "dark_green", "dark_grey", "green", "grey", "magenta", "orange", "pink", "red", "violet", "white", "yellow"}
+		local random_colour = math.random(1, #sheep_colours)
+		mob_name1 = string.split(mob_name, "_")
+		mob_name1 = mob_name1[1]
+		mob_name = mob_name1.."_"..sheep_colours[random_colour]
+	end
+
 	for i=1,how_many do
 		local obj = minetest.add_entity(pos, mod_prefix..":"..mob_name)
 

@@ -39,20 +39,34 @@ local chest_stuff = {
 	{name="default:axe_steel", max = 1},
 	{name="default:axe_stone", max = 1},
 	{name="default:axe_wood", max = 1},
+	{name="diamonds:diamond_apple", max = 1},
 }
 
 function pyramids.fill_chest(pos)
 	minetest.after(2, function()
 		local n = minetest.get_node(pos)
+
 		if n and n.name and n.name == "default:chest" then
 			local meta = minetest.get_meta(pos)
 			local inv = meta:get_inventory()
+
 			inv:set_size("main", 8*4)
+
 			if math.random(1,10) < 5 then return end
+			
 			for i=0,2,1 do
 				local stuff = chest_stuff[math.random(1,#chest_stuff)]
-				if stuff.name == "farming:bread" and not minetest.get_modpath("farming") then stuff = chest_stuff[1] end
+
+				if stuff.name == "farming:bread" and not minetest.get_modpath("farming") then
+					stuff = chest_stuff[1]
+				end
+
+				if stuff.name == "diamonds:diamond_apple" and not minetest.get_modpath("diamonds") then
+					stuff = chest_stuff[1]
+				end
+				
 				local stack = {name=stuff.name, count = math.random(1,stuff.max)}
+				
 				if not inv:contains_item("main", stack) then
 					inv:set_stack("main", math.random(1,32), stack)
 				end

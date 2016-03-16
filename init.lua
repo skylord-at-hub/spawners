@@ -29,7 +29,14 @@ end
 if SPAWNERS_GENERATE then
 	dofile(minetest.get_modpath("spawners").."/spawners_gen.lua")
 
-	print("[Mod][spawners] Environmental enabled")
+	print("[Mod][spawners] Spawners generate enabled")
+end
+
+-- Add Chests to dungeons, temples..
+if CHESTS_GENERATE then
+	dofile(minetest.get_modpath("spawners").."/chests_gen.lua")
+
+	print("[Mod][spawners] Chests generate enabled")
 end
 
 print ("[Mod] Spawners 0.6 Loaded.")
