@@ -133,7 +133,7 @@ MOBS_PROPS = {
 			dummy_offset=0.05,
 			dummy_mesh="mobs_tree_monster.b3d",
 			dummy_texture={"mobs_tree_monster.png"},
-			night_only=false,
+			night_only=true,
 			sound_custom="mobs_treemonster"
 		}
 	},

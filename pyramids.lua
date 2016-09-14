@@ -52,7 +52,7 @@ function pyramids.fill_chest(pos)
 
 			inv:set_size("main", 8*4)
 
-			if math.random(1,10) < 5 then return end
+			-- if math.random(1,10) < 5 then return end
 			
 			for i=0,2,1 do
 				local stuff = chest_stuff[math.random(1,#chest_stuff)]
@@ -159,7 +159,11 @@ local function make(pos)
 	make_entrance({x=pos.x,y=pos.y, z=pos.z})
 end
 
-local perl1 = {SEED1 = 9130, OCTA1 = 3,	PERS1 = 0.5, SCAL1 = 250} -- Values should match minetest mapgen V6 desert noise.
+local perl1 = {SEED1 = 9130, OCTA1 = 3,	PERS1 = 0.5, SCAL1 = 250} -- Values should match minetest mapgen V6 desert noise
+
+if minetest.get_modpath("simplev7") ~= nil then
+   perl1 = {SEED1 = 5349, OCTA1 = 3, PERS1 = 0.7, SCAL1 = 500}
+end
 
 local function hlp_fnct(pos, name)
 	local n = minetest.get_node_or_nil(pos)

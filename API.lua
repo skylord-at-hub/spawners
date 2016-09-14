@@ -26,9 +26,9 @@ for k, mob_mod in ipairs(ENABLED_MODS) do
 				minetest.register_craft({
 					output = "spawners:"..mob_mod.."_"..mob.name.."_spawner",
 					recipe = {
-						{"default:diamondblock", "fake_fire:flint_and_steel", "default:diamondblock"},
-						{"xpanes:bar", mob_egg, "xpanes:bar"},
-						{"default:diamondblock", "xpanes:bar", "default:diamondblock"},
+						{"default:diamondblock", "fire:flint_and_steel", "default:diamondblock"},
+						{"xpanes:bar_flat", mob_egg, "xpanes:bar_flat"},
+						{"default:diamondblock", "xpanes:bar_flat", "default:diamondblock"},
 					}
 				})
 			end
@@ -66,6 +66,7 @@ function spawners.start_spawning(pos, how_many, mob_name, mod_prefix, sound_cust
 	end
 
 	for i=1,how_many do
+		pos.y = pos.y+1
 		local obj = minetest.add_entity(pos, mod_prefix..":"..mob_name)
 
 		if obj then

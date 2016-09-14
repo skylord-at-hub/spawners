@@ -310,26 +310,26 @@ spawners.create_ore("stone_with_copper", "", {x=.33,y=.33}, 0, {"default_stone.p
 minetest.register_craft({
 	output = "spawners:stone_with_gold_spawner",
 	recipe = {
-		{"default:diamondblock", "fake_fire:flint_and_steel", "default:diamondblock"},
-		{"xpanes:bar", "default:goldblock", "xpanes:bar"},
-		{"default:diamondblock", "xpanes:bar", "default:diamondblock"},
+		{"default:diamondblock", "fire:flint_and_steel", "default:diamondblock"},
+		{"xpanes:bar_flat", "default:goldblock", "xpanes:bar_flat"},
+		{"default:diamondblock", "xpanes:bar_flat", "default:diamondblock"},
 	}
 })
 
 minetest.register_craft({
 	output = "spawners:stone_with_iron_spawner",
 	recipe = {
-		{"default:diamondblock", "fake_fire:flint_and_steel", "default:diamondblock"},
-		{"xpanes:bar", "default:steelblock", "xpanes:bar"},
-		{"default:diamondblock", "xpanes:bar", "default:diamondblock"},
+		{"default:diamondblock", "fire:flint_and_steel", "default:diamondblock"},
+		{"xpanes:bar_flat", "default:steelblock", "xpanes:bar_flat"},
+		{"default:diamondblock", "xpanes:bar_flat", "default:diamondblock"},
 	}
 })
 
 minetest.register_craft({
 	output = "spawners:stone_with_copper_spawner",
 	recipe = {
-		{"default:diamondblock", "fake_fire:flint_and_steel", "default:diamondblock"},
-		{"xpanes:bar", "default:copperblock", "xpanes:bar"},
-		{"default:diamondblock", "xpanes:bar", "default:diamondblock"},
+		{"default:diamondblock", "fire:flint_and_steel", "default:diamondblock"},
+		{"xpanes:bar_flat", "default:copperblock", "xpanes:bar_flat"},
+		{"default:diamondblock", "xpanes:bar_flat", "default:diamondblock"},
 	}
 })
