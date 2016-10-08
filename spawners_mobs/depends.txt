@@ -1,3 +1,5 @@
 default
+xpanes?
+fire?
 mobs?
 creatures?
