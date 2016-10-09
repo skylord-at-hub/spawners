@@ -79,7 +79,7 @@ function pyramids.spawn_mummy(pos, number)
 	-- needs mobs redo
 	if minetest.get_modpath("mobs") ~= nil then
 		for i=0,number do
-			minetest.add_entity(pos,"spawners:mummy")
+			minetest.add_entity(pos,"spawners_env:mummy")
 		end
 	end
 end
@@ -87,7 +87,7 @@ end
 local function add_spawner(pos)
 	-- needs mobs redo
 	if minetest.get_modpath("mobs") ~= nil then
-		minetest.set_node(pos, {name="spawners:spawners_mummy_spawner_env"})
+		minetest.set_node(pos, {name="spawners_env:spawners_mummy_spawner_env"})
 		
 		if not minetest.setting_getbool("only_peaceful_mobs") then pyramids.spawn_mummy({x=pos.x,y=pos.y,z=pos.z-2},2)
 		end
@@ -235,26 +235,26 @@ end)
 --
 
 -- spawner mummy
-minetest.register_alias("pyramids:spawner_mummy", "spawners:spawners_mummy_spawner_env")
--- minetest.register_alias("pyramids:mummy_spawner", "spawners:spawners_mummy_spawner_env")
+minetest.register_alias("pyramids:spawner_mummy", "spawners_env:spawners_mummy_spawner_env")
+-- minetest.register_alias("pyramids:mummy_spawner", "spawners_env:spawners_mummy_spawner_env")
 
 -- spawn egg
-minetest.register_alias("pyramids:spawn_egg", "spawners:mummy")
+minetest.register_alias("pyramids:spawn_egg", "spawners_env:mummy")
 
 -- mummy entity
-minetest.register_alias("pyramids:mummy", "spawners:mummy")
+minetest.register_alias("pyramids:mummy", "spawners_env:mummy")
 
 -- deco stone 1
-minetest.register_alias("pyramids:deco_stone1", "spawners:deco_stone1")
+minetest.register_alias("pyramids:deco_stone1", "spawners_env:deco_stone1")
 
 -- deco stone 2
-minetest.register_alias("pyramids:deco_stone2", "spawners:deco_stone2")
+minetest.register_alias("pyramids:deco_stone2", "spawners_env:deco_stone2")
 
 -- deco stone 3
-minetest.register_alias("pyramids:deco_stone3", "spawners:deco_stone3")
+minetest.register_alias("pyramids:deco_stone3", "spawners_env:deco_stone3")
 
 -- deco trap
-minetest.register_alias("pyramids:trap", "spawners:trap")
+minetest.register_alias("pyramids:trap", "spawners_env:trap")
 
 -- deco trap 2
-minetest.register_alias("pyramids:trap_2", "spawners:trap_2")
+minetest.register_alias("pyramids:trap_2", "spawners_env:trap_2")

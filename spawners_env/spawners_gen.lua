@@ -14,11 +14,11 @@ local function place_spawner(param)
 		if gen_obj == "dungeon" then
 			minetest.log("action", "[Mod][Spawners] dungeon spawner placed at: "..minetest.pos_to_string(pos))
 			
-			minetest.set_node(pos, {name = "spawners:spawners_mummy_spawner_env"})
+			minetest.set_node(pos, {name = "spawners_env:spawners_mummy_spawner_env"})
 		else
 			minetest.log("action", "[Mod][Spawners] temple spawner placed at: "..minetest.pos_to_string(pos))
 			
-			minetest.set_node(pos, {name = "spawners:mobs_spider_spawner_env"})
+			minetest.set_node(pos, {name = "spawners_env:mobs_spider_spawner_env"})
 		end
 
 	end

@@ -1,7 +1,7 @@
 local img = {"eye", "men", "sun"}
 
 for i=1,3 do
-	minetest.register_node("spawners:deco_stone"..i, {
+	minetest.register_node("spawners_env:deco_stone"..i, {
 		description = "Sandstone with "..img[i],
 		tiles = {"default_sandstone.png^pyramids_"..img[i]..".png"},
 		is_ground_content = true,
@@ -17,7 +17,7 @@ trap_on_timer = function (pos, elapsed)
 			local n = minetest.get_node(pos)
 			if n and n.name then
 				if minetest.registered_nodes[n.name].crack and minetest.registered_nodes[n.name].crack < 2 then
-					minetest.set_node(pos, {name="spawners:trap_2"})
+					minetest.set_node(pos, {name="spawners_env:trap_2"})
 					nodeupdate(pos)
 				end
 			end
@@ -26,7 +26,7 @@ trap_on_timer = function (pos, elapsed)
 	return true
 end
 
-minetest.register_node("spawners:trap", {
+minetest.register_node("spawners_env:trap", {
 	description = "Cracked sandstone brick",
 	tiles = {"default_sandstone_brick.png^pyramids_crack.png"},
 	is_ground_content = true,
@@ -40,7 +40,7 @@ minetest.register_node("spawners:trap", {
 	drop = "",
 })
 
-minetest.register_node("spawners:trap_2", {
+minetest.register_node("spawners_env:trap_2", {
 	description = "trapstone",
 	tiles = {"default_sandstone_brick.png^pyramids_crack.png^[transformR90"},
 	is_ground_content = true,
