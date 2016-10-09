@@ -4,7 +4,7 @@ local max_obj_per_mapblock = tonumber(minetest.setting_get("max_objects_per_bloc
 -- * CREATE ALL SPAWNERS NODES *
 -- 
 
-function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, night_only, sound_custom)
+function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture, night_only, sound_custom)
 	
 	-- 
 	-- DUMMY INSIDE THE SPAWNER
@@ -127,7 +127,7 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 		groups = {cracky=1,level=2},
 		stack_max = 1,
 		on_construct = function(pos)
-			local random_pos, waiting = spawners.check_node_status(pos, mob_name, night_only)
+			local random_pos, waiting = spawners_mobs.check_node_status(pos, mob_name, night_only)
 
 			if random_pos then
 				minetest.set_node(pos, {name="spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner_active"})
@@ -180,7 +180,7 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 		catch_up = false,
 		action = function(pos, node, active_object_count, active_object_count_wider)
 
-			local random_pos, waiting = spawners.check_node_status(pos, mob_name, night_only)
+			local random_pos, waiting = spawners_mobs.check_node_status(pos, mob_name, night_only)
 
 			-- minetest.log("action", "[Mod][Spawners] checking for: "..mob_name.." at "..minetest.pos_to_string(pos))
 
@@ -208,7 +208,7 @@ function spawners.create(mob_name, mod_prefix, size, offset, mesh, texture, nigh
 				end
 
 				-- enough place to spawn more mobs
-				spawners.start_spawning(random_pos, 1, "spawners_mobs:"..mob_name, mod_prefix, sound_custom)
+				spawners_mobs.start_spawning(random_pos, 1, "spawners_mobs:"..mob_name, mod_prefix, sound_custom)
 
 			elseif waiting then
 				-- waiting status
@@ -235,9 +235,9 @@ end
 -- CALL 'CREATE' FOR ALL SPAWNERS
 -- 
 
-for i, mob_table in ipairs(spawners.mob_tables) do
+for i, mob_table in ipairs(spawners_mobs.mob_tables) do
 	if mob_table then
 
-		spawners.create(mob_table.name, mob_table.mod_prefix, mob_table.dummy_size, mob_table.dummy_offset, mob_table.dummy_mesh, mob_table.dummy_texture, mob_table.night_only, mob_table.sound_custom)
+		spawners_mobs.create(mob_table.name, mob_table.mod_prefix, mob_table.dummy_size, mob_table.dummy_offset, mob_table.dummy_mesh, mob_table.dummy_texture, mob_table.night_only, mob_table.sound_custom)
 	end
 end

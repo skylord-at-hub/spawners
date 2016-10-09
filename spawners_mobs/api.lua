@@ -1,6 +1,6 @@
 -- main tables
-spawners = {}
-spawners.mob_tables = {}
+spawners_mobs = {}
+spawners_mobs.mob_tables = {}
 
 -- check if mods exists and build tables
 for k, mob_mod in ipairs(ENABLED_MODS) do
@@ -13,8 +13,7 @@ for k, mob_mod in ipairs(ENABLED_MODS) do
 			-- disabled extra check for mobs redo due to incompatibility with Lua 5.1, this method is available from Lua 5.2
 			-- if mob_mod == "mobs" and not (mobs.mod == "redo") then goto continue end
 
-			table.insert(spawners.mob_tables, {name=mob.name, mod_prefix=mob_mod, egg_name_custom=mob.egg_name_custom, dummy_size=mob.dummy_size, dummy_offset=mob.dummy_offset, dummy_mesh=mob.dummy_mesh, dummy_texture=mob.dummy_texture, night_only=mob.night_only, sound_custom=mob.sound_custom})
-
+			table.insert(spawners_mobs.mob_tables, {name=mob.name, mod_prefix=mob_mod, egg_name_custom=mob.egg_name_custom, dummy_size=mob.dummy_size, dummy_offset=mob.dummy_offset, dummy_mesh=mob.dummy_mesh, dummy_texture=mob.dummy_texture, night_only=mob.night_only, sound_custom=mob.sound_custom})
 			-- use custom egg or create a default egg
 			if mob.egg_name_custom ~= "" then 
 				mob_egg = mob.egg_name_custom
@@ -40,7 +39,7 @@ for k, mob_mod in ipairs(ENABLED_MODS) do
 end
 
 -- start spawning mobs
-function spawners.start_spawning(pos, how_many, mob_name, mod_prefix, sound_custom)
+function spawners_mobs.start_spawning(pos, how_many, mob_name, mod_prefix, sound_custom)
 	if not (pos or how_many or mob_name) then return end
 
 	local sound_name
@@ -80,7 +79,7 @@ function spawners.start_spawning(pos, how_many, mob_name, mod_prefix, sound_cust
 	end
 end
 
-function spawners.check_around_radius(pos)
+function spawners_mobs.check_around_radius(pos)
 	local player_near = false
 	local radius = 21
 
@@ -93,8 +92,8 @@ function spawners.check_around_radius(pos)
 	return player_near
 end
 
-function spawners.check_node_status(pos, mob, night_only)
-	local player_near = spawners.check_around_radius(pos)
+function spawners_mobs.check_node_status(pos, mob, night_only)
+	local player_near = spawners_mobs.check_around_radius(pos)
 
 	if player_near then
 		local random_pos = false

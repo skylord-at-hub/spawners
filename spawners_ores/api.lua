@@ -1,7 +1,7 @@
 -- main tables
-spawners = {}
+spawners_ores = {}
 
-function spawners.add_effects(pos, radius)
+function spawners_ores.add_effects(pos, radius)
 	minetest.add_particlespawner({
 		amount = 32,
 		time = 2,
@@ -15,12 +15,12 @@ function spawners.add_effects(pos, radius)
 		maxexptime = 2,
 		minsize = .5,
 		maxsize = 8,
-		texture = "spawners_smoke_particle.png",
+		texture = "spawners_ores_smoke_particle.png",
 	})
 end
 
 -- start spawning ores
-function spawners.start_spawning_ores(pos, ore_name, sound_custom, spawners_pos)
+function spawners_ores.start_spawning_ores(pos, ore_name, sound_custom, spawners_pos)
 	if not pos or not ore_name then return end
 	local sound_name
 	local player_near = false
@@ -38,7 +38,7 @@ function spawners.start_spawning_ores(pos, ore_name, sound_custom, spawners_pos)
 	for i=1, how_many do
 		
 		if i > 1 then
-			player_near, pos = spawners.check_around_radius_ores(pos, "default:stone")
+			player_near, pos = spawners_ores.check_around_radius_ores(pos, "default:stone")
 
 			if not pos then return end
 
@@ -49,7 +49,7 @@ function spawners.start_spawning_ores(pos, ore_name, sound_custom, spawners_pos)
 			})
 
 			minetest.set_node(pos, {name=ore_name})
-			spawners.add_effects(pos, 1)
+			spawners_ores.add_effects(pos, 1)
 		else
 			minetest.sound_play(sound_name, {
 				pos = pos,
@@ -58,14 +58,28 @@ function spawners.start_spawning_ores(pos, ore_name, sound_custom, spawners_pos)
 			})
 
 			minetest.set_node(pos, {name=ore_name})
-			spawners.add_effects(pos, 1)
+			spawners_ores.add_effects(pos, 1)
 		end
 	end
 	
 end
 
-function spawners.check_around_radius_ores(pos, check_node)
-	local player_near = spawners.check_around_radius(pos);
+function spawners_ores.check_around_radius(pos)
+	local player_near = false
+	local radius = 21
+	local node_ore_pos = nil
+
+	for _,obj in ipairs(minetest.get_objects_inside_radius(pos, radius)) do
+		if obj:is_player() then
+			player_near = true
+		end
+	end
+
+	return player_near
+end
+
+function spawners_ores.check_around_radius_ores(pos, check_node)
+	local player_near = spawners_ores.check_around_radius(pos);
 	local found_node = false
 	local node_ore_pos = nil
 	if check_node then
@@ -80,10 +94,10 @@ function spawners.check_around_radius_ores(pos, check_node)
 	return player_near, found_node
 end
 
-function spawners.check_node_status_ores(pos, ore_name, check_node)
+function spawners_ores.check_node_status_ores(pos, ore_name, check_node)
 	if not check_node then return end
 
-	local player_near, found_node = spawners.check_around_radius_ores(pos, check_node)
+	local player_near, found_node = spawners_ores.check_around_radius_ores(pos, check_node)
 
 	if player_near and found_node then
 		return true, found_node
