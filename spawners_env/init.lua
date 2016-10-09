@@ -5,18 +5,7 @@ dofile(minetest.get_modpath("spawners").."/settings.txt")
 dofile(minetest.get_modpath("spawners").."/config.lua")
 
 -- API
-dofile(minetest.get_modpath("spawners").."/API.lua")
-
--- Spawners for mobs
-dofile(minetest.get_modpath("spawners").."/spawners_mobs.lua")
-
--- Spawners for ores
-dofile(minetest.get_modpath("spawners").."/spawners_ores.lua")
-
--- include mummy mobs redo addon (mob)
-if minetest.get_modpath("mobs") then
-	dofile(minetest.get_modpath("spawners").."/mob_mummy.lua")
-end
+dofile(minetest.get_modpath("spawners").."/api.lua")
 
 -- Spawners Pyramids
 if SPAWN_PYRAMIDS then
@@ -39,4 +28,4 @@ if CHESTS_GENERATE then
 	print("[Mod][spawners] Chests generate enabled")
 end
 
-print ("[Mod] Spawners 0.6 Loaded.")
+print ("[Mod] Spawners Environmental 0.6 Loaded.")
