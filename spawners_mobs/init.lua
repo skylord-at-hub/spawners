@@ -15,4 +15,4 @@ if minetest.get_modpath("mobs") then
 	dofile(minetest.get_modpath(MOD_NAME).."/nodes_additional.lua")
 end
 
-print ("[Mod] Spawners Mobs 0.6 Loaded.")
+print ("[Mod] Spawners Mobs 0.7 Loaded.")

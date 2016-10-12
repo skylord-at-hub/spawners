@@ -221,20 +221,20 @@ if minetest.get_modpath("mobs") ~= nil then
 			egg_name_custom="",
 			dummy_size={x=0.4,y=0.4},
 			dummy_offset=0,
-			dummy_mesh="spawners_mob_mummy.b3d",
-			dummy_texture={"spawners_mob_mummy.png"},
+			dummy_mesh="spawners_env_mummy.b3d",
+			dummy_texture={"spawners_env_mummy.png"},
 			night_only="disable",
-			sound_custom="spawners_mob_mummy"
+			sound_custom="spawners_env_mummy"
 		},
 		{
 			name="mummy",
 			egg_name_custom="",
 			dummy_size={x=0.4,y=0.4},
 			dummy_offset=0,
-			dummy_mesh="spawners_mob_mummy.b3d",
-			dummy_texture={"spawners_mob_mummy.png"},
+			dummy_mesh="spawners_env_mummy.b3d",
+			dummy_texture={"spawners_env_mummy.png"},
 			night_only="disable",
-			sound_custom="spawners_mob_mummy",
+			sound_custom="spawners_env_mummy",
 			env=true
 		}
 	}
