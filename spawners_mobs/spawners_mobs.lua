@@ -44,41 +44,44 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 	minetest.register_entity("spawners_mobs:dummy_"..mod_prefix.."_"..mob_name, dummy_definition)
 
 	-- 
-	-- * CRAFTING SPAWNERS *
-	-- 
-
-	-- print("[Mod][Spawners] Registering Crafting Spawner.")
-
-	-- 
 	-- ACTIVE SPAWNER
 	-- 
 
 	minetest.register_node("spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner_active", {
 		description = mod_prefix.."_"..mob_name.." spawner active",
 		paramtype = "light",
-		light_source = 4,
+		light_source = 6	,
 		drawtype = "allfaces",
 		walkable = true,
 		sounds = default.node_sound_stone_defaults(),
 		damage_per_second = 4,
 		sunlight_propagates = true,
-		tiles = {
-			{
-				name = "spawners_mobs_spawner_animated.png",
-				animation = {
-					type = "vertical_frames",
-					aspect_w = 32,
-					aspect_h = 32,
-					length = 2.0
-				},
-			}
-		},
+		tiles = {"spawners_mobs_spawner_16.png"},
 		is_ground_content = true,
 		groups = {cracky=1,level=2,igniter=1,not_in_creative_inventory=1},
 		drop = "spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner",
 		on_construct = function(pos)
 			pos.y = pos.y + offset
 			minetest.add_entity(pos,"spawners_mobs:dummy_"..mod_prefix.."_"..mob_name)
+			local id_flame = spawners_mobs.add_flame_effects(pos)
+			local id_smoke = spawners_mobs.add_smoke_effects(pos)
+			local meta = minetest.get_meta(pos)
+			print("construct: "..id_flame)
+			print("construct: "..id_smoke)
+			meta:set_int("id_flame", id_flame)
+			meta:set_int("id_smoke", id_smoke)
+		end,
+		on_destruct = function(pos)
+			local meta = minetest.get_meta(pos)
+			local id_flame = meta:get_int("id_flame")
+			local id_smoke = meta:get_int("id_smoke")
+			
+			if id_flame and id_smoke and id_flame ~= nil and id_smoke ~= nil then
+				print("destruct: "..id_flame)
+				print("destruct: "..id_smoke)
+				minetest.delete_particlespawner(id_flame)
+				minetest.delete_particlespawner(id_smoke)
+			end
 		end,
 	})
 
@@ -122,7 +125,7 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 		walkable = true,
 		sounds = default.node_sound_stone_defaults(),
 		sunlight_propagates = true,
-		tiles = {"spawners_mobs_spawner.png"},
+		tiles = {"spawners_mobs_spawner_16.png"},
 		is_ground_content = true,
 		groups = {cracky=1,level=2},
 		stack_max = 1,
@@ -151,7 +154,7 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 		sounds = default.node_sound_stone_defaults(),
 		damage_per_second = 4,
 		sunlight_propagates = true,
-		tiles = {"spawners_mobs_spawner.png^[colorize:#FF000030"},
+		tiles = {"spawners_mobs_spawner_16.png^[colorize:#FF000030"},
 		is_ground_content = true,
 		groups = {cracky=1,level=2,igniter=1,not_in_creative_inventory=1},
 		drop = "spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner",
@@ -176,7 +179,7 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 		},
 		neighbors = {"air"},
 		interval = 10.0,
-		chance = 6,
+		chance = 5,
 		catch_up = false,
 		action = function(pos, node, active_object_count, active_object_count_wider)
 
@@ -208,7 +211,7 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 				end
 
 				-- enough place to spawn more mobs
-				spawners_mobs.start_spawning(random_pos, 1, "spawners_mobs:"..mob_name, mod_prefix, sound_custom)
+				spawners_mobs.start_spawning(random_pos, 1, "spawners_mobs:"..mob_name, mod_prefix, sound_custom, pos)
 
 			elseif waiting then
 				-- waiting status

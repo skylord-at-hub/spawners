@@ -38,9 +38,68 @@ for k, mob_mod in ipairs(ENABLED_MODS) do
 	end
 end
 
+-- particles
+function spawners_mobs.cloud_booom(pos)
+	minetest.add_particlespawner({
+		amount = 5,
+		time = 2,
+		minpos = vector.subtract({x=pos.x-0.5, y=pos.y, z=pos.z-0.5}, 0.5),
+		maxpos = vector.add({x=pos.x+0.5, y=pos.y, z=pos.z+0.5}, 0.5),
+		minvel = {x=0.1, y=0.1, z=0.1},
+		maxvel = {x=0.2,  y=0.2,  z=0.2},
+		minacc = vector.new({x=-0.1, y=0.1, z=-0.1}),
+		maxacc = vector.new({x=0.1,  y=0.3,  z=0.1}),
+		minexptime = 2,
+		maxexptime = 3,
+		minsize = 4,
+		maxsize = 8,
+		texture = "spawners_mobs_smoke2_particle.png",
+	})
+end
+
+function spawners_mobs.add_flame_effects(pos)
+	local id = minetest.add_particlespawner({
+		amount = 6,
+		time = 0,
+		minpos = vector.subtract({x=pos.x-0.001, y=pos.y-0.001, z=pos.z-0.001}, 0.5),
+		maxpos = vector.add({x=pos.x+0.001, y=pos.y+0.001, z=pos.z+0.001}, 0.5),
+		minvel = {x=-0.1, y=-0.1, z=-0.1},
+		maxvel = {x=0.1,  y=0.1,  z=0.1},
+		minacc = vector.new(),
+		maxacc = vector.new(),
+		minexptime = 1,
+		maxexptime = 5,
+		minsize = .5,
+		maxsize = 2.5,
+		texture = "spawners_mobs_flame_particle.png",
+	})
+
+	return id
+end
+
+function spawners_mobs.add_smoke_effects(pos)
+	local id = minetest.add_particlespawner({
+		amount = 1,
+		time = 0,
+		minpos = vector.subtract({x=pos.x-0.001, y=pos.y-0.001, z=pos.z-0.001}, 0.5),
+		maxpos = vector.add({x=pos.x+0.001, y=pos.y+0.001, z=pos.z+0.001}, 0.5),
+		minvel = {x=-0.5, y=0.5, z=-0.5},
+		maxvel = {x=0.5,  y=1.5,  z=0.5},
+		minacc = vector.new({x=-0.1, y=0.1, z=-0.1}),
+		maxacc = vector.new({x=0.1,  y=0.3,  z=0.1}),
+		minexptime = .5,
+		maxexptime = 1.5,
+		minsize = .5,
+		maxsize = 2,
+		texture = "spawners_mobs_smoke_particle.png",
+	})
+
+	return id
+end
+
 -- start spawning mobs
-function spawners_mobs.start_spawning(pos, how_many, mob_name, mod_prefix, sound_custom)
-	if not (pos or how_many or mob_name) then return end
+function spawners_mobs.start_spawning(random_pos, how_many, mob_name, mod_prefix, sound_custom, pos)
+	if not (random_pos or how_many or mob_name) then return end
 
 	local sound_name
 	-- remove 'spawners_mobs:' from the string
@@ -64,18 +123,25 @@ function spawners_mobs.start_spawning(pos, how_many, mob_name, mod_prefix, sound
 	end
 
 	for i=1,how_many do
-		pos.y = pos.y+1
-		local obj = minetest.add_entity(pos, mod_prefix..":"..mob_name)
+		random_pos.y = random_pos.y+1
+		
+		spawners_mobs.cloud_booom(random_pos)
 
-		if obj then
-			if sound_name then
-				minetest.sound_play(sound_name, {
-					pos = pos,
-					max_hear_distance = 32,
-					gain = 5,
-				})
+		local obj
+
+		minetest.after(1, function()
+			obj = minetest.add_entity(random_pos, mod_prefix..":"..mob_name)
+
+			if obj then
+				if sound_name then
+					minetest.sound_play(sound_name, {
+						random_pos = random_pos,
+						max_hear_distance = 32,
+						gain = 5,
+					})
+				end
 			end
-		end
+		end)
 	end
 end
 
