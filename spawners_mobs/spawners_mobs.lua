@@ -60,28 +60,72 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 		is_ground_content = true,
 		groups = {cracky=1,level=2,igniter=1,not_in_creative_inventory=1},
 		drop = "spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner",
+
 		on_construct = function(pos)
+			spawners_mobs.meta_set_str("infotext", mod_prefix.." "..mob_name.." spawner (active)", pos)
+
 			pos.y = pos.y + offset
+			print("activating dummy")
 			minetest.add_entity(pos,"spawners_mobs:dummy_"..mod_prefix.."_"..mob_name)
+
+			-- add particles
 			local id_flame = spawners_mobs.add_flame_effects(pos)
 			local id_smoke = spawners_mobs.add_smoke_effects(pos)
-			local meta = minetest.get_meta(pos)
-			print("construct: "..id_flame)
-			print("construct: "..id_smoke)
-			meta:set_int("id_flame", id_flame)
-			meta:set_int("id_smoke", id_smoke)
+			-- print("construct: "..id_flame)
+			-- print("construct: "..id_smoke)
+			spawners_mobs.meta_set_int("id_flame", id_flame, pos)
+			spawners_mobs.meta_set_int("id_smoke", id_smoke, pos)
+			minetest.get_node_timer(pos):start(10)
 		end,
+
 		on_destruct = function(pos)
-			local meta = minetest.get_meta(pos)
-			local id_flame = meta:get_int("id_flame")
-			local id_smoke = meta:get_int("id_smoke")
-			
+			-- delete particles
+			local id_flame = spawners_mobs.meta_get_int("id_flame", pos)
+			local id_smoke = spawners_mobs.meta_get_int("id_smoke", pos)
+
 			if id_flame and id_smoke and id_flame ~= nil and id_smoke ~= nil then
+				-- print("destruct: "..id_flame)
+				-- print("destruct: "..id_smoke)
+				minetest.delete_particlespawner(id_flame)
+				minetest.delete_particlespawner(id_smoke)
+			end
+		end,
+
+		on_timer = function(pos, elapsed)
+			local id_flame = spawners_mobs.meta_get_int("id_flame", pos)
+			local id_smoke = spawners_mobs.meta_get_int("id_smoke", pos)
+			local player_near = spawners_mobs.check_around_radius(pos)
+			
+			-- delete particles
+			if id_flame and id_smoke and id_flame ~= nil and id_smoke ~= nil and player_near == false then
+				print("player_near: false")
 				print("destruct: "..id_flame)
 				print("destruct: "..id_smoke)
 				minetest.delete_particlespawner(id_flame)
 				minetest.delete_particlespawner(id_smoke)
+				spawners_mobs.meta_set_int("id_flame", nil, pos)
+				spawners_mobs.meta_set_int("id_smoke", nil, pos)
 			end
+
+			-- add particles
+			if player_near == true then
+				-- delete particles before adding new ones
+				if id_flame and id_smoke and id_flame ~= nil and id_smoke ~= nil then
+					print("player_near: true")
+					print("destruct: "..id_flame)
+					print("destruct: "..id_smoke)
+					minetest.delete_particlespawner(id_flame)
+					minetest.delete_particlespawner(id_smoke)
+				end
+
+				id_flame = spawners_mobs.add_flame_effects(pos)
+				id_smoke = spawners_mobs.add_smoke_effects(pos)
+				print("construct: "..id_flame)
+				print("construct: "..id_smoke)
+				spawners_mobs.meta_set_int("id_flame", id_flame, pos)
+				spawners_mobs.meta_set_int("id_smoke", id_smoke, pos)
+			end
+			minetest.get_node_timer(pos):start(10)
 		end,
 	})
 
@@ -112,6 +156,9 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 		is_ground_content = true,
 		groups = {cracky=1,level=2,not_in_creative_inventory=1},
 		drop = "spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner",
+		on_construct = function(pos)
+			spawners_mobs.meta_set_str("infotext", mod_prefix.." "..mob_name.." spawner (waiting)", pos)
+		end,
 	})
 
 	-- 
@@ -132,11 +179,17 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 		on_construct = function(pos)
 			local random_pos, waiting = spawners_mobs.check_node_status(pos, mob_name, night_only)
 
+			spawners_mobs.meta_set_str("infotext", mod_prefix.." "..mob_name.." spawner (inactive)", pos)
+
 			if random_pos then
-				minetest.set_node(pos, {name="spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner_active"})
+				-- set active node after dummy was removed
+				minetest.after(2, function()
+					minetest.set_node(pos, {name="spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner_active"})
+				end)
 			elseif waiting then
 				minetest.set_node(pos, {name="spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner_waiting"})
 			else
+				print("no position and not waiting")
 			end
 		end,
 	})
@@ -159,12 +212,30 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 		groups = {cracky=1,level=2,igniter=1,not_in_creative_inventory=1},
 		drop = "spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner",
 		on_construct = function(pos)
+			spawners_mobs.meta_set_str("infotext", mod_prefix.." "..mob_name.." spawner (overheated)", pos)
 			minetest.get_node_timer(pos):start(60)
 		end,
 		on_timer = function(pos, elapsed)
 				minetest.set_node(pos, {name="spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner"})
 		end,
 	})
+
+	-- 
+	-- * LBM *
+	-- 
+
+	-- minetest.register_lbm({
+	-- 	name = "spawners_mobs:set_to_active",
+	-- 	nodenames = {
+	-- 		"spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner_active",
+	-- 		"spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner_overheat",
+	-- 		"spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner_waiting"
+	-- 	},
+	-- 	run_at_every_load = true,
+	-- 	action = function(pos, node)
+	-- 		minetest.set_node(pos, {name="spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner"})
+	-- 	end,
+	-- })
 
 	-- 
 	-- * ABM *
@@ -211,7 +282,7 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 				end
 
 				-- enough place to spawn more mobs
-				spawners_mobs.start_spawning(random_pos, 1, "spawners_mobs:"..mob_name, mod_prefix, sound_custom, pos)
+				spawners_mobs.start_spawning(random_pos, 1, "spawners_mobs:"..mob_name, mod_prefix, sound_custom)
 
 			elseif waiting then
 				-- waiting status
@@ -235,7 +306,7 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 end
 
 -- 
--- CALL 'CREATE' FOR ALL SPAWNERS
+-- * INIT 'CREATE' FOR ALL SPAWNERS *
 -- 
 
 for i, mob_table in ipairs(spawners_mobs.mob_tables) do

@@ -38,6 +38,21 @@ for k, mob_mod in ipairs(ENABLED_MODS) do
 	end
 end
 
+function spawners_mobs.meta_get_int(key, pos)
+	local meta = minetest.get_meta(pos)
+	return meta:get_int(key)
+end
+
+function spawners_mobs.meta_set_int(key, value, pos)
+	local meta = minetest.get_meta(pos)
+	meta:set_int(key, value)
+end
+
+function spawners_mobs.meta_set_str(key, value, pos)
+	local meta = minetest.get_meta(pos)
+	meta:set_string(key, value)
+end
+
 -- particles
 function spawners_mobs.cloud_booom(pos)
 	minetest.add_particlespawner({
@@ -53,7 +68,7 @@ function spawners_mobs.cloud_booom(pos)
 		maxexptime = 3,
 		minsize = 4,
 		maxsize = 8,
-		texture = "spawners_mobs_smoke2_particle.png",
+		texture = "spawners_mobs_smoke2_particle.png^[transform"..math.random(0,3),
 	})
 end
 
@@ -88,17 +103,17 @@ function spawners_mobs.add_smoke_effects(pos)
 		minacc = vector.new({x=-0.1, y=0.1, z=-0.1}),
 		maxacc = vector.new({x=0.1,  y=0.3,  z=0.1}),
 		minexptime = .5,
-		maxexptime = 1.5,
+		maxexptime = 2,
 		minsize = .5,
 		maxsize = 2,
-		texture = "spawners_mobs_smoke_particle.png",
+		texture = "spawners_mobs_smoke_particle.png^[transform"..math.random(0,3),
 	})
 
 	return id
 end
 
 -- start spawning mobs
-function spawners_mobs.start_spawning(random_pos, how_many, mob_name, mod_prefix, sound_custom, pos)
+function spawners_mobs.start_spawning(random_pos, how_many, mob_name, mod_prefix, sound_custom)
 	if not (random_pos or how_many or mob_name) then return end
 
 	local sound_name
@@ -123,7 +138,7 @@ function spawners_mobs.start_spawning(random_pos, how_many, mob_name, mod_prefix
 	end
 
 	for i=1,how_many do
-		random_pos.y = random_pos.y+1
+		random_pos.y = random_pos.y+0.5
 		
 		spawners_mobs.cloud_booom(random_pos)
 
@@ -200,7 +215,7 @@ function spawners_mobs.check_node_status(pos, mob, night_only)
 		end
 
 		if #spawn_positions < 1 then
-			-- spawner is cloed from all sides
+			-- spawner is closed from all sides
 			return false
 		else
 			-- pick random from the open sides
@@ -242,9 +257,10 @@ function spawners_mobs.check_node_status(pos, mob, night_only)
 				end
 			end
 		end
-
+		-- random_pos, waiting
 		return random_pos, false
 	else
+		-- random_pos, waiting
 		return false, true
 	end
 end
