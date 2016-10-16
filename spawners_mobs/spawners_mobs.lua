@@ -83,9 +83,9 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 			local id_flame = spawners_mobs.meta_get_int("id_flame", pos)
 			local id_smoke = spawners_mobs.meta_get_int("id_smoke", pos)
 
-			if id_flame and id_smoke and id_flame ~= nil and id_smoke ~= nil then
-				-- print("destruct: "..id_flame)
-				-- print("destruct: "..id_smoke)
+			if id_flame and id_smoke and id_flame ~= 0 and id_smoke ~= 0 then
+				print("destruct: "..id_flame)
+				print("destruct: "..id_smoke)
 				minetest.delete_particlespawner(id_flame)
 				minetest.delete_particlespawner(id_smoke)
 			end
@@ -97,14 +97,14 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 			local player_near = spawners_mobs.check_around_radius(pos)
 			
 			-- delete particles
-			if id_flame and id_smoke and id_flame ~= nil and id_smoke ~= nil and player_near == false then
+			if id_flame and id_smoke and id_flame ~= nil and id_smoke ~= nil and id_flame ~= 0 and id_smoke ~= 0 and player_near == false then
 				print("player_near: false")
 				print("destruct: "..id_flame)
 				print("destruct: "..id_smoke)
 				minetest.delete_particlespawner(id_flame)
 				minetest.delete_particlespawner(id_smoke)
-				spawners_mobs.meta_set_int("id_flame", nil, pos)
-				spawners_mobs.meta_set_int("id_smoke", nil, pos)
+				spawners_mobs.meta_set_int("id_flame", 0, pos)
+				spawners_mobs.meta_set_int("id_smoke", 0, pos)
 			end
 
 			-- add particles
@@ -144,7 +144,7 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 		sunlight_propagates = true,
 		tiles = {
 			{
-				name = "spawners_mobs_spawner_waiting_animated.png",
+				name = "spawners_mobs_spawner_waiting_animated_16.png",
 				animation = {
 					type = "vertical_frames",
 					aspect_w = 32,
