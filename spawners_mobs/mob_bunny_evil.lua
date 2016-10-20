@@ -7,7 +7,7 @@ local bunny_evil_def = {
 	group_attack = true,
 	pathfinding = true,
 	reach = 2,
-	damage = 5,
+	damage = 3,
 	hp_min = 25,
 	hp_max = 35,
 	armor = 200,
@@ -32,7 +32,7 @@ local bunny_evil_def = {
 	},
 	water_damage = 3,
 	lava_damage = 4,
-	light_damage = 2,
+	light_damage = 0,
 	fear_height = 2,
 	animation = {
 		speed_normal = 15,
@@ -48,6 +48,6 @@ local bunny_evil_def = {
 mobs:register_mob("spawners_mobs:bunny_evil", bunny_evil_def)
 
 mobs:register_spawn("spawners_mobs:bunny_evil",
-	{"default:snow", "default:snowblock", "default:dirt_with_snow"}, 7, 0, 7000, 2, 31000)
+	{"default:snow", "default:snowblock", "default:dirt_with_snow"}, 20, 0, 1, 3, 31000, false)
 
 mobs:register_egg("spawners_mobs:bunny_evil", "Evil Bunny", "mobs_bunny_inv.png", 0)
