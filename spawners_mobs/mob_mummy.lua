@@ -12,8 +12,8 @@ local mummy_def = {
 	shoot_offset = 2,
 	reach = 3,
 	damage = 5,
-	hp_min = 35,
-	hp_max = 65,
+	hp_min = 45,
+	hp_max = 75,
 	armor = 100,
 	collisionbox = {-0.4, -1, -0.4, 0.4, 0.8, 0.4},
 	visual = "mesh",
@@ -67,7 +67,7 @@ local mummy_def = {
 
 mobs:register_mob("spawners_mobs:mummy", mummy_def)
 
-mobs:register_spawn("spawners_mobs:mummy", {"default:desert_sand", "default:desert_stone", "default:sand", "default:sandstone", "default:silver_sand"}, 20, 0, 1, 2, 31000, false)
+mobs:register_spawn("spawners_mobs:mummy", {"default:desert_sand", "default:desert_stone", "default:sand", "default:sandstone", "default:silver_sand"}, 20, 0, 2000, 2, 31000, false)
 
 mobs:register_egg("spawners_mobs:mummy", "Mummy Monster", "default_sandstone_brick.png", 1)
 
