@@ -165,7 +165,7 @@ function spawners_ores.create_ore(ore_name, mod_prefix, size, offset, texture, s
 		light_source = 4,
 		drawtype = "allfaces",
 		walkable = true,
-		sounds = default.node_sound_stone_defaults(),
+		sounds = default.node_sound_metal_defaults(),
 		damage_per_second = 4,
 		sunlight_propagates = true,
 		tiles = {
@@ -195,7 +195,7 @@ function spawners_ores.create_ore(ore_name, mod_prefix, size, offset, texture, s
 		light_source = 2,
 		drawtype = "allfaces",
 		walkable = true,
-		sounds = default.node_sound_stone_defaults(),
+		sounds = default.node_sound_metal_defaults(),
 		sunlight_propagates = true,
 		tiles = {
 			{
@@ -223,7 +223,7 @@ function spawners_ores.create_ore(ore_name, mod_prefix, size, offset, texture, s
 		paramtype = "light",
 		drawtype = "allfaces",
 		walkable = true,
-		sounds = default.node_sound_stone_defaults(),
+		sounds = default.node_sound_metal_defaults(),
 		sunlight_propagates = true,
 		tiles = {"spawners_ores_spawner.png"},
 		is_ground_content = true,
