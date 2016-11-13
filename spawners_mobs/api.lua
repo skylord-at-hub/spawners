@@ -58,8 +58,8 @@ function spawners_mobs.cloud_booom(pos)
 	minetest.add_particlespawner({
 		amount = 5,
 		time = 2,
-		minpos = vector.subtract({x=pos.x-0.5, y=pos.y, z=pos.z-0.5}, 0.5),
-		maxpos = vector.add({x=pos.x+0.5, y=pos.y, z=pos.z+0.5}, 0.5),
+		minpos = vector.subtract({x=pos.x-0.6, y=pos.y, z=pos.z-0.6}, 0.6),
+		maxpos = vector.add({x=pos.x+0.6, y=pos.y, z=pos.z+0.6}, 0.6),
 		minvel = {x=0.1, y=0.1, z=0.1},
 		maxvel = {x=0.2,  y=0.2,  z=0.2},
 		minacc = vector.new({x=-0.1, y=0.1, z=-0.1}),

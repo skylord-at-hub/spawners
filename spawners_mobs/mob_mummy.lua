@@ -12,8 +12,8 @@ local mummy_def = {
 	shoot_offset = 2,
 	reach = 3,
 	damage = 5,
-	hp_min = 45,
-	hp_max = 75,
+	hp_min = 60,
+	hp_max = 120,
 	armor = 100,
 	collisionbox = {-0.4, -1, -0.4, 0.4, 0.8, 0.4},
 	visual = "mesh",
@@ -42,7 +42,7 @@ local mummy_def = {
 	},
 	water_damage = 4,
 	lava_damage = 8,
-	light_damage = 5,
+	light_damage = 10,
 	fear_height = 4,
 	animation = {
 		speed_normal = 15,
@@ -95,4 +95,7 @@ mobs:register_arrow("spawners_mobs:black_skull", {
 			damage_groups = {fleshy = 8},
 		}, nil)
 	end,
+
+	hit_node = function(self, pos, node)
+	end
 })
