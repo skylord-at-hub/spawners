@@ -237,7 +237,7 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 		},
 		neighbors = {"air"},
 		interval = 20.0,
-		chance = 20,
+		chance = 10,
 		catch_up = false,
 		action = function(pos, node, active_object_count, active_object_count_wider)
 
