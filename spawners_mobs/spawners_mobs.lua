@@ -65,14 +65,11 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 			spawners_mobs.meta_set_str("infotext", mod_prefix.." "..mob_name.." spawner (active)", pos)
 
 			pos.y = pos.y + offset
-			print("activating dummy")
 			minetest.add_entity(pos,"spawners_mobs:dummy_"..mod_prefix.."_"..mob_name)
 
 			-- add particles
 			local id_flame = spawners_mobs.add_flame_effects(pos)
 			local id_smoke = spawners_mobs.add_smoke_effects(pos)
-			-- print("construct: "..id_flame)
-			-- print("construct: "..id_smoke)
 			spawners_mobs.meta_set_int("id_flame", id_flame, pos)
 			spawners_mobs.meta_set_int("id_smoke", id_smoke, pos)
 			minetest.get_node_timer(pos):start(10)
@@ -84,8 +81,6 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 			local id_smoke = spawners_mobs.meta_get_int("id_smoke", pos)
 
 			if id_flame and id_smoke and id_flame ~= 0 and id_smoke ~= 0 then
-				print("destruct: "..id_flame)
-				print("destruct: "..id_smoke)
 				minetest.delete_particlespawner(id_flame)
 				minetest.delete_particlespawner(id_smoke)
 			end
@@ -98,9 +93,6 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 			
 			-- delete particles
 			if id_flame and id_smoke and id_flame ~= nil and id_smoke ~= nil and id_flame ~= 0 and id_smoke ~= 0 and player_near == false then
-				print("player_near: false")
-				print("destruct: "..id_flame)
-				print("destruct: "..id_smoke)
 				minetest.delete_particlespawner(id_flame)
 				minetest.delete_particlespawner(id_smoke)
 				spawners_mobs.meta_set_int("id_flame", 0, pos)
@@ -111,17 +103,12 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 			if player_near == true then
 				-- delete particles before adding new ones
 				if id_flame and id_smoke and id_flame ~= nil and id_smoke ~= nil then
-					print("player_near: true")
-					print("destruct: "..id_flame)
-					print("destruct: "..id_smoke)
 					minetest.delete_particlespawner(id_flame)
 					minetest.delete_particlespawner(id_smoke)
 				end
 
 				id_flame = spawners_mobs.add_flame_effects(pos)
 				id_smoke = spawners_mobs.add_smoke_effects(pos)
-				print("construct: "..id_flame)
-				print("construct: "..id_smoke)
 				spawners_mobs.meta_set_int("id_flame", id_flame, pos)
 				spawners_mobs.meta_set_int("id_smoke", id_smoke, pos)
 			end
