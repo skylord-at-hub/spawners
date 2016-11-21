@@ -18,7 +18,7 @@ trap_on_timer = function (pos, elapsed)
 			if n and n.name then
 				if minetest.registered_nodes[n.name].crack and minetest.registered_nodes[n.name].crack < 2 then
 					minetest.set_node(pos, {name="spawners_env:trap_2"})
-					nodeupdate(pos)
+					check_for_falling(pos)
 				end
 			end
 		end
