@@ -32,7 +32,7 @@ local bunny_evil_def = {
 	},
 	water_damage = 3,
 	lava_damage = 4,
-	light_damage = 0,
+	light_damage = 10,
 	fear_height = 2,
 	animation = {
 		speed_normal = 15,
