@@ -150,7 +150,7 @@ function spawners_mobs.start_spawning(random_pos, how_many, mob_name, mod_prefix
 			if obj then
 				if sound_name then
 					minetest.sound_play(sound_name, {
-						random_pos = random_pos,
+						pos = random_pos,
 						max_hear_distance = 32,
 						gain = 5,
 					})
