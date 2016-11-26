@@ -50,7 +50,7 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 	minetest.register_node("spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner_active", {
 		description = mod_prefix.."_"..mob_name.." spawner active",
 		paramtype = "light",
-		light_source = 6	,
+		light_source = 6,
 		drawtype = "allfaces",
 		walkable = true,
 		sounds = default.node_sound_metal_defaults(),
