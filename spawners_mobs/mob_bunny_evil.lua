@@ -28,7 +28,7 @@ local bunny_evil_def = {
 	jump = true,
 	floats = 0,
 	drops = {
-		{name = "mobs:meat_raw", chance = 1, min = 1, max = 1},
+		{name = "mobs:meat_raw", chance = 5, min = 1, max = 1},
 		{name = "spawners_mobs:bunny_evil", chance = 40, min = 1, max = 1},
 	},
 	water_damage = 3,
