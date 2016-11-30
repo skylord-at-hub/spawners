@@ -49,6 +49,6 @@ local bunny_evil_def = {
 mobs:register_mob("spawners_mobs:bunny_evil", bunny_evil_def)
 
 mobs:register_spawn("spawners_mobs:bunny_evil",
-	{"default:snow", "default:snowblock", "default:dirt_with_snow"}, 20, 0, 700, 3, 31000, false)
+	{"default:snow", "default:snowblock", "default:dirt_with_snow"}, 20, 0, 700, 6, 31000, false)
 
 mobs:register_egg("spawners_mobs:bunny_evil", "Evil Bunny", "spawners_mobs_evil_bunny_egg.png", 0)
