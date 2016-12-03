@@ -31,7 +31,7 @@ local mummy_def = {
 	run_velocity = 1.5,
 	view_range = 15,
 	jump = true,
-	floats = 0,
+	floats = 1,
 	drops = {
 		{name = "default:sandstone", chance = 5, min = 1, max = 2},
 		{name = "default:sandstonebrick", chance = 5, min = 1, max = 2},

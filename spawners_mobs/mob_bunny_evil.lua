@@ -26,7 +26,7 @@ local bunny_evil_def = {
 	run_velocity = 4,
 	view_range = 15,
 	jump = true,
-	floats = 0,
+	floats = 1,
 	drops = {
 		{name = "mobs:meat_raw", chance = 5, min = 1, max = 1},
 	},
