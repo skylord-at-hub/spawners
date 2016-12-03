@@ -38,7 +38,6 @@ local mummy_def = {
 		{name = "spawners_mobs:deco_stone_eye", chance = 25, min = 1, max = 1},
 		{name = "spawners_mobs:deco_stone_men", chance = 25, min = 1, max = 1},
 		{name = "spawners_mobs:deco_stone_sun", chance = 25, min = 1, max = 1},
-		{name = "spawners_mobs:mummy", chance = 40, min = 1, max = 1},
 	},
 	water_damage = 4,
 	lava_damage = 8,
@@ -56,12 +55,21 @@ local mummy_def = {
 		punch_start = 74,
 		punch_end = 105,
 	},
+	follow = {"spawners_mobs:deco_stone_eye","spawners_mobs:deco_stone_men","spawners_mobs:deco_stone_sun"},
 	on_die = function(self, pos)
 		minetest.sound_play("spawners_mobs_mummy_death", {
 			object = self.object,
 			pos = pos,
 			max_hear_distance = 10
 		})
+	end,
+	on_rightclick = function(self, clicker)
+
+		if mobs:feed_tame(self, clicker, 8, true, true) then
+			return
+		end
+
+		mobs:capture_mob(self, clicker, 30, 50, 80, false, nil)
 	end,
 }
 

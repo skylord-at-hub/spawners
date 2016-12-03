@@ -29,7 +29,6 @@ local bunny_evil_def = {
 	floats = 0,
 	drops = {
 		{name = "mobs:meat_raw", chance = 5, min = 1, max = 1},
-		{name = "spawners_mobs:bunny_evil", chance = 40, min = 1, max = 1},
 	},
 	water_damage = 3,
 	lava_damage = 4,
@@ -43,7 +42,16 @@ local bunny_evil_def = {
 		walk_end = 24,
 		punch_start = 16,
 		punch_end = 24,
-	}
+	},
+	follow = {"mobs:lava_orb"},
+	on_rightclick = function(self, clicker)
+
+		if mobs:feed_tame(self, clicker, 3, true, true) then
+			return
+		end
+
+		mobs:capture_mob(self, clicker, 30, 50, 80, false, nil)
+	end,
 }
 
 mobs:register_mob("spawners_mobs:bunny_evil", bunny_evil_def)
