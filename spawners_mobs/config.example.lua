@@ -90,8 +90,9 @@ MOBS_PROPS = {
 			dummy_offset=-0.2,
 			dummy_mesh="mobs_spider.x",
 			dummy_texture={"mobs_spider.png"},
-			night_only=false,
-			sound_custom=""
+			night_only="disable",
+			sound_custom="",
+			env=true
 		},
 		{
 			name="stone_monster",
@@ -100,7 +101,7 @@ MOBS_PROPS = {
 			dummy_offset=0.05,
 			dummy_mesh="mobs_stone_monster.b3d",
 			dummy_texture={"mobs_stone_monster.png"},
-			night_only=false,
+			night_only=true,
 			sound_custom="mobs_stonemonster"
 		},
 		{
@@ -186,10 +187,10 @@ MOBS_PROPS = {
 -- include mummy mobs redo addon (spawner)
 if minetest.get_modpath("mobs") ~= nil then
 	-- enable spawner
-	table.insert(ENABLED_MODS, "spawners")
+	table.insert(ENABLED_MODS, "spawners_mobs")
 
 	-- configure spawner
-	MOBS_PROPS["spawners"] = {
+	MOBS_PROPS["spawners_mobs"] = {
 		{
 			name="mummy",
 			egg_name_custom="",
@@ -197,8 +198,29 @@ if minetest.get_modpath("mobs") ~= nil then
 			dummy_offset=0,
 			dummy_mesh="spawners_mobs_mummy.b3d",
 			dummy_texture={"spawners_mobs_mummy.png"},
-			night_only="disable",
+			night_only=true,
 			sound_custom="spawners_mobs_mummy"
+		},
+		{
+			name="bunny_evil",
+			egg_name_custom="",
+			dummy_size={x=1,y=1},
+			dummy_offset=0.2,
+			dummy_mesh="spawners_mobs_evil_bunny.b3d",
+			dummy_texture={"spawners_mobs_evil_bunny.png"},
+			night_only=true,
+			sound_custom="spawners_mobs_bunny"
+		},
+		{
+			name="uruk_hai",
+			egg_name_custom="",
+			dummy_size={x=0.5,y=0.5},
+			dummy_offset=0,
+			dummy_mesh="spawners_mobs_character.b3d",
+			dummy_texture={"spawners_mobs_uruk_hai.png", "spawners_mobs_trans.png","spawners_mobs_galvornsword.png", "spawners_mobs_trans.png"},
+			night_only="disable",
+			sound_custom="spawners_mobs_barbarian_yell2",
+			env=true
 		}
 	}
 end
