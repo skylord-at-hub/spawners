@@ -134,8 +134,8 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 				name = "spawners_mobs_spawner_waiting_animated_16.png",
 				animation = {
 					type = "vertical_frames",
-					aspect_w = 32,
-					aspect_h = 32,
+					aspect_w = 16,
+					aspect_h = 16,
 					length = 2.0
 				},
 			}
@@ -176,7 +176,7 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 			elseif waiting then
 				minetest.set_node(pos, {name="spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner_waiting"})
 			else
-				print("no position and not waiting")
+				-- print("no position and not waiting")
 			end
 		end,
 	})
@@ -236,7 +236,7 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 			"spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner_waiting"
 		},
 		neighbors = {"air"},
-		interval = 20.0,
+		interval = 20,
 		chance = 20,
 		catch_up = false,
 		action = function(pos, node, active_object_count, active_object_count_wider)

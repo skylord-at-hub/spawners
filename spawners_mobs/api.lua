@@ -114,11 +114,15 @@ end
 
 -- start spawning mobs
 function spawners_mobs.start_spawning(random_pos, how_many, mob_name, mod_prefix, sound_custom)
+				print(mod_prefix)
+			print(mob_name)
 	if not (random_pos or how_many or mob_name) then return end
 
 	local sound_name
 	-- remove 'spawners_mobs:' from the string
 	local mob_name = string.sub(mob_name,15)
+			print(mod_prefix)
+			print(mob_name)
 
 	-- use custom sounds
 	if sound_custom ~= "" then 
@@ -144,6 +148,8 @@ function spawners_mobs.start_spawning(random_pos, how_many, mob_name, mod_prefix
 
 		local obj
 
+			print(mod_prefix)
+			print(mob_name)
 		minetest.after(1, function()
 			obj = minetest.add_entity(random_pos, mod_prefix..":"..mob_name)
 

@@ -1,5 +1,3 @@
-local max_obj_per_mapblock = tonumber(minetest.setting_get("max_objects_per_block"))
-
 -- 
 -- * CREATE ALL SPAWNERS NODES *
 -- 
@@ -58,21 +56,25 @@ function spawners_env.create(mob_name, mod_prefix, size, offset, mesh, texture, 
 		sunlight_propagates = true,
 		tiles = {
 			{
-				name = "spawners_env_spawner_animated.png",
+				name = "spawners_env_spawner_animated_16.png",
 				animation = {
 					type = "vertical_frames",
-					aspect_w = 32,
-					aspect_h = 32,
+					aspect_w = 16,
+					aspect_h = 16,
 					length = 2.0
 				},
 			}
 		},
 		is_ground_content = true,
 		groups = {cracky=1,level=2,igniter=1,not_in_creative_inventory=1},
+		on_timer = function(pos, elapsed)
+			spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_prefix, sound_custom)
+			return false
+		end,
 		drop = {
 			max_items = 1,
 			items = {
-				{items = {"spawners_env:"..mod_prefix.."_"..mob_name.."_spawner"}, rarity = 20}
+				{items = {"spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner"}, rarity = 20}
 			}
 		},
 		on_construct = function(pos)
@@ -96,21 +98,25 @@ function spawners_env.create(mob_name, mod_prefix, size, offset, mesh, texture, 
 		sunlight_propagates = true,
 		tiles = {
 			{
-				name = "spawners_env_spawner_waiting_animated.png",
+				name = "spawners_env_spawner_waiting_animated_16.png",
 				animation = {
 					type = "vertical_frames",
-					aspect_w = 32,
-					aspect_h = 32,
+					aspect_w = 16,
+					aspect_h = 16,
 					length = 2.0
 				},
 			}
 		},
 		is_ground_content = true,
 		groups = {cracky=1,level=2,not_in_creative_inventory=1},
+		on_timer = function(pos, elapsed)
+			spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_prefix, sound_custom)
+			return false
+		end,
 		drop = {
 			max_items = 1,
 			items = {
-				{items = {"spawners_env:"..mod_prefix.."_"..mob_name.."_spawner"}, rarity = 20}
+				{items = {"spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner"}, rarity = 20}
 			}
 		},
 	})
@@ -126,124 +132,100 @@ function spawners_env.create(mob_name, mod_prefix, size, offset, mesh, texture, 
 		walkable = true,
 		sounds = default.node_sound_metal_defaults(),
 		sunlight_propagates = true,
-		tiles = {"spawners_env_spawner.png"},
+		tiles = {"spawners_env_spawner_16.png"},
 		is_ground_content = true,
 		groups = {cracky=1,level=2,not_in_creative_inventory=1},
 		stack_max = 1,
 		drop = {
 			max_items = 1,
 			items = {
-				{items = {"spawners_env:"..mod_prefix.."_"..mob_name.."_spawner"}, rarity = 20}
+				{items = {"spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner"}, rarity = 20}
 			}
 		},
 		on_construct = function(pos)
-			local random_pos, waiting = spawners_env.check_node_status(pos, mob_name, night_only)
-
-			if random_pos then
-				minetest.set_node(pos, {name="spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_active"})
-			elseif waiting then
-				minetest.set_node(pos, {name="spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_waiting"})
-			else
-			end
+			spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_prefix, sound_custom)
 		end,
 	})
 
 	-- 
-	-- OVERHEATED SPAWNER ENV
+	-- * LBM *
 	-- 
 
-	minetest.register_node("spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_overheat", {
-		description = mod_prefix.."_"..mob_name.." spawner overheated env",
-		paramtype = "light",
-		light_source = 2,
-		drawtype = "allfaces",
-		walkable = true,
-		sounds = default.node_sound_metal_defaults(),
-		damage_per_second = 4,
-		sunlight_propagates = true,
-		tiles = {"spawners_env_spawner.png^[colorize:#FF000030"},
-		is_ground_content = true,
-		groups = {cracky=1,level=2,igniter=1,not_in_creative_inventory=1},
-		drop = {
-			max_items = 1,
-			items = {
-				{items = {"spawners_env:"..mod_prefix.."_"..mob_name.."_spawner"}, rarity = 20}
-			}
-		},
-		on_construct = function(pos)
-			minetest.get_node_timer(pos):start(60)
-		end,
-		on_timer = function(pos, elapsed)
-				minetest.set_node(pos, {name="spawners_env:"..mod_prefix.."_"..mob_name.."_spawner"})
-		end,
-	})
-
-	-- 
-	-- * ABM *
-	-- 
-
-	minetest.register_abm({
+	minetest.register_lbm({
+		name = "spawners_env:check_for_spawning_timer",
 		nodenames = {
 			"spawners_env:"..mod_prefix.."_"..mob_name.."_spawner",
 			"spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_active",
-			"spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_overheat",
 			"spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_waiting"
 		},
-		neighbors = {"air"},
-		interval = 3.0,
-		chance = 3,
-		catch_up = false,
-		action = function(pos, node, active_object_count, active_object_count_wider)
+		action = function(pos)
+			spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_prefix, sound_custom)
+		end
+	})
+end
 
-			local random_pos, waiting = spawners_env.check_node_status(pos, mob_name, night_only)
+-- 
+-- * check for spawning *
+-- 
+function spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_prefix, sound_custom)
 
-			-- minetest.log("action", "[Mod][Spawners] checking for: "..mob_name.." at "..minetest.pos_to_string(pos))
+	local random_pos, waiting = spawners_env.check_node_status(pos, mob_name, night_only)
 
-			if random_pos then
+	local node = minetest.get_node_or_nil(pos)
 
-				-- do not spawn if too many active entities in map block and call cooldown
-				if active_object_count_wider > max_obj_per_mapblock then
+	-- minetest.log("action", "[Mod][Spawners] checking for: "..mob_name.." at "..minetest.pos_to_string(pos))
 
-					-- make sure the right node status is shown
-					if node.name ~= "spawners_env:"..mob_name.."_spawner_overheat" then
-						minetest.set_node(pos, {name="spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_overheat"})
-					end
+	if random_pos then
+		-- print('try to spawn another mob at: '..minetest.pos_to_string(random_pos))
 
-					-- extend the timeout if still too many entities in map block
-					if node.name == "spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_overheat" then
-						minetest.get_node_timer(pos):stop()
-						minetest.get_node_timer(pos):start(60)
-					end
+		local mobs_counter_table = {}
+		mobs_counter_table[mob_name] = 0
 
-					return
-				end
-				-- make sure the right node status is shown
-				if node.name ~= "spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_active" then
-					minetest.set_node(pos, {name="spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_active"})
-				end
+		-- collect all spawned mobs around area
+		for _,obj in ipairs(minetest.get_objects_inside_radius(pos, 10)) do
+			
+			if obj:get_luaentity() ~= nil then
 
-				-- enough place to spawn more mobs
-				spawners_env.start_spawning(random_pos, 1, "spawners_env:"..mob_name, mod_prefix, sound_custom)
+				-- get entity name			
+				local name_split = string.split(obj:get_luaentity().name, ":")
 
-			elseif waiting then
-				-- waiting status
-				if node.name ~= "spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_waiting" then
-					minetest.set_node(pos, {name="spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_waiting"})
-				end
-			else
-				-- no random_pos found
-				if minetest.get_node_timer(pos):is_started() then
-					minetest.get_node_timer(pos):stop()
+				if name_split[2] == mob_name then
+
+					mobs_counter_table[mob_name]=mobs_counter_table[mob_name]+1
+
 				end
 
-				if node.name ~= "spawners_env:"..mod_prefix.."_"..mob_name.."_spawner" then
-					minetest.set_node(pos, {name="spawners_env:"..mod_prefix.."_"..mob_name.."_spawner"})
-				end
 			end
 
 		end
-	})
 
+		-- print(mob_name.." : "..mobs_counter_table[mob_name])
+		
+		-- enough place to spawn more mobs
+		if mobs_counter_table[mob_name] < 3 then
+			-- make sure the right node status is shown
+			if node.name ~= "spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_active" then
+				minetest.set_node(pos, {name="spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_active"})
+			end
+
+			spawners_env.start_spawning(random_pos, 1, "spawners_env:"..mob_name, mod_prefix, sound_custom)
+		else
+			-- print("too many mobs: waiting")
+			-- waiting status
+			if node.name ~= "spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_waiting" then
+				minetest.set_node(pos, {name="spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_waiting"})
+			end
+		end
+
+	else
+		-- print("no random_pos found: waiting")
+		-- waiting status
+		if node.name ~= "spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_waiting" then
+			minetest.set_node(pos, {name="spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_waiting"})
+		end
+	end
+
+	minetest.get_node_timer(pos):start(math.random(5, 15))
 end
 
 -- 
