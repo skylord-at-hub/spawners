@@ -34,9 +34,9 @@ local uruk_hai_def = {
 	jump = true,
 	floats = 1,
 	drops = {
-		{name = "default:apple", chance = 10, min = 1, max = 2},
+		{name = "default:apple", chance = 5, min = 1, max = 2},
 		{name = "default:wood", chance = 15, min = 1, max = 2},
-		{name = "default:stick", chance = 10, min = 1, max = 2},
+		{name = "default:stick", chance = 5, min = 1, max = 2},
 		{name = "default:torch", chance = 10, min = 1, max = 2},
 	},
 	water_damage = 0,

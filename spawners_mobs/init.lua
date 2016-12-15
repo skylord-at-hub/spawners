@@ -14,6 +14,7 @@ if minetest.get_modpath("mobs") then
 	dofile(minetest.get_modpath(MOD_NAME).."/mob_mummy.lua")
 	dofile(minetest.get_modpath(MOD_NAME).."/mob_bunny_evil.lua")
 	dofile(minetest.get_modpath(MOD_NAME).."/mob_uruk_hai.lua")
+	dofile(minetest.get_modpath(MOD_NAME).."/mob_balrog.lua")
 	dofile(minetest.get_modpath(MOD_NAME).."/nodes_additional.lua")
 end
 

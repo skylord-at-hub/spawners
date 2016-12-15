@@ -2,7 +2,7 @@
 -- * CREATE ALL SPAWNERS NODES *
 -- 
 
-function spawners_env.create(mob_name, mod_prefix, size, offset, mesh, texture, night_only, sound_custom)
+function spawners_env.create(mob_name, mod_prefix, size, offset, mesh, texture, night_only, sound_custom, env, boss)
 	
 	-- 
 	-- DUMMY INSIDE THE SPAWNER
@@ -68,7 +68,7 @@ function spawners_env.create(mob_name, mod_prefix, size, offset, mesh, texture, 
 		is_ground_content = true,
 		groups = {cracky=1,level=2,igniter=1,not_in_creative_inventory=1},
 		on_timer = function(pos, elapsed)
-			spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_prefix, sound_custom)
+			spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_prefix, sound_custom, env, boss)
 			return false
 		end,
 		drop = {
@@ -110,7 +110,7 @@ function spawners_env.create(mob_name, mod_prefix, size, offset, mesh, texture, 
 		is_ground_content = true,
 		groups = {cracky=1,level=2,not_in_creative_inventory=1},
 		on_timer = function(pos, elapsed)
-			spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_prefix, sound_custom)
+			spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_prefix, sound_custom, env, boss)
 			return false
 		end,
 		drop = {
@@ -143,7 +143,7 @@ function spawners_env.create(mob_name, mod_prefix, size, offset, mesh, texture, 
 			}
 		},
 		on_construct = function(pos)
-			spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_prefix, sound_custom)
+			spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_prefix, sound_custom, env, boss)
 		end,
 	})
 
@@ -159,7 +159,7 @@ function spawners_env.create(mob_name, mod_prefix, size, offset, mesh, texture, 
 			"spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_waiting"
 		},
 		action = function(pos)
-			spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_prefix, sound_custom)
+			spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_prefix, sound_custom, env, boss)
 		end
 	})
 end
@@ -167,9 +167,9 @@ end
 -- 
 -- * check for spawning *
 -- 
-function spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_prefix, sound_custom)
+function spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_prefix, sound_custom, env, boss)
 
-	local random_pos, waiting = spawners_env.check_node_status(pos, mob_name, night_only)
+	local random_pos, waiting = spawners_env.check_node_status(pos, mob_name, night_only, boss)
 
 	local node = minetest.get_node_or_nil(pos)
 
@@ -179,10 +179,20 @@ function spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_pr
 		-- print('try to spawn another mob at: '..minetest.pos_to_string(random_pos))
 
 		local mobs_counter_table = {}
+		local mobs_check_radius
+		local mobs_max
 		mobs_counter_table[mob_name] = 0
+		
+		if boss then
+			mobs_max = 1
+			mobs_check_radius = 35
+		else
+			mobs_max = 3
+			mobs_check_radius = 10
+		end
 
 		-- collect all spawned mobs around area
-		for _,obj in ipairs(minetest.get_objects_inside_radius(pos, 10)) do
+		for _,obj in ipairs(minetest.get_objects_inside_radius(pos, mobs_check_radius)) do
 			
 			if obj:get_luaentity() ~= nil then
 
@@ -200,12 +210,16 @@ function spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_pr
 		end
 
 		-- print(mob_name.." : "..mobs_counter_table[mob_name])
-		
+
 		-- enough place to spawn more mobs
-		if mobs_counter_table[mob_name] < 3 then
+		if mobs_counter_table[mob_name] < mobs_max then
 			-- make sure the right node status is shown
 			if node.name ~= "spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_active" then
 				minetest.set_node(pos, {name="spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_active"})
+			end
+
+			if boss then
+				minetest.chat_send_all('!Balrog has spawned to this World!')
 			end
 
 			spawners_env.start_spawning(random_pos, 1, "spawners_env:"..mob_name, mod_prefix, sound_custom)
@@ -224,8 +238,14 @@ function spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_pr
 			minetest.set_node(pos, {name="spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_waiting"})
 		end
 	end
-
-	minetest.get_node_timer(pos):start(math.random(5, 15))
+	-- 6 hours = 21600 seconds
+	-- 4 hours = 14400 seconds
+	-- 1 hour = 3600 seconds
+	if boss then
+		minetest.get_node_timer(pos):start(3600)
+	else
+		minetest.get_node_timer(pos):start(math.random(5, 15))
+	end
 end
 
 -- 
@@ -235,6 +255,6 @@ end
 for i, mob_table in ipairs(spawners_env.mob_tables) do
 	if mob_table then
 
-		spawners_env.create(mob_table.name, mob_table.mod_prefix, mob_table.dummy_size, mob_table.dummy_offset, mob_table.dummy_mesh, mob_table.dummy_texture, mob_table.night_only, mob_table.sound_custom)
+		spawners_env.create(mob_table.name, mob_table.mod_prefix, mob_table.dummy_size, mob_table.dummy_offset, mob_table.dummy_mesh, mob_table.dummy_texture, mob_table.night_only, mob_table.sound_custom, mob_table.env, mob_table.boss)
 	end
 end
