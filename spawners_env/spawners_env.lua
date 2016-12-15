@@ -134,7 +134,7 @@ function spawners_env.create(mob_name, mod_prefix, size, offset, mesh, texture, 
 		sunlight_propagates = true,
 		tiles = {"spawners_env_spawner_16.png"},
 		is_ground_content = true,
-		groups = {cracky=1,level=2,not_in_creative_inventory=1},
+		groups = {cracky=1,level=2,not_in_creative_inventory=0},
 		stack_max = 1,
 		drop = {
 			max_items = 1,

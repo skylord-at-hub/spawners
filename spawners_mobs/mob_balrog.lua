@@ -160,4 +160,4 @@ mobs:register_mob("spawners_mobs:balrog", balrog_def)
 -- 	day_toggle = false,
 -- })
 
-mobs:register_egg("spawners_mobs:balrog", "balrog", "default_coal_block.png", 1, true)
+mobs:register_egg("spawners_mobs:balrog", "balrog", "default_coal_block.png", 1, false)
