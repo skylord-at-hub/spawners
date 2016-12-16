@@ -8,7 +8,7 @@ local balrog_def = {
 	hp_max = 1250,
 	pathfinding = false,
 	attack_type = "dogfight",
-	reach = 3,
+	reach = 5,
 	damage = 10,
 	armor = 100,
 	collisionbox = {-0.8, -2.1, -0.8, 0.8, 2.6, 0.8},
@@ -25,8 +25,8 @@ local balrog_def = {
 		death = "spawners_mobs_howl",
 		attack = "spawners_mobs_stone_death",
 	},
-	walk_velocity = 1,
-	run_velocity = 3,
+	walk_velocity = 3,
+	run_velocity = 4,
 	view_range = 20,
 	jump = true,
 	floats = 1,
@@ -160,4 +160,4 @@ mobs:register_mob("spawners_mobs:balrog", balrog_def)
 -- 	day_toggle = false,
 -- })
 
-mobs:register_egg("spawners_mobs:balrog", "balrog", "default_coal_block.png", 1, false)
+mobs:register_egg("spawners_mobs:balrog", "balrog", "default_coal_block.png", 1, true)
