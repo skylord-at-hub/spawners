@@ -7,7 +7,12 @@ local balrog_def = {
 	hp_min = 1000,
 	hp_max = 1250,
 	pathfinding = false,
-	attack_type = "dogfight",
+	attack_type = "dogshoot",
+	shoot_interval = 0.6,
+	dogshoot_switch = 1,
+	dogshoot_count_max = 10,
+	shoot_offset = 1,
+	arrow = "spawners_mobs:balrog_firebolt",
 	reach = 5,
 	damage = 10,
 	armor = 100,
@@ -24,6 +29,7 @@ local balrog_def = {
 	sounds = {
 		death = "spawners_mobs_howl",
 		attack = "spawners_mobs_stone_death",
+		shoot_attack = "spawners_mobs_fireball",
 	},
 	walk_velocity = 3,
 	run_velocity = 4,
@@ -161,3 +167,33 @@ mobs:register_mob("spawners_mobs:balrog", balrog_def)
 -- })
 
 mobs:register_egg("spawners_mobs:balrog", "balrog", "default_coal_block.png", 1, true)
+
+-- shooting
+mobs:register_arrow("spawners_mobs:balrog_firebolt", {
+	visual = "sprite",
+	visual_size = {x = 1, y = 1},
+	textures = {"spawners_mobs_firebolt.png"},
+	velocity = 15,
+	-- tail = 1,
+	-- tail_texture = "spawners_mobs_black_skull.png",
+	-- tail_size = 10,
+
+	-- direct hit, no fire... just plenty of pain
+	hit_player = function(self, player)
+		player:punch(self.object, 1.0, {
+			full_punch_interval = 1.0,
+			damage_groups = {fleshy = 8},
+		}, nil)
+	end,
+
+	hit_mob = function(self, player)
+		player:punch(self.object, 1.0, {
+			full_punch_interval = 1.0,
+			damage_groups = {fleshy = 8},
+		}, nil)
+	end,
+
+	hit_node = function(self, pos, node)
+		-- minetest.set_node({x=pos.x, y=pos.y+1, z=pos.z}, {name="default:lava_flowing"})
+	end
+})
