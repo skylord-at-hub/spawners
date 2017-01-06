@@ -33,11 +33,12 @@ local mummy_def = {
 	jump = true,
 	floats = 1,
 	drops = {
-		{name = "default:sandstone", chance = 5, min = 1, max = 2},
 		{name = "default:sandstonebrick", chance = 5, min = 1, max = 2},
 		{name = "spawners_mobs:deco_stone_eye", chance = 25, min = 1, max = 1},
 		{name = "spawners_mobs:deco_stone_men", chance = 25, min = 1, max = 1},
 		{name = "spawners_mobs:deco_stone_sun", chance = 25, min = 1, max = 1},
+		{name = "default:diamond", chance = 3, min = 1, max = 2},
+		{name = "default:mese_crystal", chance = 3, min = 1, max = 2},
 	},
 	water_damage = 4,
 	lava_damage = 8,
