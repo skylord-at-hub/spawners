@@ -96,6 +96,7 @@ mobs:register_arrow("spawners_mobs:black_skull", {
 	velocity = 7,
 	tail = 1,
 	tail_texture = "spawners_mobs_black_skull.png",
+	glow = 5,
 	-- tail_size = 10,
 
 	-- direct hit, no fire... just plenty of pain
