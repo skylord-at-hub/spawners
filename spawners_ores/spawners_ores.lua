@@ -41,7 +41,7 @@ end
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
 	if minetest.is_protected(pos, player:get_player_name()) then
 		minetest.record_protection_violation(pos, player:get_player_name())
-		return
+		return 0
 	end
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
