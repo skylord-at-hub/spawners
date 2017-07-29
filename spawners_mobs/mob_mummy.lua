@@ -56,7 +56,7 @@ local mummy_def = {
 		punch_start = 74,
 		punch_end = 105,
 	},
-	follow = {"spawners_mobs:deco_stone_eye","spawners_mobs:deco_stone_men","spawners_mobs:deco_stone_sun"},
+	-- follow = {"spawners_mobs:deco_stone_eye","spawners_mobs:deco_stone_men","spawners_mobs:deco_stone_sun"},
 	on_die = function(self, pos)
 		minetest.sound_play("spawners_mobs_mummy_death", {
 			object = self.object,

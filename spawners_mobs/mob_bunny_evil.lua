@@ -43,7 +43,7 @@ local bunny_evil_def = {
 		punch_start = 16,
 		punch_end = 24,
 	},
-	follow = {"mobs:lava_orb"},
+	-- follow = {"mobs:lava_orb"},
 	on_rightclick = function(self, clicker)
 
 		if mobs:feed_tame(self, clicker, 3, true, true) then
