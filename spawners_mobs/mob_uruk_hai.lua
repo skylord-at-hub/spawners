@@ -38,7 +38,7 @@ local uruk_hai_def = {
 		{name = "default:wood", chance = 4, min = 1, max = 2},
 		{name = "default:stick", chance = 2, min = 1, max = 2},
 		{name = "default:torch", chance = 3, min = 1, max = 2},
-		{name = "spawners_mobs:uruk_hai", chance = 20, min = 1, max = 1},
+		{name = "spawners_mobs:uruk_hai", chance = 30, min = 1, max = 1},
 	},
 	water_damage = 0,
 	lava_damage = 0,
