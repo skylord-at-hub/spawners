@@ -39,6 +39,7 @@ local mummy_def = {
 		{name = "spawners_mobs:deco_stone_sun", chance = 25, min = 1, max = 1},
 		{name = "default:diamond", chance = 3, min = 1, max = 2},
 		{name = "default:mese_crystal", chance = 3, min = 1, max = 2},
+		{name = "spawners_mobs:mummy", chance = 15, min = 1, max = 1},
 	},
 	water_damage = 4,
 	lava_damage = 8,
