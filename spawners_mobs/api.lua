@@ -172,11 +172,31 @@ function spawners_mobs.start_spawning(random_pos, how_many, mob_name, mod_prefix
 	end
 end
 
-function spawners_mobs.check_around_radius(pos)
+function spawners_mobs.check_around_radius(pos, mob)
 	local player_near = false
 	local radius = 21
+	local mobs = {}
 
 	for _,obj in ipairs(minetest.get_objects_inside_radius(pos, radius)) do
+
+		local luae = obj:get_luaentity()
+
+		-- check for number of mobs near by
+		if luae ~= nil and luae.name ~= nil and mob ~= nil then
+			local mob_name = string.split(luae.name, ":")
+			mob_name = mob_name[2]
+
+			if mob_name == mob then
+				table.insert(mobs, mob)
+			end
+
+			if #mobs >= 8 then
+				player_near = false
+				return player_near
+			end
+		end
+
+		-- check for player near by
 		if obj:is_player() then
 			player_near = true
 		end
@@ -186,7 +206,7 @@ function spawners_mobs.check_around_radius(pos)
 end
 
 function spawners_mobs.check_node_status(pos, mob, night_only)
-	local player_near = spawners_mobs.check_around_radius(pos)
+	local player_near = spawners_mobs.check_around_radius(pos, mob)
 
 	if player_near then
 		local random_pos = false
