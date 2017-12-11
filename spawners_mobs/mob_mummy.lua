@@ -5,6 +5,7 @@ local mummy_def = {
 	passive = false,
 	pathfinding = true,
 	attack_type = "dogshoot",
+	owner_loyal = true,
 	shoot_interval = 2,
 	dogshoot_switch = 1,
 	dogshoot_count_max = 10,
@@ -57,7 +58,7 @@ local mummy_def = {
 		punch_start = 74,
 		punch_end = 105,
 	},
-	-- follow = {"spawners_mobs:deco_stone_eye","spawners_mobs:deco_stone_men","spawners_mobs:deco_stone_sun"},
+	follow = {"spawners_mobs:deco_stone_eye","spawners_mobs:deco_stone_men","spawners_mobs:deco_stone_sun"},
 	on_die = function(self, pos)
 		minetest.sound_play("spawners_mobs_mummy_death", {
 			object = self.object,
