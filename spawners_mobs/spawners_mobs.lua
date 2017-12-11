@@ -1,4 +1,4 @@
-local max_obj_per_mapblock = tonumber(minetest.setting_get("max_objects_per_block"))
+local max_obj_per_mapblock = tonumber(minetest.settings:get("max_objects_per_block"))
 
 -- 
 -- * CREATE ALL SPAWNERS NODES *
