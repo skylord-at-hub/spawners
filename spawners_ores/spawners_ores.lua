@@ -1,60 +1,36 @@
--- Formspecs
-local ore_formspec =
-	"size[8,8.5]"..
-	default.gui_bg..
-	default.gui_bg_img..
-	default.gui_slots..
-	"label[2,1.7;Input Ingot]"..
-	"list[current_name;fuel;3.5,1.5;1,1;]"..
-	"list[current_player;main;0,4.25;8,1;]"..
-	"list[current_player;main;0,5.5;8,3;8]"..
-	"button_exit[5,1.5;2,1;exit;Save]"..
-	"listring[current_name;fuel]"..
-	"listring[current_player;main]"..
-	default.get_hotbar_bg(0, 4.25)
+-- 
+-- Colorize HEX
+-- 
 
-local function can_dig(pos, player)
-	local meta = minetest.get_meta(pos);
-	local inv = meta:get_inventory()
-	return inv:is_empty("fuel")
-end
+local colorize = {
+	stone_with_gold = "^[colorize:#ffe40030",
+	stone_with_tin = "^[colorize:#d0d0d040",
+	stone_with_iron = "^[colorize:#b66d4940",
+	stone_with_copper = "^[colorize:#b5875240",
+}
 
-function spawners_ores.get_formspec(pos)
-
-	-- Inizialize metadata
-	local meta = minetest.get_meta(pos)
-	
-	-- Inizialize inventory
-	local inv = meta:get_inventory()
-	for listname, size in pairs({
-			fuel = 1,
-	}) do
-		if inv:get_size(listname) ~= size then
-			inv:set_size(listname, size)
-		end
-	end
-
-	-- Update formspec, infotext and node
-	meta:set_string("formspec", ore_formspec)
-end
+-- 
+-- Handle formspec and inventory management
+-- 
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
+
 	if minetest.is_protected(pos, player:get_player_name()) then
 		minetest.record_protection_violation(pos, player:get_player_name())
 		return 0
 	end
+
 	local meta = minetest.get_meta(pos)
-	local inv = meta:get_inventory()
-	local ingot = minetest.get_node_or_nil(pos).name
+	local mineral = meta:get_string("mineral")
 
-	ingot = string.split(ingot, ":")
-	ingot = string.split(ingot[2], "_")
-
-	if ingot[3] == "iron" then
-		ingot[3] = "steel"
+	if mineral == "iron" then
+		mineral = "steel"
 	end
 
-	if stack:get_name() == "default:"..ingot[3].."_ingot" then
+	if stack:get_name() == "default:"..mineral.."_ingot" then
+
+		minetest.get_node_timer(pos):start(1.0)
+		
 		return stack:get_count()
 	else
 		return 0
@@ -66,63 +42,27 @@ local function allow_metadata_inventory_take(pos, listname, index, stack, player
 		minetest.record_protection_violation(pos, player:get_player_name())
 		return 0
 	end
+
+	minetest.get_node_timer(pos):start(1.0)
+
 	return stack:get_count()
 end
 
-local function on_receive_fields(pos, formname, fields, sender)
-	local ore_node = minetest.get_node_or_nil(pos)
+-- 
+-- Spawners Ores creation function
+-- 
 
-	if minetest.is_protected(pos, sender:get_player_name()) then
-		minetest.record_protection_violation(pos, sender:get_player_name())
-		return
+function spawners_ores.create(def)
+
+	local ore_name = def.ore_name or nil
+	local size = def.size or {x = 0.33, y = 0.33}
+	local offset = def.offset or 0
+
+	-- these must be defined
+	if ore_name == nil then
+		return false
 	end
 
-	-- get the ore name
-	local ingot = ore_node.name
-	ingot = string.split(ingot, ":")
-	ingot = string.split(ingot[2], "_")
-
-	local meta = minetest.get_meta(pos)
-	local inv = meta:get_inventory()
-	local fuellist = inv:get_list("fuel")
-
-	if inv:is_empty("fuel") then
-		if ore_node.name ~= "spawners_ores:stone_with_"..ingot[3].."_spawner" then
-			minetest.swap_node(pos, {name="spawners_ores:stone_with_"..ingot[3].."_spawner"})
-		end
-		meta:set_string("infotext", ingot[3].." ore spawner is empty")
-	else
-		meta:set_string("infotext", ingot[3].." ore spawner fuel: "..inv:get_stack("fuel", 1):get_count())
-	end
-
-	-- fix iron vs. steel issue
-	if ingot[3] == "iron" then
-		ingot[3] = "steel"
-	end
-
-	if not fuellist[1]:is_empty() and inv:get_stack("fuel", 1):get_name() == "default:"..ingot[3].."_ingot" then
-		
-		-- fix iron vs. steel issue
-		if ingot[3] == "steel" then
-			ingot[3] = "iron"
-		end
-
-		local waiting, found_node = spawners_ores.check_node_status_ores(pos, "stone_with_"..ingot[3], "default:stone")
-
-		if found_node then
-			minetest.swap_node(pos, {name="spawners_ores:stone_with_"..ingot[3].."_spawner_active"})
-		elseif waiting then
-			minetest.swap_node(pos, {name="spawners_ores:stone_with_"..ingot[3].."_spawner_waiting"})
-
-			meta:set_string("infotext", "Waiting status - player was away or no stone around, "..ingot[3].." ore spawner fuel: "..inv:get_stack("fuel", 1):get_count())
-		else
-			return
-		end
-	end
-end
-
--- Ores creation
-function spawners_ores.create_ore(ore_name, mod_prefix, size, offset, texture, sound_custom)
 	-- dummy inside the spawner
 	local dummy_ore_definition = {
 		hp_max = 1,
@@ -171,11 +111,11 @@ function spawners_ores.create_ore(ore_name, mod_prefix, size, offset, texture, s
 		sunlight_propagates = true,
 		tiles = {
 			{
-				name = "spawners_ores_spawner_animated.png",
+				name = "spawners_ores_spawner_animated_magma_16.png"..colorize[ore_name],
 				animation = {
 					type = "vertical_frames",
-					aspect_w = 32,
-					aspect_h = 32,
+					aspect_w = 16,
+					aspect_h = 16,
 					length = 2.0
 				},
 			}
@@ -183,10 +123,21 @@ function spawners_ores.create_ore(ore_name, mod_prefix, size, offset, texture, s
 		is_ground_content = true,
 		groups = {cracky=1,level=2,igniter=1,not_in_creative_inventory=1},
 		drop = "spawners_ores:"..ore_name.."_spawner",
-		can_dig = can_dig,
+		
+		can_dig = spawners_ores.can_dig,
+		
+		on_timer = spawners_ores.on_timer,
+		
+		on_blast = function(pos)
+			local drops = {}
+			default.get_inventory_drops(pos, "fuel", drops)
+			drops[#drops+1] = "spawners_ores:"..ore_name.."_spawner_active"
+			minetest.remove_node(pos)
+			return drops
+		end,
+
 		allow_metadata_inventory_put = allow_metadata_inventory_put,
 		allow_metadata_inventory_take = allow_metadata_inventory_take,
-		on_receive_fields = on_receive_fields,
 	})
 
 	-- node spawner waiting - no stone around or no fuel
@@ -201,7 +152,7 @@ function spawners_ores.create_ore(ore_name, mod_prefix, size, offset, texture, s
 		sunlight_propagates = true,
 		tiles = {
 			{
-				name = "spawners_ores_spawner_waiting_animated.png",
+				name = "spawners_ores_spawner_waiting_animated_16.png"..colorize[ore_name],
 				animation = {
 					type = "vertical_frames",
 					aspect_w = 32,
@@ -212,11 +163,22 @@ function spawners_ores.create_ore(ore_name, mod_prefix, size, offset, texture, s
 		},
 		is_ground_content = true,
 		groups = {cracky=1,level=2,not_in_creative_inventory=1},
-		drop = "spawners_ores:"..ore_name.."_spawner",
-		can_dig = can_dig,
+		drop = "spawners_ores:"..ore_name.."_spawner_waiting",
+		
+		can_dig = spawners_ores.can_dig,
+		
+		on_timer = spawners_ores.on_timer,
+
+		on_blast = function(pos)
+			local drops = {}
+			default.get_inventory_drops(pos, "fuel", drops)
+			drops[#drops+1] = "spawners_ores:"..ore_name.."_spawner"
+			minetest.remove_node(pos)
+			return drops
+		end,
+		
 		allow_metadata_inventory_put = allow_metadata_inventory_put,
 		allow_metadata_inventory_take = allow_metadata_inventory_take,
-		on_receive_fields = on_receive_fields,
 	})
 
 	-- node spawner inactive (default)
@@ -228,87 +190,102 @@ function spawners_ores.create_ore(ore_name, mod_prefix, size, offset, texture, s
 		walkable = true,
 		sounds = default.node_sound_metal_defaults(),
 		sunlight_propagates = true,
-		tiles = {"spawners_ores_spawner.png"},
+		tiles = {"spawners_ores_spawner_16.png"..colorize[ore_name]},
 		is_ground_content = true,
-		groups = {cracky=1,level=2},
+		groups = {cracky = 1, level = 2},
 		stack_max = 1,
+		
+		can_dig = spawners_ores.can_dig,
+		
+		on_timer = spawners_ores.on_timer,
+
 		on_construct = function(pos)
 			local meta = minetest.get_meta(pos)
-			spawners_ores.get_formspec(pos)
+			local formspec = spawners_ores.get_formspec(pos, {ore=ore[3]})
+
+			-- Inizialize inventory
+			local inv = meta:get_inventory()
+			inv:set_size('fuel', 1)
+
+			-- custom meta
+			meta:set_string("mineral", ore[3])
+			meta:set_string("ore_name", ore_name)
+			meta:set_string("status", "")
+
+			-- add spinning entity inside the spawner
 			pos.y = pos.y + offset
 			minetest.add_entity(pos,"spawners_ores:dummy_ore_"..ore_name)
+			
+			-- Update formspec, infotext and node
+			meta:set_string("formspec", formspec)
 			meta:set_string("infotext", ore[3].." ore spawner is empty")
 		end,
 
-		can_dig = can_dig,
+		on_blast = function(pos)
+			local drops = {}
+			default.get_inventory_drops(pos, "fuel", drops)
+			drops[#drops+1] = "spawners_ores:"..ore_name.."_spawner"
+			minetest.remove_node(pos)
+			return drops
+		end,
 	
+		on_metadata_inventory_put = function(pos)
+			-- start timer function, it will sort out whether ingots can burn in to stone and create minerals or not.
+			minetest.get_node_timer(pos):start(1.0)
+		end,
 		allow_metadata_inventory_put = allow_metadata_inventory_put,
 		allow_metadata_inventory_take = allow_metadata_inventory_take,
-		on_receive_fields = on_receive_fields,
 	})
 
-	-- ABM
-	minetest.register_abm({
-		nodenames = {"spawners_ores:"..ore_name.."_spawner_active", "spawners_ores:"..ore_name.."_spawner_waiting"},
-		interval = 5.0,
-		chance = 5,
-		action = function(pos, node, active_object_count, active_object_count_wider)
-
-			local waiting, found_node = spawners_ores.check_node_status_ores(pos, ore_name,  "default:stone")
-
-			local meta = minetest.get_meta(pos)
-			local inv = meta:get_inventory()
-
-			if found_node then
-				-- make sure the right node status is shown
-				if node.name ~= "spawners_ores:"..ore_name.."_spawner_active" then
-					minetest.swap_node(pos, {name="spawners_ores:"..ore_name.."_spawner_active"})
-				end
-
-				
-				-- take fuel
-				local stack = inv:get_stack("fuel", 1)
-				stack:take_item()
-
-
-				inv:set_stack("fuel", 1, stack)
-
-				meta:set_string("infotext", ore[3].." ore spawner fuel: "..inv:get_stack("fuel", 1):get_count())
-
-				-- enough place to spawn more ores
-				spawners_ores.start_spawning_ores(found_node, "default:"..ore_name, sound_custom)
-
-				-- empty / no fuel
-				if inv:is_empty("fuel") then
-					minetest.swap_node(pos, {name="spawners_ores:"..ore_name.."_spawner"})
-					meta:set_string("infotext", ore[3].." ore spawner is empty.")
-
-				end
-			else
-				-- waiting status
-				if node.name ~= "spawners_ores:"..ore_name.."_spawner_waiting" then
-					minetest.swap_node(pos, {name="spawners_ores:"..ore_name.."_spawner_waiting"})
-					
-					meta:set_string("infotext", "Waiting status - player was away or no stone around, "..ore[3].." ore spawner fuel: "..inv:get_stack("fuel", 1):get_count())
-				end
-			end
-
-		end
+	-- replacement LBM for pre-nodetimer plants
+	minetest.register_lbm({
+		name = "spawners_ores:start_nodetimer_"..ore_name,
+		nodenames = {
+			"spawners_ores:"..ore_name.."_spawner_active",
+			"spawners_ores:"..ore_name.."_spawner_waiting"
+		},
+		action = function(pos, node)
+			spawners_ores.tick_short(pos)
+		end,
 	})
-
 end
 
+-- 
+-- Ore Spawners Definitions
+-- 
+
 -- default:stone_with_gold
-spawners_ores.create_ore("stone_with_gold", "", {x=.33,y=.33}, 0, {"default_stone.png^default_mineral_gold.png"}, "spawners_ores_strike")
+spawners_ores.create({
+	ore_name = "stone_with_gold",
+	size = {x = 0.33, y = 0.33},
+	offset = 0
+})
 
 -- default:stone_with_iron
-spawners_ores.create_ore("stone_with_iron", "", {x=.33,y=.33}, 0, {"default_stone.png^default_mineral_gold.png"}, "spawners_ores_strike")
+spawners_ores.create({
+	ore_name = "stone_with_iron",
+	size = {x = 0.33, y = 0.33},
+	offset = 0
+})
 
 -- default:stone_with_copper
-spawners_ores.create_ore("stone_with_copper", "", {x=.33,y=.33}, 0, {"default_stone.png^default_mineral_gold.png"}, "spawners_ores_strike")
+spawners_ores.create({
+	ore_name = "stone_with_copper",
+	size = {x = 0.33, y = 0.33},
+	offset = 0
+})
 
+-- default:stone_with_tin
+spawners_ores.create({
+	ore_name = "stone_with_tin",
+	size = {x = 0.33, y = 0.33},
+	offset = 0
+})
 
--- recipes
+-- 
+-- Recipes
+-- 
+
 minetest.register_craft({
 	output = "spawners_ores:stone_with_gold_spawner",
 	recipe = {
@@ -332,6 +309,15 @@ minetest.register_craft({
 	recipe = {
 		{"default:diamondblock", "fire:flint_and_steel", "default:diamondblock"},
 		{"xpanes:bar_flat", "default:copperblock", "xpanes:bar_flat"},
+		{"default:diamondblock", "xpanes:bar_flat", "default:diamondblock"},
+	}
+})
+
+minetest.register_craft({
+	output = "spawners_ores:stone_with_tin_spawner",
+	recipe = {
+		{"default:diamondblock", "fire:flint_and_steel", "default:diamondblock"},
+		{"xpanes:bar_flat", "default:tinblock", "xpanes:bar_flat"},
 		{"default:diamondblock", "xpanes:bar_flat", "default:diamondblock"},
 	}
 })
