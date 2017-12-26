@@ -1,7 +1,7 @@
 -- main tables
 spawners_ores = {}
 
--- how often node timers for plants will tick, +/- some random value
+-- how often node timers for minerals will tick, +/- some random value
 function spawners_ores.tick(pos)
   minetest.get_node_timer(pos):start(math.random(30, 60))
 end
