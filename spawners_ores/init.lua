@@ -6,4 +6,4 @@ dofile(minetest.get_modpath(MOD_NAME).."/api.lua")
 -- Spawners for ores
 dofile(minetest.get_modpath(MOD_NAME).."/spawners_ores.lua")
 
-print ("[Mod] Spawners Ores 0.7 Loaded.")
+print ("[Mod] Spawners Ores Loaded.")

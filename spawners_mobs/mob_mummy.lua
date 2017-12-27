@@ -38,6 +38,7 @@ local mummy_def = {
 		{name = "spawners_mobs:deco_stone_eye", chance = 25, min = 1, max = 1},
 		{name = "spawners_mobs:deco_stone_men", chance = 25, min = 1, max = 1},
 		{name = "spawners_mobs:deco_stone_sun", chance = 25, min = 1, max = 1},
+		{name = "spawners_mobs:deco_stone_bird", chance = 25, min = 1, max = 1},
 		{name = "default:diamond", chance = 3, min = 1, max = 2},
 		{name = "default:mese_crystal", chance = 3, min = 1, max = 2},
 		{name = "spawners_mobs:mummy", chance = 25, min = 1, max = 1},
@@ -58,7 +59,7 @@ local mummy_def = {
 		punch_start = 74,
 		punch_end = 105,
 	},
-	follow = {"spawners_mobs:deco_stone_eye","spawners_mobs:deco_stone_men","spawners_mobs:deco_stone_sun"},
+	follow = {"spawners_mobs:deco_stone_eye","spawners_mobs:deco_stone_men","spawners_mobs:deco_stone_sun","spawners_mobs:deco_stone_bird"},
 	on_die = function(self, pos)
 		minetest.sound_play("spawners_mobs_mummy_death", {
 			object = self.object,

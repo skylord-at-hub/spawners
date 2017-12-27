@@ -3,7 +3,7 @@
 -- 
 
 local colorize = {
-	stone_with_gold = "^[colorize:#ffe40030",
+	stone_with_gold = "^[colorize:#ffe40033",
 	stone_with_tin = "^[colorize:#d0d0d040",
 	stone_with_iron = "^[colorize:#b66d4940",
 	stone_with_copper = "^[colorize:#b5875240",
@@ -28,9 +28,6 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
 	end
 
 	if stack:get_name() == "default:"..mineral.."_ingot" then
-
-		minetest.get_node_timer(pos):start(1.0)
-		
 		return stack:get_count()
 	else
 		return 0
@@ -43,9 +40,21 @@ local function allow_metadata_inventory_take(pos, listname, index, stack, player
 		return 0
 	end
 
-	minetest.get_node_timer(pos):start(1.0)
-
 	return stack:get_count()
+end
+
+local function on_metadata_inventory_put(pos)
+	local meta = minetest.get_meta(pos)
+	meta:set_int("tick", 0)
+	spawners_ores.get_formspec(pos)
+	minetest.get_node_timer(pos):start(1.0)
+end
+
+local function on_metadata_inventory_take(pos)
+	local meta = minetest.get_meta(pos)
+	meta:set_int("tick", 0)
+	spawners_ores.get_formspec(pos)
+	minetest.get_node_timer(pos):start(1.0)
 end
 
 -- 
@@ -135,7 +144,8 @@ function spawners_ores.create(def)
 			minetest.remove_node(pos)
 			return drops
 		end,
-
+		on_metadata_inventory_put = on_metadata_inventory_put,
+		on_metadata_inventory_take = on_metadata_inventory_take,
 		allow_metadata_inventory_put = allow_metadata_inventory_put,
 		allow_metadata_inventory_take = allow_metadata_inventory_take,
 	})
@@ -177,6 +187,17 @@ function spawners_ores.create(def)
 			return drops
 		end,
 		
+		on_receive_fields = function(pos, formname, fields, sender)
+			if fields.restart then
+				local meta = minetest.get_meta(pos)
+				meta:set_int("tick", 0)
+				spawners_ores.get_formspec(pos)
+				minetest.get_node_timer(pos):start(1.0)
+			end
+		end,
+
+		on_metadata_inventory_put = on_metadata_inventory_put,
+		on_metadata_inventory_take = on_metadata_inventory_take,
 		allow_metadata_inventory_put = allow_metadata_inventory_put,
 		allow_metadata_inventory_take = allow_metadata_inventory_take,
 	})
@@ -201,7 +222,7 @@ function spawners_ores.create(def)
 
 		on_construct = function(pos)
 			local meta = minetest.get_meta(pos)
-			local formspec = spawners_ores.get_formspec(pos, {ore=ore[3]})
+			spawners_ores.get_formspec(pos, {ore=ore[3]})
 
 			-- Inizialize inventory
 			local inv = meta:get_inventory()
@@ -211,14 +232,11 @@ function spawners_ores.create(def)
 			meta:set_string("mineral", ore[3])
 			meta:set_string("ore_name", ore_name)
 			meta:set_string("status", "")
+			meta:set_int("tick", 0)
 
 			-- add spinning entity inside the spawner
 			pos.y = pos.y + offset
 			minetest.add_entity(pos,"spawners_ores:dummy_ore_"..ore_name)
-			
-			-- Update formspec, infotext and node
-			meta:set_string("formspec", formspec)
-			meta:set_string("infotext", ore[3].." ore spawner is empty")
 		end,
 
 		on_blast = function(pos)
@@ -229,10 +247,8 @@ function spawners_ores.create(def)
 			return drops
 		end,
 	
-		on_metadata_inventory_put = function(pos)
-			-- start timer function, it will sort out whether ingots can burn in to stone and create minerals or not.
-			minetest.get_node_timer(pos):start(1.0)
-		end,
+		on_metadata_inventory_put = on_metadata_inventory_put,
+		on_metadata_inventory_take = on_metadata_inventory_take,
 		allow_metadata_inventory_put = allow_metadata_inventory_put,
 		allow_metadata_inventory_take = allow_metadata_inventory_take,
 	})
@@ -241,8 +257,7 @@ function spawners_ores.create(def)
 	minetest.register_lbm({
 		name = "spawners_ores:start_nodetimer_"..ore_name,
 		nodenames = {
-			"spawners_ores:"..ore_name.."_spawner_active",
-			"spawners_ores:"..ore_name.."_spawner_waiting"
+			"spawners_ores:"..ore_name.."_spawner_active"
 		},
 		action = function(pos, node)
 			spawners_ores.tick_short(pos)

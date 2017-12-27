@@ -70,17 +70,17 @@ function spawners_mobs.cloud_booom(pos)
 	minetest.add_particlespawner({
 		amount = 5,
 		time = 2,
-		minpos = vector.subtract({x=pos.x-0.6, y=pos.y, z=pos.z-0.6}, 0.6),
-		maxpos = vector.add({x=pos.x+0.6, y=pos.y, z=pos.z+0.6}, 0.6),
+		minpos = vector.subtract({x=pos.x-0.3, y=pos.y, z=pos.z-0.3}, 0.3),
+		maxpos = vector.add({x=pos.x+0.3, y=pos.y, z=pos.z+0.3}, 0.3),
 		minvel = {x=0.1, y=0.1, z=0.1},
 		maxvel = {x=0.2,  y=0.2,  z=0.2},
-		minacc = vector.new({x=-0.1, y=0.1, z=-0.1}),
-		maxacc = vector.new({x=0.1,  y=0.3,  z=0.1}),
+		minacc = vector.new({x=-0.1, y=0.3, z=-0.1}),
+		maxacc = vector.new({x=0.1,  y=0.6,  z=0.1}),
 		minexptime = 2,
 		maxexptime = 3,
 		minsize = 4,
-		maxsize = 8,
-		texture = "spawners_mobs_smoke2_particle.png^[transform"..math.random(0,3),
+		maxsize = 12,
+		texture = "spawners_mobs_smoke_particle_2.png^[transform"..math.random(0,3),
 	})
 end
 
@@ -98,7 +98,7 @@ function spawners_mobs.add_flame_effects(pos)
 		maxexptime = 5,
 		minsize = .5,
 		maxsize = 2.5,
-		texture = "spawners_mobs_flame_particle.png",
+		texture = "spawners_mobs_flame_particle_2.png",
 	})
 
 	return id

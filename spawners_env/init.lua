@@ -10,4 +10,4 @@ dofile(minetest.get_modpath(MOD_NAME).."/api.lua")
 dofile(minetest.get_modpath(MOD_NAME).."/spawners_env.lua")
 dofile(minetest.get_modpath(MOD_NAME).."/spawners_gen.lua")
 
-print ("[Mod] Spawners Environmental 0.7 Loaded.")
+print ("[Mod] Spawners Environmental Loaded.")

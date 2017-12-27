@@ -203,7 +203,7 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 		groups = {cracky=1,level=2,igniter=1,not_in_creative_inventory=1},
 		drop = "spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner",
 		on_construct = function(pos)
-			spawners_mobs.meta_set_str("infotext", mod_prefix.." "..mob_name.." spawner (overheated)", pos)
+			spawners_mobs.meta_set_str("infotext", mod_prefix.." "..mob_name.." spawner is overheated - too many items/entities in the area", pos)
 			minetest.get_node_timer(pos):start(60)
 		end,
 		on_timer = function(pos, elapsed)
