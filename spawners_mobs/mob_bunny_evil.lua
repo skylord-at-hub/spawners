@@ -58,11 +58,11 @@ mobs:register_mob("spawners_mobs:bunny_evil", bunny_evil_def)
 
 mobs:spawn({
 	name = "spawners_mobs:bunny_evil",
-	nodes = {"default:snow", "default:snowblock", "default:dirt_with_snow", "default:ice"},
+	nodes = {"default:snowblock", "default:dirt_with_snow", "default:ice"},
 	min_light = 0,
 	max_light = 20,
-	chance = 700,
-	active_object_count = 6,
+	chance = 7000,
+	active_object_count = 3,
 	day_toggle = false,
 })
 

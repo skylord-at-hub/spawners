@@ -167,6 +167,11 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 		groups = {cracky=1,level=2},
 		stack_max = 1,
 		on_construct = function(pos)
+			local meta = minetest.get_meta(pos)
+			meta:set_string("status", "default")
+			meta:set_string("mod_prefix", mod_prefix)
+			meta:set_string("sound_custom", sound_custom)
+			meta:set_string("mob_name", mob_name)
 			local random_pos, waiting = spawners_mobs.check_node_status(pos, mob_name, night_only)
 
 			spawners_mobs.meta_set_str("infotext", mod_prefix.." "..mob_name.." spawner (inactive)", pos)
@@ -182,6 +187,10 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 				-- print("no position and not waiting")
 			end
 		end,
+		after_place_node = function(pos, placer, itemstack, pointed_thing)
+			local meta = minetest.get_meta(pos)
+			meta:set_string("owner", placer:get_player_name())
+		end
 	})
 
 	-- 
@@ -240,8 +249,10 @@ function spawners_mobs.create(mob_name, mod_prefix, size, offset, mesh, texture,
 			"spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner_waiting"
 		},
 		neighbors = {"air"},
-		interval = 10,
-		chance = 10,
+		interval = 1,
+		chance = 1,
+		-- interval = 10,
+		-- chance = 10,
 		catch_up = false,
 		action = function(pos, node, active_object_count, active_object_count_wider)
 

@@ -81,10 +81,10 @@ mobs:register_mob("spawners_mobs:mummy", mummy_def)
 
 mobs:spawn({
 	name = "spawners_mobs:mummy",
-	nodes = {"default:desert_sand", "default:desert_stone", "default:sand", "default:sandstone", "default:silver_sand", "spawners_mobs:deco_stone_eye", "spawners_mobs:deco_stone_men", "spawners_mobs:deco_stone_sun"},
+	nodes = {"default:desert_sand", "default:sand"},
 	min_light = 0,
 	max_light = 20,
-	chance = 2000,
+	chance = 7000,
 	active_object_count = 2,
 	day_toggle = false,
 })
