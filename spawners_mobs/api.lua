@@ -203,7 +203,7 @@ function spawners_mobs.on_timer(pos, elapsed)
 
 	if not mob_table then return end
 
-	local posmin = { x = pos.x - 4, y = pos.y - 1, z = pos.z - 4 }
+	local posmin = { x = pos.x - 3, y = pos.y - 1, z = pos.z - 3 }
 	local posmax = { x = pos.x + 4, y = pos.y + 1, z = pos.z + 4 }
 	local player_near = false
 	local entities_near = 0
