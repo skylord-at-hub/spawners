@@ -1,30 +1,49 @@
-# Spawners #
-This MOD for Minetest let the player craft mob and ore Spawner blocks. Mobs/Ores are spawning randomly in a short intervals.
-
-From version 0.6 Pyramids can be spawned in desert and environmental spwaners are added. Environmental spawners are used for spawning inside of temples and dungeons (mapgen v6 default minetest game). - Thanks to BlockMen. These kind of spawners are very rarely dropping real mob spawners, in any other case they don't drop anything.
+# Spawners Modpack #
+This MOD for Minetest adds multiple spawner blocks. There ara no ABM's used and this modpack is developed with focus on the best multiplayer online server performace.
 
 Easy to implement new mob mods just look in to config.lua.
 New features can be enabled/disabled in settings.txt file.
 
-Currently it works with [Pyramids Mummy](https://forum.minetest.net/viewtopic.php?id=7063), [Mobs Redo](https://forum.minetest.net/viewtopic.php?f=11&t=9917) and [Creatures](https://forum.minetest.net/viewtopic.php?f=11&t=8638).
+Currently it works with [Mobs Redo](https://forum.minetest.net/viewtopic.php?f=11&t=9917) and [Creatures](https://forum.minetest.net/viewtopic.php?f=11&t=8638) but other mob mods can be easily added to config.lua
 
 ![spawners_promo.jpg](https://bitbucket.org/repo/y69Me7/images/3793257566-spawners_promo.jpg)
 ![spawner_waiting_medium.gif](https://bitbucket.org/repo/y69Me7/images/246761582-spawner_waiting_medium.gif) ![spawner_animated_medium.gif](https://bitbucket.org/repo/y69Me7/images/1359872529-spawner_animated_medium.gif)
 
-## YouTube video ##
-[Minetest - spawners MOD v0.1](https://youtu.be/TlaMVl0ZDtw)
+## Spawners Ores ##
 
-## Mod dependencies ##
+![Spawners Ores](spawners_ores/screenshot.png)
+
+This MOD for Minetest let the player craft ore Spawners. Ores are spawning randomly in a short intervals and you get 10% more ores from inputed ingots. Ores are spawning only in default:stone so make sure there is one around. This MOD is giving the option of creating lumps back from ingots.
+
+### Mod dependencies ###
 * default
-* fake_fire?
+
+## Spawners Mobs ##
+
+This MOD for Minetest let the player craft Mob Spawners. Mobs are spawning randomly in a short intervals. This MOD is giving the option of creating mob farms and grinders.
+
+![Spawners Mobs](spawners_mobs/screenshot.png)
+
+### Mod dependencies ###
+* default
+* fire?
 * xpanes?
 * mobs?
 * creatures?
-* pyramids?
-
-mobs redo, creatures are supported mods
+* bones?
 
 fake_fire, xpanes for recipes
+
+bones are for mob drops only
+
+## Spawners Environmental ##
+
+This MOD for Minetest adds environmental spawners to the map. When enabled, the spawners will be added to newly generated Dungeons (Uruk Hai) and Temples (Spider). They are dropping a real mob spawner by change (very small chance).
+
+![Spawners Mobs](spawners_env/screenshot.png)
+
+### Mod dependencies ###
+* default
 
 ## Links ##
 [[Mod]Minetest Forum Page](https://forum.minetest.net/viewtopic.php?f=11&t=13857)
@@ -36,9 +55,15 @@ fake_fire, xpanes for recipes
 [G+ Community](https://plus.google.com/communities/105201070842404099845)
 
 ## License ##
-WTFPL
+![WTFPL](http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-1.png)
 
 ## Changelog ##
+
+### 1.0 ###
+* refactored Spawners Ores - best multiplayer performance usable on online servers
+* refactored Spawners Mobs - best multiplayer performance usable on online servers
+* refactored Spawners Env - best multiplayer performance usable on online servers
+
 ### 0.6 ###
 * inherited BlockMen Pyramid mod, so now Spawners can spawn Pyramids in desert (mapgen v6)
 * spawning Pyramids work independently from BlockMen Pyramids mod (can be removed) but works also besides BlockMen Pyramid mod 

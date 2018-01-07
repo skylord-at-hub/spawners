@@ -1,6 +1,10 @@
 -- main tables
 spawners_mobs = {}
 spawners_mobs.mob_tables = {}
+local max_obj_per_mapblock = tonumber(minetest.settings:get("max_objects_per_block"))
+local enable_particles = minetest.settings:get_bool("enable_particles")
+local tick_max = 20
+local tick_short_max = 20
 
 -- check if mods exists and build tables
 for k, mob_mod in ipairs(ENABLED_MODS) do
@@ -48,23 +52,12 @@ for k, mob_mod in ipairs(ENABLED_MODS) do
 	end
 end
 
-function spawners_mobs.meta_get_int(key, pos)
-	local meta = minetest.get_meta(pos)
-	return meta:get_int(key)
-end
-
-function spawners_mobs.meta_set_int(key, value, pos)
-	local meta = minetest.get_meta(pos)
-	meta:set_int(key, value)
-end
-
-function spawners_mobs.meta_set_str(key, value, pos)
-	local meta = minetest.get_meta(pos)
-	meta:set_string(key, value)
-end
-
--- particles
+-- 
+-- Particles
+-- 
 function spawners_mobs.cloud_booom(pos)
+	if not enable_particles then return end
+
 	minetest.add_particlespawner({
 		amount = 5,
 		time = 2,
@@ -83,6 +76,8 @@ function spawners_mobs.cloud_booom(pos)
 end
 
 function spawners_mobs.add_flame_effects(pos)
+	if not enable_particles then return end
+
 	local id = minetest.add_particlespawner({
 		amount = 6,
 		time = 0,
@@ -103,6 +98,8 @@ function spawners_mobs.add_flame_effects(pos)
 end
 
 function spawners_mobs.add_smoke_effects(pos)
+	if not enable_particles then return end
+
 	local id = minetest.add_particlespawner({
 		amount = 1,
 		time = 0,
@@ -122,9 +119,47 @@ function spawners_mobs.add_smoke_effects(pos)
 	return id
 end
 
+-- 
+-- Timers
+-- 
+-- how often node timers for spawners will tick, +/- some random value
+function spawners_mobs.tick(pos)
+	local meta = minetest.get_meta(pos)
+	local tick_counter = meta:get_int("tick")
+	tick_counter = tick_counter + 1
+	meta:set_int("tick", tick_counter)
+	-- print("tick_counter: "..tick_counter)
+	
+	-- rusty spawner
+	if tick_counter >= tick_max then
+		spawners_mobs.set_status(pos, "rusty")
+		return
+	end
+	minetest.get_node_timer(pos):start(math.random(40, 80))
+end
+
+-- how often a spawn failure tick is retried (e.g. too dark)
+function spawners_mobs.tick_short(pos)
+	local meta = minetest.get_meta(pos)
+	local tick_short_counter = meta:get_int("tick_short")
+	
+	if tick_short_counter >= tick_short_max then
+		spawners_mobs.tick(pos)
+		return
+	else
+		tick_short_counter = tick_short_counter + 1
+		meta:set_int("tick_short", tick_short_counter)
+		-- print("tick_short_counter: "..tick_short_counter)
+	end
+	minetest.get_node_timer(pos):start(math.random(20, 40))
+end
+
+-- 
+-- Core Functions
+-- 
 -- start spawning mobs
-function spawners_mobs.start_spawning(random_pos, mob_name, mod_prefix, sound_custom)
-	if not (random_pos or how_many or mob_name) then return end
+function spawners_mobs.start_spawning(spawn_area_random_pos, mob_name, mod_prefix, sound_custom)
+	if not (spawn_area_random_pos or how_many or mob_name) then return end
 
 	local sound_name = mod_prefix.."_"..mob_name
 	-- use custom sounds
@@ -132,34 +167,27 @@ function spawners_mobs.start_spawning(random_pos, mob_name, mod_prefix, sound_cu
 		sound_name = sound_custom
 	end
 
-	-- remove 'spawners_mobs:' from the string
-	print("#2 mod_prefix: "..mod_prefix)
-	print("#2 mob_name: "..mob_name)
-	-- local mob_name = string.sub(mob_name,15)
-
 	-- use random colors for sheeps
 	if mob_name == "sheep_white" then
 		local sheep_colors = {"black", "blue", "brown", "cyan", "dark_green", "dark_grey", "green", "grey", "magenta", "orange", "pink", "red", "violet", "white", "yellow"}
 		mob_name = "sheep_"..sheep_colors[math.random(#sheep_colors)]
 	end
 
-	local how_many = math.random(2)
-	print("how_many: ", how_many)
-
-	for i = 1, how_many do
+	for i = 1, #spawn_area_random_pos do
 		-- spawn a bit more above the block - prevent spawning inside the block
-		random_pos.y = random_pos.y + 0.5
+		spawn_area_random_pos[i].y = spawn_area_random_pos[i].y + 0.5
 		
-		spawners_mobs.cloud_booom(random_pos)
+		spawners_mobs.cloud_booom(spawn_area_random_pos[i])
 
 		minetest.after(1, function()
-			local obj = minetest.add_entity(random_pos, mod_prefix..":"..mob_name)
+			-- minetest.set_node(spawn_area_random_pos[i], {name = "default:apple"})
+			local obj = minetest.add_entity(spawn_area_random_pos[i], mod_prefix..":"..mob_name)
 
 			if obj then
 				if sound_name then
 					minetest.sound_play(sound_name, {
-						pos = random_pos,
-						max_hear_distance = 10,
+						pos = spawn_area_random_pos[i],
+						max_hear_distance = 8,
 						gain = 0.3
 					})
 				end
@@ -168,53 +196,12 @@ function spawners_mobs.start_spawning(random_pos, mob_name, mod_prefix, sound_cu
 	end
 end
 
-function spawners_mobs.check_around_radius(pos, mob)
-	local player_near = false
-	local radius = 21
-	local mobs = {}
+function spawners_mobs.on_timer(pos, elapsed)
+	local meta = minetest.get_meta(pos)
+	local idx = meta:get_int("idx") or nil
+	local mob_table = spawners_mobs.mob_tables[idx] or false
 
-	for _,obj in ipairs(minetest.get_objects_inside_radius(pos, radius)) do
-
-		local luae = obj:get_luaentity()
-
-		-- check for number of mobs near by
-		if luae ~= nil and luae.name ~= nil and mob ~= nil then
-			local mob_name = string.split(luae.name, ":")
-			mob_name = mob_name[2]
-
-			if mob_name == mob then
-				table.insert(mobs, mob)
-			end
-
-			if #mobs >= 8 then
-				player_near = false
-				return player_near
-			end
-		end
-
-		-- check for player near by
-		if obj:is_player() then
-			player_near = true
-		end
-	end
-
-	return player_near
-end
-
-local old_is_protected = minetest.is_protected
-function minetest.is_protected(pos, name)
-	-- is area protected against name?
-	if not protector.can_dig(protector.radius, pos, name, false, 1) then
-		return true
-	end
-
-	-- otherwise can dig or place
-	return old_is_protected(pos, name)
-end
-
-function spawners_mobs.check_node_status(pos, mob, night_only)
-
-	-- re-factor
+	if not mob_table then return end
 
 	local posmin = { x = pos.x - 4, y = pos.y - 1, z = pos.z - 4 }
 	local posmax = { x = pos.x + 4, y = pos.y + 1, z = pos.z + 4 }
@@ -222,57 +209,97 @@ function spawners_mobs.check_node_status(pos, mob, night_only)
 	local entities_near = 0
 	local entities_max = 6
 	local node_light_min = 13
-	local meta = minetest.get_meta(pos)
+
 	local owner = meta:get_string("owner") or ""
-	local mod_prefix = meta:get_string("mod_prefix") or false
-	local mob_name = meta:get_string("mob_name") or false
-	local sound_custom = meta:get_string("sound_custom") or ""
-
-	print("#1 mod_prefix: "..mod_prefix)
-	print("#1 mob_name: "..mob_name)
-
-	if not (mod_prefix or mob_name) then return end
+	local mod_prefix = mob_table.mod_prefix
+	local mob_name = mob_table.name
+	local sound_custom = mob_table.sound_custom
+	local night_only = mob_table.night_only
+	local max_objects = max_obj_per_mapblock / 4
 
 	-- check spawner light
 	local node_light = minetest.get_node_light(pos)
 
-	if (not node_light or node_light < node_light_min) and night_only then
-		-- too dark - spawn only hostile mobs
-		print("too dark - spawn only hostile mobs")
-	elseif node_light >= node_light_min and not night_only then
-		-- enough light - spawn only friendly mobs
-		print("enough light - spawn only friendly mobs")
-	else
-		-- too dark for friendly mob to spawn or too light for hostile mob to spawn
-		print("too dark for friendly mob to spawn or too light for hostile mob to spawn")
-		-- tick short
+	-- dark
+	if (not node_light or node_light < node_light_min) and not night_only then
+		-- print("Too dark for mob ( "..mob_name.." ) to spawn. Waiting for day...")
+		spawners_mobs.set_status(pos, "waiting")
+
+		-- set infotext
+		meta:set_string("infotext", mob_name.." spawner\nowner: "..owner.."\nToo dark for mob to spawn. Waiting for day...")
+		spawners_mobs.tick_short(pos)
+		return
+
+	-- light
+	elseif node_light >= node_light_min and night_only then
+		-- print("Too much light for mob ( "..mob_name.." ) to spawn. Waiting for night...")
+		spawners_mobs.set_status(pos, "waiting")
+
+		-- set infotext
+		meta:set_string("infotext", mob_name.." spawner\nowner: "..owner.."\nToo much light for mob to spawn. Waiting for night...")
+		spawners_mobs.tick_short(pos)
 		return
 	end
 
 	-- positions where mobs can spawn
 	local spawn_area_pos = minetest.find_nodes_in_area(posmin, posmax, "air")
-	-- get random spawn position from spawn area
-	local random_idx = math.random(#spawn_area_pos)
-	local random_pos = spawn_area_pos[random_idx]
-	local random_pos_above = minetest.get_node({ x = random_pos.x, y = random_pos.y + 1, z = random_pos.z }).name
-	
+
 	-- check if there is enough place to spawn mob
-	if random_pos_above ~= "air" then
-		-- tick short
-		print("no random position found")
+	if #spawn_area_pos < 1 then
+		spawners_mobs.set_status(pos, "waiting")
+
+		-- set infotext
+		meta:set_string("infotext", mob_name.." spawner\nowner: "..owner.."\nNot enough place to spawn mob. Find more space!")
+		spawners_mobs.tick(pos)
 		return
 	end
 
-	-- don't do anything and try again later when random position is protected
-	if minetest.is_protected(random_pos, owner) then
-		print("random pos is protected")
-		minetest.record_protection_violation(random_pos, owner)
-		-- tick short
+	-- spawn 2 mobs on 2 different positions by chance
+	local how_many = math.random(2)
+	local spawn_area_random_pos = {}
+
+	-- get random spawn position from spawn area
+	for i = 1, how_many do
+		while #spawn_area_random_pos < how_many and #spawn_area_pos > 0 do
+
+			local random_pos = spawn_area_pos[math.random(#spawn_area_pos)]
+			local random_pos_above = minetest.get_node({ x = random_pos.x, y = random_pos.y + 1, z = random_pos.z }).name
+			
+			if random_pos_above == "air" and not minetest.is_protected(random_pos, owner) then
+				table.insert(spawn_area_random_pos, random_pos)
+				-- print("spawn_area_random_pos: "..#spawn_area_random_pos)
+			else
+				table.remove(spawn_area_pos, i)
+				-- print("spawn_area_pos: "..#spawn_area_pos)
+			end
+
+		end
+	end
+
+	-- print(dump(spawn_area_random_pos))
+	
+	-- check if there is still enough place to spawn mob
+	if #spawn_area_random_pos < 1 then
+		spawners_mobs.set_status(pos, "waiting")
+
+		-- set infotext
+		meta:set_string("infotext", mob_name.." spawner\nowner: "..owner.."\nNot enough place to spawn mob. Searching for new location...")
+		spawners_mobs.tick_short(pos)
 		return
 	end
 
 	-- area where player and entity count will be detected
 	local activation_area = minetest.get_objects_inside_radius(pos, 16)
+
+	-- prevent object clutter on the map
+	if #activation_area > max_objects then
+		spawners_mobs.set_status(pos, "waiting")
+
+		-- set infotext
+		meta:set_string("infotext", mob_name.." spawner\nowner: "..owner.."\nToo many objects in the area ("..#activation_area.."/"..max_objects.."), clean-up dropped objects first!")
+		spawners_mobs.tick_short(pos)
+		return
+	end
 
 	for k, object in ipairs(activation_area) do
 		-- find player inside activation area
@@ -288,11 +315,11 @@ function spawners_mobs.check_node_status(pos, mob, night_only)
 			local tmp_mob_name = string.split(object:get_luaentity().name, ":")[2]
 
 			-- sheeps have colors in names
-			if string.find(tmp_mob_name, "sheep") and string.find(mob, "sheep") then
+			if string.find(tmp_mob_name, "sheep") and string.find(mob_name, "sheep") and not string.find(tmp_mob_name, "dummy") then
 				-- print("found entity: "..tmp_mob_name)
 				entities_near = entities_near + 1
 			
-			elseif tmp_mob_name == mob then
+			elseif tmp_mob_name == mob_name then
 				-- print("found entity: "..tmp_mob_name)
 				entities_near = entities_near + 1
 			end
@@ -307,102 +334,128 @@ function spawners_mobs.check_node_status(pos, mob, night_only)
 
 	-- don't do anything and try again later when player not near or max entities reached
 	if entities_near >= entities_max or not player_near then
-		-- tick short
-		print("max entities reached "..entities_max.." or player not near")
+		spawners_mobs.set_status(pos, "waiting")
+		
+		-- sheeps have color in the name
+		local name = mob_name
+		if string.find(mob_name, "sheep") then
+			name = "sheep"
+		end
+
+		meta:set_string("infotext", mob_name.." spawner\nowner: "..owner.."\nmax mobs reached: "..entities_near.."/"..entities_max) -- or player not near
+		spawners_mobs.tick_short(pos)
+		return
+	end
+	
+	-- start spawning
+	spawners_mobs.start_spawning(spawn_area_random_pos, mob_name, mod_prefix, sound_custom)
+
+	spawners_mobs.set_status(pos, "active")
+	meta:set_string("infotext", mob_name.." spawner\nowner: "..owner.."\nspawner is active reached: "..entities_near.."/"..entities_max)
+
+	meta:set_int("tick", 0)
+	meta:set_int("tick_short", 0)
+
+	spawners_mobs.tick(pos)
+end
+
+--
+-- Status Manager
+--
+function spawners_mobs.set_status(pos, set_status)
+	local meta = minetest.get_meta(pos)
+	local idx = meta:get_int("idx")
+	local mob_table = spawners_mobs.mob_tables[idx] or false
+
+	if not mob_table then return end
+	
+	local mod_prefix = mob_table.mod_prefix
+	local mob_name = mob_table.name
+	local offset = mob_table.dummy_offset
+
+	-- get meta
+	local owner = meta:get_string("owner")
+	local meta_status = meta:get_string("status")
+	local id_flame = meta:get_int("id_flame")
+	local id_smoke = meta:get_int("id_smoke")
+
+	--
+	-- active
+	--
+	if set_status == "active" then
+		-- remove particles and add them again - keeps particles after server restart
+		-- delete particles
+		if id_flame and id_smoke and id_flame ~= nil and id_smoke ~= nil then
+			minetest.delete_particlespawner(id_flame)
+			minetest.delete_particlespawner(id_smoke)
+		end
+
+		-- add particles
+		id_flame = spawners_mobs.add_flame_effects(pos)
+		id_smoke = spawners_mobs.add_smoke_effects(pos)
+		meta:set_int("id_flame", id_flame)
+		meta:set_int("id_smoke", id_smoke)
+		
+		if meta_status ~= set_status then
+			-- add dummy entity
+			minetest.add_entity({ x = pos.x, y = pos.y + offset, z = pos.z },"spawners_mobs:dummy_"..mod_prefix.."_"..mob_name)
+
+			meta:set_string("status", "active")
+
+			minetest.swap_node(pos, {name="spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner"})
+		end
+
+	--
+	-- waiting
+	--
+	elseif set_status == "waiting" and meta_status ~= set_status then
+		-- delete particles
+		if id_flame and id_smoke and id_flame ~= nil and id_smoke ~= nil then
+			minetest.delete_particlespawner(id_flame)
+			minetest.delete_particlespawner(id_smoke)
+		end
+
+		-- remove dummy
+		local objs = minetest.get_objects_inside_radius(pos, 0.5)
+		if objs then
+			for _, obj in ipairs(objs) do
+				if obj and obj:get_luaentity() and obj:get_luaentity().name == "spawners_mobs:dummy_"..mod_prefix.."_"..mob_name then
+					obj:remove()
+				end
+			end
+		end
+
+		meta:set_string("status", "waiting")
+
+		minetest.swap_node(pos, {name="spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner_waiting"})
+
+	--
+	-- rusty
+	--
+	elseif set_status == "rusty" and meta_status ~= set_status then
+		-- delete particles
+		if id_flame and id_smoke and id_flame ~= nil and id_smoke ~= nil then
+			minetest.delete_particlespawner(id_flame)
+			minetest.delete_particlespawner(id_smoke)
+		end
+
+		-- remove dummy
+		local objs = minetest.get_objects_inside_radius(pos, 0.5)
+		if objs then
+			for _, obj in ipairs(objs) do
+				if obj and obj:get_luaentity() and obj:get_luaentity().name == "spawners_mobs:dummy_"..mod_prefix.."_"..mob_name then
+					obj:remove()
+				end
+			end
+		end
+
+		meta:set_string("status", "rusty")
+
+		minetest.swap_node(pos, {name="spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner_rusty"})
+
+		-- set infotext
+		meta:set_string("infotext", mob_name.." spawner\nowner: "..owner.."\nSpawner was searching for too long and got rusted! Dig up the spawner and place it again.")
 		return
 	end
 
-	-- start spawning
-	-- minetest.set_node(random_pos, { name = "default:apple" })
-	spawners_mobs.start_spawning(random_pos, mob_name, mod_prefix, sound_custom)
-
-	-- /re-factor
-
-	-- if player_near then
-	-- 	local random_pos = false
-	-- 	local min_node_light = 10
-	-- 	local tod = minetest.get_timeofday() * 24000
-	-- 	local node_light = minetest.get_node_light(pos)
-
-	-- 	if not node_light then
-	-- 		return false
-	-- 	end
-
-	-- 	local spawn_positions = {}
-	-- 	local right = minetest.get_node_or_nil({x=pos.x+1, y=pos.y, z=pos.z})
-	-- 	local front = minetest.get_node_or_nil({x=pos.x, y=pos.y, z=pos.z+1})
-	-- 	local left = minetest.get_node_or_nil({x=pos.x-1, y=pos.y, z=pos.z})
-	-- 	local back = minetest.get_node_or_nil({x=pos.x, y=pos.y, z=pos.z-1})
-	-- 	local top = minetest.get_node_or_nil({x=pos.x, y=pos.y+1, z=pos.z})
-	-- 	local bottom = minetest.get_node_or_nil({x=pos.x, y=pos.y-1, z=pos.z})
-
-	-- 	-- make sure that at least one side of the spawner is open
-	-- 	if right ~= nil and right.name == "air" then
-	-- 		table.insert(spawn_positions, {x=pos.x+1.5, y=pos.y, z=pos.z})
-	-- 	end
-	-- 	if front ~= nil and front.name == "air" then
-	-- 		table.insert(spawn_positions, {x=pos.x, y=pos.y, z=pos.z+1.5})
-	-- 	end
-	-- 	if left ~= nil and left.name == "air" then
-	-- 		table.insert(spawn_positions, {x=pos.x-1.5, y=pos.y, z=pos.z})
-	-- 	end
-	-- 	if back ~= nil and back.name == "air" then
-	-- 		table.insert(spawn_positions, {x=pos.x, y=pos.y, z=pos.z-1.5})
-	-- 	end
-	-- 	if top ~= nil and top.name == "air" then
-	-- 		table.insert(spawn_positions, {x=pos.x, y=pos.y+1.5, z=pos.z})
-	-- 	end
-	-- 	if bottom ~= nil and bottom.name == "air" then
-	-- 		table.insert(spawn_positions, {x=pos.x, y=pos.y-1.5, z=pos.z})
-	-- 	end
-
-	-- 	if #spawn_positions < 1 then
-	-- 		-- spawner is closed from all sides
-	-- 		return false
-	-- 	else
-	-- 		-- pick random from the open sides
-	-- 		local pick_random
-
-	-- 		if #spawn_positions == 1 then
-	-- 			pick_random = #spawn_positions
-	-- 		else
-	-- 			pick_random = math.random(#spawn_positions)
-	-- 		end
-			
-	-- 		for k, v in pairs (spawn_positions) do
-	-- 			if k == pick_random then
-	-- 				random_pos = v
-	-- 			end
-	-- 		end
-	-- 	end
-
-	-- 	-- check the node above and below the found air node
-	-- 	local node_above = minetest.get_node({x=random_pos.x, y=random_pos.y+1, z=random_pos.z}).name
-	-- 	local node_below = minetest.get_node({x=random_pos.x, y=random_pos.y-1, z=random_pos.z}).name
-		
-	-- 	if not (node_above == "air" or node_below == "air") then
-	-- 		return false
-	-- 	end
-
-	-- 	if night_only ~= "disable" then
-	-- 		-- spawn only at day
-	-- 		if not night_only and node_light < min_node_light then
-	-- 			return false, true
-	-- 		end
-
-	-- 		-- spawn only at night
-	-- 		if night_only then
-	-- 			if not (19359 > tod and tod > 5200) or node_light < min_node_light then
-	-- 				return random_pos
-	-- 			else
-	-- 				return false, true
-	-- 			end
-	-- 		end
-	-- 	end
-	-- 	-- random_pos, waiting
-	-- 	return random_pos, false
-	-- else
-	-- 	-- random_pos, waiting
-	-- 	return false, true
-	-- end
 end

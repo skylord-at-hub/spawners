@@ -1,7 +1,7 @@
 MOD_NAME = minetest.get_current_modname()
 
 -- Spawners configurations
-dofile(minetest.get_modpath("spawners_mobs").."/config.lua")
+dofile(minetest.get_modpath(MOD_NAME).."/config.lua")
 
 -- API
 dofile(minetest.get_modpath(MOD_NAME).."/api.lua")
