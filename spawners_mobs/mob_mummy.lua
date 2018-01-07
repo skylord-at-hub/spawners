@@ -3,7 +3,7 @@
 local mummy_def = {
 	type = "monster",
 	passive = false,
-	pathfinding = true,
+	pathfinding = false,
 	attack_type = "dogshoot",
 	owner_loyal = true,
 	shoot_interval = 2,
