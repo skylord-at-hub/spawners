@@ -6,9 +6,6 @@ New features can be enabled/disabled in settings.txt file.
 
 Currently it works with [Mobs Redo](https://forum.minetest.net/viewtopic.php?f=11&t=9917) and [Creatures](https://forum.minetest.net/viewtopic.php?f=11&t=8638) but other mob mods can be easily added to config.lua
 
-![spawners_promo.jpg](https://bitbucket.org/repo/y69Me7/images/3793257566-spawners_promo.jpg)
-![spawner_waiting_medium.gif](https://bitbucket.org/repo/y69Me7/images/246761582-spawner_waiting_medium.gif) ![spawner_animated_medium.gif](https://bitbucket.org/repo/y69Me7/images/1359872529-spawner_animated_medium.gif)
-
 ## Spawners Ores ##
 
 ![Spawners Ores](spawners_ores/screenshot.png)
