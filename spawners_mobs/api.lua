@@ -188,7 +188,7 @@ function spawners_mobs.start_spawning(spawn_area_random_pos, mob_name, mod_prefi
 					minetest.sound_play(sound_name, {
 						pos = spawn_area_random_pos[i],
 						max_hear_distance = 8,
-						gain = 0.3
+						gain = 0.5
 					})
 				end
 			end
@@ -385,7 +385,11 @@ function spawners_mobs.set_status(pos, set_status)
 	if set_status == "active" then
 		-- remove particles and add them again - keeps particles after server restart
 		-- delete particles
-		if id_flame and id_smoke and id_flame ~= nil and id_smoke ~= nil then
+
+		-- print("id_flame: "..id_flame)
+		-- print("id_smoke: "..id_smoke)
+
+		if id_flame and id_smoke then
 			minetest.delete_particlespawner(id_flame)
 			minetest.delete_particlespawner(id_smoke)
 		end
@@ -410,7 +414,7 @@ function spawners_mobs.set_status(pos, set_status)
 	--
 	elseif set_status == "waiting" and meta_status ~= set_status then
 		-- delete particles
-		if id_flame and id_smoke and id_flame ~= nil and id_smoke ~= nil then
+		if id_flame and id_smoke then
 			minetest.delete_particlespawner(id_flame)
 			minetest.delete_particlespawner(id_smoke)
 		end
@@ -434,7 +438,7 @@ function spawners_mobs.set_status(pos, set_status)
 	--
 	elseif set_status == "rusty" and meta_status ~= set_status then
 		-- delete particles
-		if id_flame and id_smoke and id_flame ~= nil and id_smoke ~= nil then
+		if id_flame and id_smoke then
 			minetest.delete_particlespawner(id_flame)
 			minetest.delete_particlespawner(id_smoke)
 		end
