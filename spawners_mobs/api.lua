@@ -320,14 +320,18 @@ function spawners_mobs.on_timer(pos, elapsed)
 			 object:get_luaentity().name ~= "__builtin:item" then
 			local tmp_mob_name = string.split(object:get_luaentity().name, ":")[2]
 
-			-- sheeps have colors in names
-			if string.find(tmp_mob_name, "sheep") and string.find(mob_name, "sheep") and not string.find(tmp_mob_name, "dummy") then
-				-- print("found entity: "..tmp_mob_name)
-				entities_near = entities_near + 1
-			
-			elseif tmp_mob_name == mob_name then
-				-- print("found entity: "..tmp_mob_name)
-				entities_near = entities_near + 1
+			if tmp_mob_name ~= nil then
+				-- sheeps have colors in names
+				if string.find(tmp_mob_name, "sheep") and string.find(mob_name, "sheep") and not string.find(tmp_mob_name, "dummy") then
+					-- print("found entity: "..tmp_mob_name)
+					entities_near = entities_near + 1
+				
+				elseif tmp_mob_name == mob_name then
+					-- print("found entity: "..tmp_mob_name)
+					entities_near = entities_near + 1
+				end
+			else
+				minetest.log("warning", "[spawners_mobs] tmp_mob_name was nil, luaentity name was: "..object:get_luaentity().name)
 			end
 		end
 
