@@ -127,12 +127,15 @@ function spawners_mobs.tick(pos)
 	local meta = minetest.get_meta(pos)
 	local tick_counter = meta:get_int("tick")
 	local owner = meta:get_string("owner")
-	tick_counter = tick_counter + 1
-	-- print("tick_counter: "..tick_counter)
+	local privs = minetest.get_player_privs(owner);
 	
-	if owner ~= "ADMIN" then
+	-- not for admin
+	if not privs.privs then
+		tick_counter = tick_counter + 1
 		meta:set_int("tick", tick_counter)
 	end
+
+	-- print("tick_counter: "..tick_counter)
 
 	-- rusty spawner
 	if tick_counter >= tick_max then
@@ -395,10 +398,6 @@ function spawners_mobs.set_status(pos, set_status)
 	if set_status == "active" then
 		-- remove particles and add them again - keeps particles after server restart
 		-- delete particles
-
-		-- print("id_flame: "..id_flame)
-		-- print("id_smoke: "..id_smoke)
-
 		if id_flame and id_smoke then
 			minetest.delete_particlespawner(id_flame)
 			minetest.delete_particlespawner(id_smoke)

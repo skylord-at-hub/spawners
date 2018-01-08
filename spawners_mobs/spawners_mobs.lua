@@ -126,7 +126,7 @@ function spawners_mobs.create(mob_table, idx)
 	minetest.register_lbm({
 		name = "spawners_mobs:start_nodetimer_"..mod_prefix.."_"..mob_name.."_spawner",
 		nodenames = "spawners_mobs:"..mod_prefix.."_"..mob_name.."_spawner",
-		action = function(pos, node)
+		action = function(pos)
 			spawners_mobs.tick_short(pos)
 		end,
 	})
