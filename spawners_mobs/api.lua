@@ -140,7 +140,7 @@ function spawners_mobs.tick(pos)
 		return
 	end
 	minetest.get_node_timer(pos):start(math.random(166, 286))
-	-- minetest.get_node_timer(pos):start(math.random(40, 80))
+	-- minetest.get_node_timer(pos):start(math.random(2, 3))
 end
 
 -- how often a spawn failure tick is retried (e.g. too dark)
@@ -157,7 +157,7 @@ function spawners_mobs.tick_short(pos)
 		-- print("tick_short_counter: "..tick_short_counter)
 	end
 	minetest.get_node_timer(pos):start(math.random(40, 80))
-	-- minetest.get_node_timer(pos):start(math.random(20, 40))
+	-- minetest.get_node_timer(pos):start(math.random(2, 3))
 end
 
 -- 
@@ -331,7 +331,7 @@ function spawners_mobs.on_timer(pos, elapsed)
 					entities_near = entities_near + 1
 				end
 			else
-				minetest.log("warning", "[spawners_mobs] tmp_mob_name was nil, luaentity name was: "..object:get_luaentity().name)
+				minetest.log("warning", "[spawners_mobs] tmp_mob_name was nil, luaentity name was: "..object:get_luaentity().name.." at: "..minetest.pos_to_string(object:get_pos()))
 			end
 		end
 
