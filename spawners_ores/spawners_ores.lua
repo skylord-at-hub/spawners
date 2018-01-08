@@ -246,6 +246,12 @@ function spawners_ores.create(def)
 			minetest.remove_node(pos)
 			return drops
 		end,
+
+		after_place_node = function(pos, placer, itemstack, pointed_thing)
+			-- TODO: show owner in infotext/formspec
+			local meta = minetest.get_meta(pos)
+			meta:set_string("owner", placer:get_player_name())
+		end,
 	
 		on_metadata_inventory_put = on_metadata_inventory_put,
 		on_metadata_inventory_take = on_metadata_inventory_take,
