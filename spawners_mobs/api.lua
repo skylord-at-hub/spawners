@@ -126,16 +126,21 @@ end
 function spawners_mobs.tick(pos)
 	local meta = minetest.get_meta(pos)
 	local tick_counter = meta:get_int("tick")
+	local owner = meta:get_string("owner")
 	tick_counter = tick_counter + 1
-	meta:set_int("tick", tick_counter)
 	-- print("tick_counter: "..tick_counter)
 	
+	if owner ~= "ADMIN" then
+		meta:set_int("tick", tick_counter)
+	end
+
 	-- rusty spawner
 	if tick_counter >= tick_max then
 		spawners_mobs.set_status(pos, "rusty")
 		return
 	end
-	minetest.get_node_timer(pos):start(math.random(40, 80))
+	minetest.get_node_timer(pos):start(math.random(166, 286))
+	-- minetest.get_node_timer(pos):start(math.random(40, 80))
 end
 
 -- how often a spawn failure tick is retried (e.g. too dark)
@@ -151,7 +156,8 @@ function spawners_mobs.tick_short(pos)
 		meta:set_int("tick_short", tick_short_counter)
 		-- print("tick_short_counter: "..tick_short_counter)
 	end
-	minetest.get_node_timer(pos):start(math.random(20, 40))
+	minetest.get_node_timer(pos):start(math.random(40, 80))
+	-- minetest.get_node_timer(pos):start(math.random(20, 40))
 end
 
 -- 
