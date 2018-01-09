@@ -78,7 +78,7 @@ end
 function spawners_mobs.add_flame_effects(pos)
 	if not enable_particles then return end
 
-	local id = minetest.add_particlespawner({
+	return minetest.add_particlespawner({
 		amount = 6,
 		time = 0,
 		minpos = vector.subtract({x=pos.x-0.001, y=pos.y-0.001, z=pos.z-0.001}, 0.5),
@@ -93,14 +93,12 @@ function spawners_mobs.add_flame_effects(pos)
 		maxsize = 2.5,
 		texture = "spawners_mobs_flame_particle_2.png",
 	})
-
-	return id
 end
 
 function spawners_mobs.add_smoke_effects(pos)
 	if not enable_particles then return end
 
-	local id = minetest.add_particlespawner({
+	return minetest.add_particlespawner({
 		amount = 1,
 		time = 0,
 		minpos = vector.subtract({x=pos.x-0.001, y=pos.y-0.001, z=pos.z-0.001}, 0.5),
@@ -115,8 +113,6 @@ function spawners_mobs.add_smoke_effects(pos)
 		maxsize = 2,
 		texture = "spawners_mobs_smoke_particle.png^[transform"..math.random(0,3),
 	})
-
-	return id
 end
 
 -- 
@@ -135,7 +131,7 @@ function spawners_mobs.tick(pos)
 		meta:set_int("tick", tick_counter)
 	end
 
-	-- print("tick_counter: "..tick_counter)
+	-- print("tick_counter: "..tick_counter.." at "..minetest.pos_to_string(pos))
 
 	-- rusty spawner
 	if tick_counter >= tick_max then
@@ -143,7 +139,7 @@ function spawners_mobs.tick(pos)
 		return
 	end
 	minetest.get_node_timer(pos):start(math.random(166, 286))
-	-- minetest.get_node_timer(pos):start(math.random(2, 3))
+	-- minetest.get_node_timer(pos):start(math.random(20, 30))
 end
 
 -- how often a spawn failure tick is retried (e.g. too dark)
@@ -157,10 +153,10 @@ function spawners_mobs.tick_short(pos)
 	else
 		tick_short_counter = tick_short_counter + 1
 		meta:set_int("tick_short", tick_short_counter)
-		-- print("tick_short_counter: "..tick_short_counter)
+		-- print("tick_short_counter: "..tick_short_counter.." at "..minetest.pos_to_string(pos))
 	end
 	minetest.get_node_timer(pos):start(math.random(40, 80))
-	-- minetest.get_node_timer(pos):start(math.random(2, 3))
+	-- minetest.get_node_timer(pos):start(math.random(10, 20))
 end
 
 -- 
@@ -398,9 +394,13 @@ function spawners_mobs.set_status(pos, set_status)
 	if set_status == "active" then
 		-- remove particles and add them again - keeps particles after server restart
 		-- delete particles
-		if id_flame and id_smoke then
+		if id_flame ~= -1 and id_smoke ~= -1 then
+			-- print("#1 delete id_flame: "..id_flame.." at "..minetest.pos_to_string(pos))
+			-- print("#1 delete id_smoke: "..id_smoke.." at "..minetest.pos_to_string(pos))
 			minetest.delete_particlespawner(id_flame)
 			minetest.delete_particlespawner(id_smoke)
+			meta:set_int("id_flame", -1)
+			meta:set_int("id_smoke", -1)
 		end
 
 		-- add particles
@@ -408,6 +408,8 @@ function spawners_mobs.set_status(pos, set_status)
 		id_smoke = spawners_mobs.add_smoke_effects(pos)
 		meta:set_int("id_flame", id_flame)
 		meta:set_int("id_smoke", id_smoke)
+		-- print("#1 add id_flame: "..id_flame.." at "..minetest.pos_to_string(pos))
+		-- print("#1 add id_smoke: "..id_smoke.." at "..minetest.pos_to_string(pos))
 		
 		if meta_status ~= set_status then
 			-- add dummy entity
@@ -423,9 +425,13 @@ function spawners_mobs.set_status(pos, set_status)
 	--
 	elseif set_status == "waiting" and meta_status ~= set_status then
 		-- delete particles
-		if id_flame and id_smoke then
+		if id_flame ~= -1 and id_smoke ~= -1 then
+			-- print("#2 delete id_flame: "..id_flame.." at "..minetest.pos_to_string(pos))
+			-- print("#2 delete id_smoke: "..id_smoke.." at "..minetest.pos_to_string(pos))
 			minetest.delete_particlespawner(id_flame)
 			minetest.delete_particlespawner(id_smoke)
+			meta:set_int("id_flame", -1)
+			meta:set_int("id_smoke", -1)
 		end
 
 		-- remove dummy
@@ -447,9 +453,13 @@ function spawners_mobs.set_status(pos, set_status)
 	--
 	elseif set_status == "rusty" and meta_status ~= set_status then
 		-- delete particles
-		if id_flame and id_smoke then
+		if id_flame ~= -1 and id_smoke ~= -1 then
+			-- print("#3 delete id_flame: "..id_flame.." at "..minetest.pos_to_string(pos))
+			-- print("#3 delete id_smoke: "..id_smoke.." at "..minetest.pos_to_string(pos))
 			minetest.delete_particlespawner(id_flame)
 			minetest.delete_particlespawner(id_smoke)
+			meta:set_int("id_flame", -1)
+			meta:set_int("id_smoke", -1)
 		end
 
 		-- remove dummy
