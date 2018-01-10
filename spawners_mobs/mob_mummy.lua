@@ -59,7 +59,7 @@ local mummy_def = {
 		punch_start = 74,
 		punch_end = 105,
 	},
-	follow = {"spawners_mobs:deco_stone_eye","spawners_mobs:deco_stone_men","spawners_mobs:deco_stone_sun","spawners_mobs:deco_stone_bird"},
+	-- follow = {"spawners_mobs:deco_stone_eye","spawners_mobs:deco_stone_men","spawners_mobs:deco_stone_sun","spawners_mobs:deco_stone_bird"},
 	on_die = function(self, pos)
 		minetest.sound_play("spawners_mobs_mummy_death", {
 			object = self.object,
@@ -67,14 +67,14 @@ local mummy_def = {
 			max_hear_distance = 10
 		})
 	end,
-	on_rightclick = function(self, clicker)
+	-- on_rightclick = function(self, clicker)
 
-		if mobs:feed_tame(self, clicker, 8, true, true) then
-			return
-		end
+	-- 	if mobs:feed_tame(self, clicker, 8, true, true) then
+	-- 		return
+	-- 	end
 
-		mobs:capture_mob(self, clicker, 30, 50, 80, false, nil)
-	end,
+	-- 	mobs:capture_mob(self, clicker, 30, 50, 80, false, nil)
+	-- end,
 }
 
 mobs:register_mob("spawners_mobs:mummy", mummy_def)
