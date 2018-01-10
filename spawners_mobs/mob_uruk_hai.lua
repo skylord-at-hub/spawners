@@ -30,7 +30,7 @@ local uruk_hai_def = {
 	},
 	walk_velocity = 1,
 	run_velocity = 3,
-	view_range = 15,
+	view_range = 5,
 	jump = true,
 	floats = 1,
 	drops = {
@@ -44,10 +44,10 @@ local uruk_hai_def = {
 		{name = "bones:bones", chance = 5, min = 1, max = 1},
 		{name = "spawners_mobs:uruk_hai", chance = 20, min = 1, max = 1},
 	},
-	water_damage = 0,
-	lava_damage = 0,
+	water_damage = 5,
+	lava_damage = 10,
 	light_damage = 0,
-	fear_height = 4,
+	fear_height = 3,
 	animation = {
 		speed_normal = 15,
 		speed_run = 15,

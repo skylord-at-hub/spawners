@@ -5,7 +5,7 @@ local mummy_def = {
 	passive = false,
 	pathfinding = false,
 	attack_type = "dogshoot",
-	owner_loyal = true,
+	-- owner_loyal = true,
 	shoot_interval = 2,
 	dogshoot_switch = 1,
 	dogshoot_count_max = 10,
@@ -30,7 +30,7 @@ local mummy_def = {
 	},
 	walk_velocity = .75,
 	run_velocity = 1.5,
-	view_range = 15,
+	view_range = 5,
 	jump = true,
 	floats = 1,
 	drops = {
@@ -43,10 +43,10 @@ local mummy_def = {
 		{name = "default:mese_crystal", chance = 3, min = 1, max = 2},
 		{name = "spawners_mobs:mummy", chance = 25, min = 1, max = 1},
 	},
-	water_damage = 4,
-	lava_damage = 8,
+	water_damage = 5,
+	lava_damage = 10,
 	light_damage = 10,
-	fear_height = 4,
+	fear_height = 3,
 	animation = {
 		speed_normal = 15,
 		speed_run = 15,
@@ -64,7 +64,7 @@ local mummy_def = {
 		minetest.sound_play("spawners_mobs_mummy_death", {
 			object = self.object,
 			pos = pos,
-			max_hear_distance = 10
+			max_hear_distance = 8
 		})
 	end,
 	-- on_rightclick = function(self, clicker)
@@ -82,9 +82,9 @@ mobs:register_mob("spawners_mobs:mummy", mummy_def)
 mobs:spawn({
 	name = "spawners_mobs:mummy",
 	nodes = {"default:desert_sand", "default:sand"},
-	min_light = 0,
-	max_light = 20,
 	chance = 7000,
+	min_light = 0,
+	max_light = 14,
 	active_object_count = 2,
 	day_toggle = false,
 })
