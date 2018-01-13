@@ -85,7 +85,7 @@ mobs:spawn({
 	chance = 7000,
 	min_light = 0,
 	max_light = 14,
-	active_object_count = 2,
+	active_object_count = 1,
 	day_toggle = false,
 })
 
