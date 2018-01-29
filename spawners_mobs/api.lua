@@ -3,8 +3,8 @@ spawners_mobs = {}
 spawners_mobs.mob_tables = {}
 local max_obj_per_mapblock = tonumber(minetest.settings:get("max_objects_per_block"))
 local enable_particles = minetest.settings:get_bool("enable_particles")
-local tick_max = 20
-local tick_short_max = 20
+local tick_max = 40
+local tick_short_max = 40
 
 -- check if mods exists and build tables
 for k, mob_mod in ipairs(ENABLED_MODS) do
