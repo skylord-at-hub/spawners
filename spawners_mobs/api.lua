@@ -138,7 +138,7 @@ function spawners_mobs.tick(pos)
 		spawners_mobs.set_status(pos, "rusty")
 		return
 	end
-	minetest.get_node_timer(pos):start(math.random(166, 286))
+	minetest.get_node_timer(pos):start(math.random(80, 214))
 	-- minetest.get_node_timer(pos):start(math.random(20, 30))
 end
 
@@ -155,7 +155,7 @@ function spawners_mobs.tick_short(pos)
 		meta:set_int("tick_short", tick_short_counter)
 		-- print("tick_short_counter: "..tick_short_counter.." at "..minetest.pos_to_string(pos))
 	end
-	minetest.get_node_timer(pos):start(math.random(40, 80))
+	minetest.get_node_timer(pos):start(math.random(20, 60))
 	-- minetest.get_node_timer(pos):start(math.random(10, 20))
 end
 
