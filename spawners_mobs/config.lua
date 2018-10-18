@@ -51,7 +51,7 @@ MOBS_PROPS = {
 			dummy_mesh = "mobs_chicken.x",
 			dummy_texture = {"mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png", "mobs_chicken.png"},
 			night_only = false,
-			sound_custom = ""
+			sound_custom = "mobs_chicken"
 		},
 		{
 			name = "pumba",
