@@ -92,7 +92,8 @@ MOBS_PROPS = {
 			dummy_texture = {"mobs_spider.png"},
 			night_only = true,
 			sound_custom = "",
-			env = true
+			env = true,
+			sound_custom = "mobs_spider_neutral"
 		},
 		{
 			name = "stone_monster",
@@ -102,7 +103,7 @@ MOBS_PROPS = {
 			dummy_mesh = "mobs_stone_monster.b3d",
 			dummy_texture = {"mobs_stone_monster.png"},
 			night_only = true,
-			sound_custom = "mobs_stonemonster"
+			sound_custom = "mobs_stonemonster_neutral"
 		},
 		{
 			name = "oerkki",
@@ -122,7 +123,7 @@ MOBS_PROPS = {
 			dummy_mesh = "mobs_tree_monster.b3d",
 			dummy_texture = {"mobs_tree_monster.png"},
 			night_only = true,
-			sound_custom = "mobs_treemonster"
+			sound_custom = "mobs_treemonster_neutral"
 		}
 	},
 
