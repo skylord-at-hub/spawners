@@ -24,13 +24,16 @@ local mummy_def = {
 	},
 	makes_footstep_sound = true,
 	sounds = {
-		random = "spawners_mobs_mummy",
+		random = "spawners_mobs_mummy_neutral",
 		damage = "spawners_mobs_mummy_hit",
 		shoot_attack = "spawners_mobs_mummy_shoot",
+		attack = "spawners_mobs_mummy_attack",
+		death = "spawners_mobs_mummy_death",
+		distance = 15
 	},
 	walk_velocity = .75,
 	run_velocity = 1.5,
-	view_range = 5,
+	view_range = 10,
 	jump = true,
 	floats = 1,
 	drops = {

@@ -24,13 +24,15 @@ local uruk_hai_def = {
 	},
 	makes_footstep_sound = true,
 	sounds = {
-		random = "spawners_mobs_barbarian_yell2",
-		death = "spawners_mobs_death2",
-		attack = "spawners_mobs_slash_attack",
+		random = "spawners_mobs_uruk_hai_neutral",
+		death = "spawners_mobs_uruk_hai_death",
+		attack = "spawners_mobs_uruk_hai_attack",
+		damage = "spawners_mobs_uruk_hai_hit",
+		distance = 15
 	},
 	walk_velocity = 1,
 	run_velocity = 3,
-	view_range = 5,
+	view_range = 10,
 	jump = true,
 	floats = 1,
 	drops = {

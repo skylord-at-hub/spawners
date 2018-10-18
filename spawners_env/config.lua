@@ -199,7 +199,7 @@ if minetest.get_modpath("mobs") ~=  nil then
 			dummy_mesh = "spawners_mobs_mummy.b3d",
 			dummy_texture = {"spawners_mobs_mummy.png"},
 			night_only = true,
-			sound_custom = "spawners_mobs_mummy"
+			sound_custom = "spawners_mobs_mummy_neutral"
 		},
 		{
 			name = "bunny_evil",
@@ -219,7 +219,7 @@ if minetest.get_modpath("mobs") ~=  nil then
 			dummy_mesh = "spawners_mobs_character.b3d",
 			dummy_texture = {"spawners_mobs_uruk_hai.png", "spawners_mobs_trans.png","spawners_mobs_galvornsword.png", "spawners_mobs_trans.png"},
 			night_only = true,
-			sound_custom = "spawners_mobs_barbarian_yell2",
+			sound_custom = "spawners_mobs_uruk_hai_neutral",
 			env = true
 		},
 		{
@@ -230,7 +230,7 @@ if minetest.get_modpath("mobs") ~=  nil then
 			dummy_mesh = "spawners_mobs_balrog.b3d",
 			dummy_texture = {"spawners_mobs_balrog.png"},
 			night_only = "disable",
-			sound_custom = "spawners_mobs_howl",
+			sound_custom = "spawners_mobs_balrog_neutral",
 			env = true,
 			boss = true
 		}
