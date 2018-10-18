@@ -31,12 +31,12 @@ for k, mob_mod in ipairs(ENABLED_MODS) do
 				}
 			)
 			-- use custom egg or create a default egg
-			if mob.egg_name_custom ~= "" then 
+			if mob.egg_name_custom ~= "" then
 				mob_egg = mob.egg_name_custom
 			else
 				mob_egg = mob_mod..":"..mob.name
 			end
-			
+
 			-- recipes
 			minetest.register_craft({
 				output = "spawners_mobs:"..mob_mod.."_"..mob.name.."_spawner",
@@ -52,9 +52,9 @@ for k, mob_mod in ipairs(ENABLED_MODS) do
 	end
 end
 
--- 
+--
 -- Particles
--- 
+--
 function spawners_mobs.cloud_booom(pos)
 	if not enable_particles then return end
 
@@ -115,16 +115,16 @@ function spawners_mobs.add_smoke_effects(pos)
 	})
 end
 
--- 
+--
 -- Timers
--- 
+--
 -- how often node timers for spawners will tick, +/- some random value
 function spawners_mobs.tick(pos)
 	local meta = minetest.get_meta(pos)
 	local tick_counter = meta:get_int("tick")
 	local owner = meta:get_string("owner")
 	local privs = minetest.get_player_privs(owner);
-	
+
 	-- not for admin
 	if not privs.privs then
 		tick_counter = tick_counter + 1
@@ -138,7 +138,7 @@ function spawners_mobs.tick(pos)
 		spawners_mobs.set_status(pos, "rusty")
 		return
 	end
-	minetest.get_node_timer(pos):start(math.random(80, 214))
+	minetest.get_node_timer(pos):start(math.random(72, 193))
 	-- minetest.get_node_timer(pos):start(math.random(20, 30))
 end
 
@@ -146,7 +146,7 @@ end
 function spawners_mobs.tick_short(pos)
 	local meta = minetest.get_meta(pos)
 	local tick_short_counter = meta:get_int("tick_short")
-	
+
 	if tick_short_counter >= tick_short_max then
 		spawners_mobs.tick(pos)
 		return
@@ -159,16 +159,16 @@ function spawners_mobs.tick_short(pos)
 	-- minetest.get_node_timer(pos):start(math.random(10, 20))
 end
 
--- 
+--
 -- Core Functions
--- 
+--
 -- start spawning mobs
 function spawners_mobs.start_spawning(spawn_area_random_pos, mob_name, mod_prefix, sound_custom)
 	if not (spawn_area_random_pos or how_many or mob_name) then return end
 
 	local sound_name = mod_prefix.."_"..mob_name
 	-- use custom sounds
-	if sound_custom ~= "" then 
+	if sound_custom ~= "" then
 		sound_name = sound_custom
 	end
 
@@ -181,7 +181,7 @@ function spawners_mobs.start_spawning(spawn_area_random_pos, mob_name, mod_prefi
 	for i = 1, #spawn_area_random_pos do
 		-- spawn a bit more above the block - prevent spawning inside the block
 		spawn_area_random_pos[i].y = spawn_area_random_pos[i].y + 0.5
-		
+
 		spawners_mobs.cloud_booom(spawn_area_random_pos[i])
 
 		minetest.after(1, function()
@@ -269,7 +269,7 @@ function spawners_mobs.on_timer(pos, elapsed)
 
 			local random_pos = spawn_area_pos[math.random(#spawn_area_pos)]
 			local random_pos_above = minetest.get_node({ x = random_pos.x, y = random_pos.y + 1, z = random_pos.z }).name
-			
+
 			if random_pos_above == "air" and not minetest.is_protected(random_pos, owner) then
 				table.insert(spawn_area_random_pos, random_pos)
 				-- print("spawn_area_random_pos: "..#spawn_area_random_pos)
@@ -282,7 +282,7 @@ function spawners_mobs.on_timer(pos, elapsed)
 	end
 
 	-- print(dump(spawn_area_random_pos))
-	
+
 	-- check if there is still enough place to spawn mob
 	if #spawn_area_random_pos < 1 then
 		spawners_mobs.set_status(pos, "waiting")
@@ -324,7 +324,7 @@ function spawners_mobs.on_timer(pos, elapsed)
 				if string.find(tmp_mob_name, "sheep") and string.find(mob_name, "sheep") and not string.find(tmp_mob_name, "dummy") then
 					-- print("found entity: "..tmp_mob_name)
 					entities_near = entities_near + 1
-				
+
 				elseif tmp_mob_name == mob_name then
 					-- print("found entity: "..tmp_mob_name)
 					entities_near = entities_near + 1
@@ -344,7 +344,7 @@ function spawners_mobs.on_timer(pos, elapsed)
 	-- don't do anything and try again later when player not near or max entities reached
 	if entities_near >= entities_max or not player_near then
 		spawners_mobs.set_status(pos, "waiting")
-		
+
 		-- sheeps have color in the name
 		local name = mob_name
 		if string.find(mob_name, "sheep") then
@@ -355,7 +355,7 @@ function spawners_mobs.on_timer(pos, elapsed)
 		spawners_mobs.tick_short(pos)
 		return
 	end
-	
+
 	-- start spawning
 	spawners_mobs.start_spawning(spawn_area_random_pos, mob_name, mod_prefix, sound_custom)
 
@@ -377,7 +377,7 @@ function spawners_mobs.set_status(pos, set_status)
 	local mob_table = spawners_mobs.mob_tables[idx] or false
 
 	if not mob_table then return end
-	
+
 	local mod_prefix = mob_table.mod_prefix
 	local mob_name = mob_table.name
 	local offset = mob_table.dummy_offset
@@ -410,7 +410,7 @@ function spawners_mobs.set_status(pos, set_status)
 		meta:set_int("id_smoke", id_smoke)
 		-- print("#1 add id_flame: "..id_flame.." at "..minetest.pos_to_string(pos))
 		-- print("#1 add id_smoke: "..id_smoke.." at "..minetest.pos_to_string(pos))
-		
+
 		if meta_status ~= set_status then
 			-- add dummy entity
 			minetest.add_entity({ x = pos.x, y = pos.y + offset, z = pos.z },"spawners_mobs:dummy_"..mod_prefix.."_"..mob_name)
