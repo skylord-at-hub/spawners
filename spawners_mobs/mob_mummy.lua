@@ -70,6 +70,57 @@ local mummy_def = {
 			max_hear_distance = 8
 		})
 	end,
+	_timer = 0,
+	_random_trigger = 5,
+	do_custom = function(self, dtime)
+		if not self._timer then
+			self._timer = 0
+		end
+
+		if not self._random_trigger then
+			self._random_trigger = math.random(5, 20)
+		end
+
+		self._timer = self._timer + dtime
+
+		if self._timer > self._random_trigger then
+			self._timer = 0
+			self._random_trigger = math.random(5, 20)
+
+			if not self.attack then
+				return
+			end
+
+			local mob_pos = self.object:get_pos()
+			local player_pos = self.attack:get_pos()
+			local distance = vector.distance(mob_pos, player_pos)
+
+			-- don't teleport when closer than 'reach' distance in mod def
+			if distance <= 3 then
+				return
+			end
+
+			if self.attack:is_player() then
+				-- health check
+				if self.attack:get_hp() > 0 then
+					-- play sound
+					minetest.sound_play("spawners_mobs_teleport", {
+						object = self.object,
+						gain = 1.0,
+						max_hear_distance = 20
+					})
+
+					local player_look_dir = self.attack:get_look_dir()
+					player_look_dir.y = 0
+					local to_pos = vector.add(player_pos, player_look_dir)
+
+					-- teleport player
+					self.object:set_pos(to_pos)
+				end
+			end
+
+		end
+	end,
 	-- on_rightclick = function(self, clicker)
 
 	-- 	if mobs:feed_tame(self, clicker, 8, true, true) then
