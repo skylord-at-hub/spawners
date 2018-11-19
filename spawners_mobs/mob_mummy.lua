@@ -33,7 +33,7 @@ local mummy_def = {
 	},
 	walk_velocity = .75,
 	run_velocity = 1.5,
-	view_range = 10,
+	view_range = 16,
 	jump = true,
 	floats = 1,
 	drops = {
