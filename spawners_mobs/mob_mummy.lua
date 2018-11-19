@@ -111,7 +111,7 @@ local mummy_def = {
 					})
 
 					local player_look_dir = self.attack:get_look_dir()
-					player_look_dir.y = 0
+					player_look_dir.y = 1
 					local to_pos = vector.add(player_pos, player_look_dir)
 
 					-- teleport player
