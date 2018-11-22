@@ -1,12 +1,12 @@
--- 
+--
 -- * CREATE ALL SPAWNERS NODES *
--- 
+--
 
 function spawners_env.create(mob_name, mod_prefix, size, offset, mesh, texture, night_only, sound_custom, env, boss)
-	
-	-- 
+
+	--
 	-- DUMMY INSIDE THE SPAWNER
-	-- 
+	--
 
 	local dummy_definition = {
 		hp_max = 1,
@@ -41,9 +41,9 @@ function spawners_env.create(mob_name, mod_prefix, size, offset, mesh, texture, 
 
 	minetest.register_entity("spawners_env:dummy_"..mod_prefix.."_"..mob_name, dummy_definition)
 
-	-- 
+	--
 	-- ACTIVE SPAWNER ENV
-	-- 
+	--
 
 	minetest.register_node("spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_active", {
 		description = mod_prefix.."_"..mob_name.." spawner active env",
@@ -84,9 +84,9 @@ function spawners_env.create(mob_name, mod_prefix, size, offset, mesh, texture, 
 		end,
 	})
 
-	-- 
+	--
 	-- WAITING SPAWNER ENV
-	-- 
+	--
 
 	-- waiting for light - everything is ok but too much light or not enough light
 	minetest.register_node("spawners_env:"..mod_prefix.."_"..mob_name.."_spawner_waiting", {
@@ -123,9 +123,9 @@ function spawners_env.create(mob_name, mod_prefix, size, offset, mesh, texture, 
 		},
 	})
 
-	-- 
+	--
 	-- INACTIVE SPAWNER (DEFAULT) ENV
-	-- 
+	--
 
 	minetest.register_node("spawners_env:"..mod_prefix.."_"..mob_name.."_spawner", {
 		description = mod_prefix.."_"..mob_name.." spawner env",
@@ -150,9 +150,9 @@ function spawners_env.create(mob_name, mod_prefix, size, offset, mesh, texture, 
 		end,
 	})
 
-	-- 
+	--
 	-- * LBM *
-	-- 
+	--
 
 	minetest.register_lbm({
 		name = "spawners_env:check_for_spawning_timer",
@@ -167,9 +167,9 @@ function spawners_env.create(mob_name, mod_prefix, size, offset, mesh, texture, 
 	})
 end
 
--- 
+--
 -- * check for spawning *
--- 
+--
 function spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_prefix, sound_custom, env, boss)
 
 	local random_pos, waiting = spawners_env.check_node_status(pos, mob_name, night_only, boss)
@@ -185,7 +185,7 @@ function spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_pr
 		local mobs_check_radius
 		local mobs_max
 		mobs_counter_table[mob_name] = 0
-		
+
 		if boss then
 			mobs_max = 1
 			mobs_check_radius = 35
@@ -196,10 +196,10 @@ function spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_pr
 
 		-- collect all spawned mobs around area
 		for _,obj in ipairs(minetest.get_objects_inside_radius(pos, mobs_check_radius)) do
-			
+
 			if obj:get_luaentity() ~= nil then
 
-				-- get entity name			
+				-- get entity name
 				local name_split = string.split(obj:get_luaentity().name, ":")
 
 				if name_split[2] == mob_name then
@@ -222,7 +222,8 @@ function spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_pr
 			end
 
 			if boss then
-				minetest.chat_send_all('!Balrog has spawned to this World!')
+				-- color: deep orange
+				minetest.chat_send_all(minetest.colorize("#FF5722", "Balrog has spawned to this World!"))
 			end
 
 			spawners_env.start_spawning(random_pos, 1, "spawners_env:"..mob_name, mod_prefix, sound_custom)
@@ -251,9 +252,9 @@ function spawners_env.check_for_spawning_timer(pos, mob_name, night_only, mod_pr
 	end
 end
 
--- 
+--
 -- CALL 'CREATE' FOR ALL SPAWNERS
--- 
+--
 
 for i, mob_table in ipairs(spawners_env.mob_tables) do
 	if mob_table then
