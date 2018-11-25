@@ -69,9 +69,18 @@ function spawners_mobs.cloud_booom(pos)
 		maxacc = vector.new({x=0.1,  y=0.6,  z=0.1}),
 		minexptime = 2,
 		maxexptime = 3,
-		minsize = 4,
-		maxsize = 12,
-		texture = "spawners_mobs_smoke_particle_2.png^[transform"..math.random(0,3),
+		minsize = 16,
+		maxsize = 24,
+		texture = "spawners_mobs_smoke_particle_2.png",
+		animation = {
+			type = "vertical_frames",
+			-- Width of a frame in pixels
+			aspect_w = 16,
+			-- Height of a frame in pixels
+			aspect_h = 16,
+			-- Full loop length
+			length = 2.0,
+		},
 	})
 end
 
@@ -187,12 +196,11 @@ function spawners_mobs.start_spawning(spawn_area_random_pos, mob_name, mod_prefi
 		minetest.after(1, function()
 			-- minetest.set_node(spawn_area_random_pos[i], {name = "default:apple"})
 			local obj = minetest.add_entity(spawn_area_random_pos[i], mod_prefix..":"..mob_name)
-
 			if obj then
 				if sound_name then
 					minetest.sound_play(sound_name, {
 						pos = spawn_area_random_pos[i],
-						max_hear_distance = 8,
+						max_hear_distance = 16,
 						gain = 0.5
 					})
 				end
